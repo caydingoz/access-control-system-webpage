@@ -34,7 +34,7 @@ import {
   cilUserFemale,
 } from '@coreui/icons'
 
-import avatar1 from 'src/assets/images/avatars/1.jpg'
+import avatar from 'src/assets/images/avatar.jpg'
 
 const Dashboard = () => {
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
@@ -71,7 +71,7 @@ const Dashboard = () => {
 
   const tableExample = [
     {
-      avatar: { src: avatar1, status: 'success' },
+      avatar: { src: avatar, status: 'success' },
       user: {
         name: 'Yiorgos Avraamu',
         new: true,
@@ -87,7 +87,7 @@ const Dashboard = () => {
       activity: '10 sec ago',
     },
     {
-      avatar: { src: avatar1, status: 'success' },
+      avatar: { src: avatar, status: 'success' },
       user: {
         name: 'Yiorgos Avraamu',
         new: true,

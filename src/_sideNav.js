@@ -3,7 +3,7 @@ import CIcon from '@coreui/icons-react'
 import { cilDescription, cilSpeedometer, cilStar } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-const _nav = [
+const _sideNav = [
   {
     component: CNavItem,
     name: 'Dashboard',
@@ -53,4 +53,4 @@ const _nav = [
   },
 ]
 
-export default _nav
+export default _sideNav

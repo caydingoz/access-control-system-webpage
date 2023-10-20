@@ -3,13 +3,13 @@ import { CAvatar, CBadge, CDropdown, CDropdownDivider, CDropdownHeader, CDropdow
 import { cilEnvelopeOpen, cilSettings, cilUser, cilAccountLogout } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
-import avatar8 from './../../assets/images/avatars/5.jpg'
+import avatar from './../assets/images/avatar.jpg'
 
 const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+        <CAvatar src={avatar} size="md" />
       </CDropdownToggle>
       <CDropdownMenu placement="bottom-end" className="pt-0">
         <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>

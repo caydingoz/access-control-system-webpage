@@ -5,8 +5,7 @@ import { CContainer, CHeader, CHeaderBrand, CHeaderDivider, CHeaderNav, CHeaderT
 import CIcon from '@coreui/icons-react'
 import { cilEnvelopeOpen, cilMenu } from '@coreui/icons'
 
-import { AppBreadcrumb } from './index'
-import { AppHeaderDropdown } from './header/index'
+import { AppBreadcrumb, AppHeaderDropdown } from './index'
 import { logo } from 'src/assets/brand/logo'
 
 const AppHeader = () => {
@@ -35,6 +34,7 @@ const AppHeader = () => {
         <CHeaderNav>
           <CNavItem>
             <CNavLink href="#">
+              {/* mesaj ikonu */}
               <CIcon icon={cilEnvelopeOpen} size="lg" />
             </CNavLink>
           </CNavItem>
