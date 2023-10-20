@@ -24,9 +24,7 @@ const AppSidebar = () => {
       position="fixed"
       unfoldable={unfoldable}
       visible={sidebarShow}
-      onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
-      }}
+      onVisibleChange={(visible) => dispatch({ type: 'set', sidebarShow: visible })}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
