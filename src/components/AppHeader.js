@@ -31,7 +31,6 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem>
         </CHeaderNav>
-        <div className="vr pr-2" />
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />
         </CHeaderNav>
