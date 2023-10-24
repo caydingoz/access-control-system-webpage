@@ -60,14 +60,14 @@ const Login = () => {
                           color="primary"
                           className="px-4"
                           onClick={async () => {
-                            let data = await AuthService.login(form.email, form.password)
-                            if (data.success) {
+                            let res = await AuthService.login(form.email, form.password)
+                            if (res.success) {
                               navigate('/dashboard')
                             } else {
                               setErrorInfo({
                                 ...errorInfo,
                                 error: true,
-                                errorMessage: data.errorMessage,
+                                errorMessage: res.errorMessage,
                               })
                             }
                           }}
