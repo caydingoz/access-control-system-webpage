@@ -4,7 +4,7 @@ import { CButton, CCard, CCardBody, CCardGroup, CCol, CContainer, CForm, CFormIn
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
-import AuthService from '../../../services/AuthService'
+import AuthService from '../../services/AuthService'
 
 const Login = () => {
   const navigate = useNavigate()
