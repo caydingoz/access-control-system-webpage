@@ -6,15 +6,16 @@ import { cilEnvelopeOpen, cilMenu } from '@coreui/icons'
 
 import { AppBreadcrumb, AppHeaderDropdown } from './index'
 import { logo } from 'src/assets/brand/logo'
+import { setSidebarShow } from '../slices/sidebarSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
 
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
-        <CHeaderToggler className="ps-1" onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}>
+        <CHeaderToggler className="ps-1" onClick={() => dispatch(setSidebarShow(!sidebarShow))}>
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">

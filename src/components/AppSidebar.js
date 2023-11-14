@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { setSidebarShow } from '../slices/sidebarSlice'
 
 import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -17,15 +18,9 @@ import navigation from '../_sideNav'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
   return (
-    <CSidebar
-      position="fixed"
-      unfoldable={unfoldable}
-      visible={sidebarShow}
-      onVisibleChange={(visible) => dispatch({ type: 'set', sidebarShow: visible })}
-    >
+    <CSidebar position="fixed" visible={sidebarShow} onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}>
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
