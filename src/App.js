@@ -2,6 +2,9 @@ import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
 
+import Anonymous from './components/Auth/Anonymous'
+import ProtectedRoute from './components/Auth/ProtectedRoute'
+
 const loading = (
   <div className="pt-3 text-center">
     <div className="sk-spinner sk-spinner-pulse"></div>
@@ -10,13 +13,10 @@ const loading = (
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
-const Anonymous = React.lazy(() => import('./components/Auth/Anonymous'))
-const ProtectedRoute = React.lazy(() => import('./components/Auth/ProtectedRoute'))
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/Login'))
 const Register = React.lazy(() => import('./views/pages/Register'))
-const Page404 = React.lazy(() => import('./views/pages/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/Page500'))
 
 //Buraya eklenen componentler full sayfa açılıyor.
@@ -33,7 +33,6 @@ class App extends Component {
             <Route element={<ProtectedRoute />}>
               <Route path="*" name="Home" element={<DefaultLayout />} />
             </Route>
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
           </Routes>
         </Suspense>

@@ -4,6 +4,7 @@ import { CContainer, CSpinner } from '@coreui/react'
 
 // routes config
 import routes from '../routes'
+const Page404 = React.lazy(() => import('../views/pages/Page404'))
 
 const AppContent = () => {
   return (
@@ -14,6 +15,7 @@ const AppContent = () => {
             return route.element && <Route key={idx} path={route.path} exact={route.exact} name={route.name} element={<route.element />} />
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="*" name="Page 404" element={<Page404 />} />
         </Routes>
       </Suspense>
     </CContainer>

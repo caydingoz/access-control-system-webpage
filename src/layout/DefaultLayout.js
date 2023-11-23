@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
+import AuthService from '../services/AuthService'
 
 const DefaultLayout = () => {
+  const authService = AuthService()
+  useEffect(() => {
+    const fetchData = async () => {
+      await authService.getUserRoles()
+    }
+    fetchData()
+  }, [authService])
+
   return (
     <div>
       <AppSidebar />

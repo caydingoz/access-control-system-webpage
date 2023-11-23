@@ -7,6 +7,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import AuthService from '../../services/AuthService'
 
 const Login = () => {
+  const authService = AuthService()
   const navigate = useNavigate()
   const [errorInfo, setErrorInfo] = useState({
     error: false,
@@ -60,7 +61,7 @@ const Login = () => {
                           color="primary"
                           className="px-4"
                           onClick={async () => {
-                            let res = await AuthService.login(form.email, form.password)
+                            let res = await authService.login(form.email, form.password)
                             if (res.success) {
                               navigate('/dashboard')
                             } else {
