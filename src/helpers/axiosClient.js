@@ -28,12 +28,16 @@ const refreshToken = async () => {
     accessToken: tokenInfo.accessToken,
     refreshToken: tokenInfo.refreshToken,
   }
-  const response = await fetchAsync('auth/refresh-token', datas, 'post')
-  if (response.success) {
-    localStorage.setItem('token', JSON.stringify(response.data))
-  } else {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+  try {
+    const response = await fetchAsync('auth/refresh-token', datas, 'post')
+    if (response.success) {
+      localStorage.setItem('token', JSON.stringify(response.data))
+    } else {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      Navigate('/login')
+    }
+  } catch {
     Navigate('/login')
   }
 }
@@ -50,8 +54,8 @@ const fetchAsync = async (url, datas, method) => {
     })
     return response.data
   } catch (error) {
+    console.log(error)
     if (error.code === 'ERR_NETWORK') return { success: false, errorMessage: 'Server connection failed!' }
-    if (error.code === 'ERR_BAD_REQUEST') return { success: false, errorMessage: 'Bad request!' }
     if (error.response.status === 401) {
       try {
         await refreshToken()
@@ -66,9 +70,11 @@ const fetchAsync = async (url, datas, method) => {
         })
         return response.data
       } catch (error) {
+        if (error.code === 'ERR_NETWORK') return { success: false, errorMessage: 'Server connection failed!' }
         return { success: false, errorMessage: 'Server error!' }
       }
     }
+    if (error.code === 'ERR_BAD_REQUEST') return { success: false, errorMessage: 'Bad request!' }
     return { success: false, errorMessage: 'Server error!' }
   }
 }

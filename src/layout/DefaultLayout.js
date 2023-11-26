@@ -6,7 +6,7 @@ const DefaultLayout = () => {
   const authService = AuthService()
   useEffect(() => {
     const fetchData = async () => {
-      await authService.getUserRoles()
+      await authService.getUserRolesAndPermissions()
     }
     fetchData()
   }, [authService])

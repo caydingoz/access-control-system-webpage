@@ -1,6 +1,6 @@
 import axiosClient from '../helpers/axiosClient'
 import { useDispatch } from 'react-redux'
-import { loggedIn, loggedOut } from '../slices/authSlice'
+import { loggedIn, setRoles, loggedOut } from '../slices/authSlice'
 
 const AuthService = () => {
   const dispatch = useDispatch()
@@ -17,7 +17,7 @@ const AuthService = () => {
       var userData = { firstName: response.data.firstName, lastName: response.data.lastName }
       localStorage.setItem('token', JSON.stringify(tokenData))
       localStorage.setItem('user', JSON.stringify(userData))
-      dispatch(loggedIn({ roles: response.data.roles }))
+      dispatch(loggedIn({ roles: response.data.roles, permissions: response.data.permissions }))
     }
     return response
   }
@@ -32,7 +32,7 @@ const AuthService = () => {
       var userData = { firstName: response.data.firstName, lastName: response.data.lastName }
       localStorage.setItem('token', JSON.stringify(tokenData))
       localStorage.setItem('user', JSON.stringify(userData))
-      dispatch(loggedIn({ roles: response.data.roles }))
+      dispatch(loggedIn({ roles: response.data.roles, permissions: response.data.permissions }))
     }
     return response
   }
@@ -44,10 +44,10 @@ const AuthService = () => {
     return { success: true }
   }
 
-  const getUserRoles = async () => {
-    const response = await axiosClient.getAsync('auth/roles')
+  const getUserRolesAndPermissions = async () => {
+    const response = await axiosClient.getAsync('auth/roles-and-permissions')
     if (response.Success) {
-      dispatch(loggedIn({ roles: response.data.roles }))
+      dispatch(setRoles({ roles: response.data.roles, permissions: response.data.permissions }))
     }
     return response
   }
@@ -56,7 +56,7 @@ const AuthService = () => {
     register,
     login,
     logout,
-    getUserRoles,
+    getUserRolesAndPermissions,
   }
 }
 
