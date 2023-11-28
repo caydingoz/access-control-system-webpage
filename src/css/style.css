@@ -1,4 +1,3 @@
 .fixed-scrollbar {
     overflow-y: scroll; /* Dikey scrollbar'ı görünür kıl */
-    max-height: 300px;  /* İstenen maksimum yüksekliği ayarlayın */
   }

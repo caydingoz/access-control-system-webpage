@@ -1,7 +1,6 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
-import './css/style.css'
 
 import Anonymous from './components/Auth/Anonymous'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
@@ -16,9 +15,9 @@ const loading = (
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 // Pages
-const Login = React.lazy(() => import('./views/pages/Login'))
-const Register = React.lazy(() => import('./views/pages/Register'))
-const Page500 = React.lazy(() => import('./views/pages/Page500'))
+const Login = React.lazy(() => import('./views/login-register/Login'))
+const Register = React.lazy(() => import('./views/login-register/Register'))
+const Page500 = React.lazy(() => import('./views/errors/Page500'))
 
 //Buraya eklenen componentler full sayfa açılıyor.
 class App extends Component {
