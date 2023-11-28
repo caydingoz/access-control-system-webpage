@@ -24,6 +24,7 @@ const getAuthorizationToken = () => {
 
 const refreshToken = async () => {
   const tokenInfo = localStorage.getItem('token')
+  if (!tokenInfo) Navigate('/login')
   const datas = {
     accessToken: tokenInfo.accessToken,
     refreshToken: tokenInfo.refreshToken,
@@ -54,11 +55,14 @@ const fetchAsync = async (url, datas, method) => {
     })
     return response.data
   } catch (error) {
-    console.log(error)
     if (error.code === 'ERR_NETWORK') return { success: false, errorMessage: 'Server connection failed!' }
     if (error.response.status === 401) {
       try {
         await refreshToken()
+      } catch (error) {
+        Navigate('/login')
+      }
+      try {
         const response = await axios({
           method: method,
           url: API_URL + url,

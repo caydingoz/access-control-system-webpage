@@ -1,6 +1,7 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+import './css/style.css'
 
 import Anonymous from './components/Auth/Anonymous'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
@@ -23,7 +24,7 @@ const Page500 = React.lazy(() => import('./views/pages/Page500'))
 class App extends Component {
   render() {
     return (
-      <HashRouter>
+      <HashRouter className="fixed-scrollbar">
         <Suspense fallback={loading}>
           <Routes>
             <Route element={<Anonymous />}>
