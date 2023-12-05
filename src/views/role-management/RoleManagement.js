@@ -18,6 +18,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilSave, cilTrash, cilChevronBottom, cilChevronTop } from '@coreui/icons'
+import TableSortAndSelection from './TestTable'
 
 const RoleManagement = () => {
   const [expandedRows, setExpandedRows] = useState([])
@@ -37,6 +38,7 @@ const RoleManagement = () => {
 
   return (
     <React.Fragment>
+      <TableSortAndSelection />
       <CRow>
         <CCol>
           <CCard className="border-top-dark border-top-4">

@@ -23,11 +23,12 @@ const getAuthorizationToken = () => {
 }
 
 const refreshToken = async () => {
-  const tokenInfo = localStorage.getItem('token')
-  if (!tokenInfo) Navigate('/login')
+  const tokenJson = localStorage.getItem('token')
+  if (!tokenJson) Navigate('/login')
+  const token = JSON.parse(tokenJson)
   const datas = {
-    accessToken: tokenInfo.accessToken,
-    refreshToken: tokenInfo.refreshToken,
+    accessToken: token.accessToken,
+    refreshToken: token.refreshToken,
   }
   try {
     const response = await fetchAsync('auth/refresh-token', datas, 'post')
