@@ -21,23 +21,24 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import RoleManagementService from 'src/services/RoleManagementService'
 
-function createData(name, calories, fat, carbs, protein) {
+function createData(id, name, createdAt, updatedAt) {
   return {
+    id,
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    history: [
+    createdAt,
+    updatedAt,
+    permissions: [
       {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3,
+        id: '2020-01-04',
+        name: '11091700',
+        createdAt: 3,
+        updatedAt: 3,
       },
       {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1,
+        id: '2020-01-05',
+        name: '11091701',
+        createdAt: 3,
+        updatedAt: 3,
       },
     ],
   }
@@ -76,33 +77,15 @@ function stableSort(array, comparator) {
 const headCells = [
   {
     id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Name',
   },
   {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
+    id: 'createdAt',
+    label: 'Create Date',
   },
   {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
+    id: 'updatedAt',
+    label: 'Update Date',
   },
 ]
 
@@ -224,13 +207,13 @@ export default function TableSortAndSelection() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await RoleManagementService.getRolesAsync(page, rowsPerPage)
-      const rolesData = res.data.roles.map((role) => createData(role.name, role.id, 'dsa', 'asd', 'sad'))
+      const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      const rolesData = res.data.roles.map((role) => createData(role.id, role.name, role.createdAt, role.updatedAt))
       setData(rolesData)
     }
 
     fetchData()
-  }, [page, rowsPerPage])
+  }, [page, rowsPerPage, order, orderBy])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -282,7 +265,7 @@ export default function TableSortAndSelection() {
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0
+  const emptyRows = Math.max(0, (1 + page) * rowsPerPage - data.length)
 
   return (
     <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}>
@@ -310,98 +293,92 @@ export default function TableSortAndSelection() {
           rowCount={data.length}
         />
         <tbody>
-          {stableSort(data, getComparator(order, orderBy))
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row, index) => {
-              const isItemSelected = isSelected(row.name)
-              const labelId = `enhanced-table-checkbox-${index}`
-              const fragmentKey = `row-${index}`
+          {stableSort(data, getComparator(order, orderBy)).map((row, index) => {
+            const isItemSelected = isSelected(row.id)
+            const labelId = `enhanced-table-checkbox-${index}`
+            const fragmentKey = `row-${index}`
 
-              return (
-                <React.Fragment key={fragmentKey}>
-                  <tr
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.name}
-                    // selected={isItemSelected}
-                    style={
-                      isItemSelected
-                        ? {
-                            '--TableCell-dataBackground': 'var(--TableCell-selectedBackground)',
-                            '--TableCell-headBackground': 'var(--TableCell-selectedBackground)',
-                          }
-                        : {}
-                    }
-                  >
-                    <th scope="row">
-                      <Checkbox
-                        onClick={(event) => handleClick(event, row.name)}
-                        checked={isItemSelected}
-                        slotProps={{
-                          input: {
-                            'aria-labelledby': labelId,
-                          },
-                        }}
-                        sx={{ verticalAlign: 'top' }}
-                      />
-                    </th>
-                    <th scope="row">
-                      <IconButton aria-label="expand row" variant="plain" color="neutral" size="sm" onClick={() => setOpen(!open)}>
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                      </IconButton>
-                    </th>
-                    <th id={labelId} scope="row">
-                      {row.name}
-                    </th>
-                    <td>{row.calories}</td>
-                    <td>{row.fat}</td>
-                    <td>{row.carbs}</td>
-                    <td>{row.protein}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ height: 0, padding: 0 }} colSpan={7}>
-                      {open && (
-                        <Sheet variant="soft" sx={{ p: 1, pl: 6, boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)' }}>
-                          <Typography level="body-md" component="div">
-                            Permissions
-                          </Typography>
-                          <Table
-                            borderAxis="bothBetween"
-                            size="sm"
-                            aria-label="purchases"
-                            sx={{
-                              '--TableCell-headBackground': 'transparent',
-                              '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-                              '& thead > tr > *:nth-of-type(n)': { width: '100%' },
-                            }}
-                          >
-                            <thead>
-                              <tr>
-                                <th>Date</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Total price ($)</th>
+            return (
+              <React.Fragment key={fragmentKey}>
+                <tr
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={row.id}
+                  // selected={isItemSelected}
+                  style={
+                    isItemSelected
+                      ? {
+                          '--TableCell-dataBackground': 'var(--TableCell-selectedBackground)',
+                          '--TableCell-headBackground': 'var(--TableCell-selectedBackground)',
+                        }
+                      : {}
+                  }
+                >
+                  <th scope="row">
+                    <Checkbox
+                      onClick={(event) => handleClick(event, row.id)}
+                      checked={isItemSelected}
+                      slotProps={{
+                        input: {
+                          'aria-labelledby': labelId,
+                        },
+                      }}
+                      sx={{ verticalAlign: 'top' }}
+                    />
+                  </th>
+                  <th scope="row">
+                    <IconButton aria-label="expand row" variant="plain" color="neutral" size="sm" onClick={() => setOpen(!open, row.id)}>
+                      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  </th>
+                  <th id={labelId} scope="row">
+                    {row.name}
+                  </th>
+                  <td>{row.createdAt}</td>
+                  <td>{row.updatedAt}</td>
+                </tr>
+                <tr>
+                  <td style={{ height: 0, padding: 0 }} colSpan={5}>
+                    {open && (
+                      <Sheet variant="soft" sx={{ p: 1, pl: 6, boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)' }}>
+                        <Typography level="body-md" component="div">
+                          Permissions
+                        </Typography>
+                        <Table
+                          borderAxis="bothBetween"
+                          size="sm"
+                          aria-label="purchases"
+                          sx={{
+                            '--TableCell-headBackground': 'transparent',
+                            '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
+                            '& thead > tr > *:nth-of-type(n)': { width: '100%' },
+                          }}
+                        >
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Create Date</th>
+                              <th>Update Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {row.permissions.map((permission, index) => (
+                              <tr key={permission.id}>
+                                <td>{permission.name}</td>
+                                <td>{permission.createdAt}</td>
+                                <td>{permission.updatedAt}</td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {row.history.map((historyRow, index) => (
-                                <tr key={historyRow.date}>
-                                  <td>{historyRow.date}</td>
-                                  <td>{historyRow.customerId}</td>
-                                  <td>{historyRow.amount}</td>
-                                  <td>{Math.round(historyRow.amount * 1 * 100) / 100}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </Table>
-                        </Sheet>
-                      )}
-                    </td>
-                  </tr>
-                </React.Fragment>
-              )
-            })}
+                            ))}
+                          </tbody>
+                        </Table>
+                      </Sheet>
+                    )}
+                  </td>
+                </tr>
+              </React.Fragment>
+            )
+          })}
           {emptyRows > 0 && (
             <tr
               style={{
@@ -409,13 +386,13 @@ export default function TableSortAndSelection() {
                 '--TableRow-hoverBackground': 'transparent',
               }}
             >
-              <td colSpan={7} aria-hidden />
+              <td colSpan={5} aria-hidden />
             </tr>
           )}
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={7}>
+            <td colSpan={5}>
               <Box
                 sx={{
                   display: 'flex',
