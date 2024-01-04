@@ -19,59 +19,21 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import RemoveIcon from '@mui/icons-material/Remove'
 import RoleManagementService from 'src/services/RoleManagementService'
+import { format } from 'date-fns'
+import FlagChecker from '../../helpers/flagChecker'
 
-function createData(id, name, createdAt, updatedAt) {
-  return {
-    id,
-    name,
-    createdAt,
-    updatedAt,
-    permissions: [
-      {
-        id: '2020-01-04',
-        name: '11091700',
-        createdAt: 3,
-        updatedAt: 3,
-      },
-      {
-        id: '2020-01-05',
-        name: '11091701',
-        createdAt: 3,
-        updatedAt: 3,
-      },
-    ],
-  }
+const PermissionTypes = {
+  None: 0,
+  Read: 1,
+  Write: 2,
+  Delete: 4,
 }
 
-function labelDisplayedRows({ from, to, count }) {
-  return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`
-}
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
+function formatDateTime(inputDateTime) {
+  const date = new Date(inputDateTime)
+  return format(date, 'dd-MM-yyyy HH:mm')
 }
 
 const headCells = [
@@ -102,6 +64,8 @@ function EnhancedTableHead(props) {
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
+            checkedIcon={<RemoveIcon />}
+            color="danger"
             onChange={onSelectAllClick}
             sx={{ verticalAlign: 'sub' }}
           />
@@ -147,108 +111,287 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 }
 
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props
+function PermissionTest(props) {
+  const { roleId } = props
+
+  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [page, setPage] = React.useState(0)
+  const [permissions, setPermissions] = React.useState([])
+  const [totalCount, setTotalCount] = React.useState(5)
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
+      setPermissions(res.data.permissions)
+      setTotalCount(res.data.totalCount)
+    }
+
+    fetchData()
+  }, [page, rowsPerPage, roleId])
+
+  const handleChangeRowsPerPage = (event, newValue) => {
+    setRowsPerPage(parseInt(newValue.toString(), 10))
+    setPage(0)
+  }
+
+  const deletePermission = async (id) => {
+    var res = await RoleManagementService.deletePermissionsByIdAsync(roleId, id)
+    if (res.success) {
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
+      setPermissions(permissionsData.data.permissions)
+    } else {
+      //TODO: Show error box
+    }
+  }
+
+  const changePermissionType = async (event, permission, permissionType) => {
+    if (FlagChecker.hasFlag(permission.type, permissionType)) {
+      permission.type = FlagChecker.removeFlag(permission.type, permissionType)
+    } else {
+      permission.type = FlagChecker.addFlag(permission.type, permissionType)
+    }
+
+    var res = await RoleManagementService.changePermissionTypeAsync(roleId, permission.id, permission.type)
+    if (res.success) {
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
+      setPermissions(permissionsData.data.permissions)
+    } else {
+      //TODO: Show error box
+    }
+  }
+  const emptyRows = Math.max(0, rowsPerPage - permissions.length)
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        py: 1,
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: 'background.level1',
-        }),
-        borderTopLeftRadius: 'var(--unstable_actionRadius)',
-        borderTopRightRadius: 'var(--unstable_actionRadius)',
-      }}
-    >
-      <Typography level="body-lg" sx={{ flex: '1 1 100%' }} id="tableTitle" component="div">
-        Roles
-      </Typography>
-      {numSelected > 0 && (
-        //TODO: %8'i mobile göre 30'a ayarla
-        <Typography display="inline" sx={{ flex: '1 1 8%' }} component="div">
-          {numSelected} selected
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton size="sm" color="danger" variant="solid">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton size="sm" variant="outlined" color="neutral" disabled>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Box>
+    <tr>
+      <td style={{ height: 0, padding: 0 }} colSpan={5}>
+        <Sheet variant="soft" sx={{ p: 1, pl: 4, boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)' }}>
+          <Typography level="body-md" component="div">
+            Permissions
+          </Typography>
+          <Table
+            borderAxis="bothBetween"
+            size="sm"
+            sx={{
+              '--TableCell-headBackground': 'transparent',
+              '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
+              '& tbody tr': { height: '41px' },
+              '& thead > tr > th:nth-of-type(n)': { width: '100%' },
+              '& thead > tr > th:nth-of-type(1)': { width: '40px' },
+              pt: 1,
+            }}
+          >
+            <thead style={{ pointerEvents: 'none' }}>
+              <tr>
+                <th />
+                <th>Operation</th>
+                <th>Type</th>
+                <th>Create Date</th>
+                <th>Update Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {permissions.length > 0 ? (
+                permissions.map((permission) => (
+                  <tr key={permission.id}>
+                    <td>
+                      <IconButton
+                        onClick={async () => await deletePermission(permission.id)}
+                        color="danger"
+                        sx={{ display: 'flex', justifyContent: 'center' }}
+                        size="sm"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                    </td>
+                    <td>{permission.operation}</td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ flex: '1' }}>
+                          <Checkbox
+                            color="neutral"
+                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Read)}
+                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Read)}
+                            sx={{ verticalAlign: 'middle' }}
+                            size="sm"
+                          />
+                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Read</span>
+                        </div>
+                        <div style={{ flex: '1' }}>
+                          <Checkbox
+                            color="success"
+                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Write)}
+                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Write)}
+                            sx={{ verticalAlign: 'middle' }}
+                            size="sm"
+                          />
+                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Write</span>
+                        </div>
+                        <div style={{ flex: '1' }}>
+                          <Checkbox
+                            color="danger"
+                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Delete)}
+                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Delete)}
+                            sx={{ verticalAlign: 'middle' }}
+                            size="sm"
+                          />
+                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Delete</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{formatDateTime(permission.createdAt)}</td>
+                    <td>{formatDateTime(permission.updatedAt)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr
+                  style={{
+                    height: `calc(${1} * 40px)`,
+                    '--TableRow-hoverBackground': 'transparent',
+                  }}
+                >
+                  <td />
+                  <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                    There is no data..
+                  </td>
+                </tr>
+              )}
+              {emptyRows > 0 && (
+                <tr
+                  style={{
+                    height: `calc(${emptyRows} * 41px)`,
+                    '--TableRow-hoverBackground': 'transparent',
+                  }}
+                >
+                  <td colSpan={5} aria-hidden />
+                </tr>
+              )}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={5}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <FormControl orientation="horizontal" size="sm">
+                      <FormLabel>Rows per page:</FormLabel>
+                      <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
+                        <Option value={5}>5</Option>
+                        <Option value={10}>10</Option>
+                        <Option value={25}>25</Option>
+                      </Select>
+                    </FormControl>
+                    <FormControl orientation="horizontal" size="sm">
+                      <FormLabel size="sm">
+                        Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
+                      </FormLabel>
+                    </FormControl>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton
+                        size="sm"
+                        color="neutral"
+                        variant="outlined"
+                        disabled={page === 0}
+                        onClick={() => setPage(page - 1)}
+                        sx={{ bgcolor: 'background.surface' }}
+                      >
+                        <KeyboardArrowLeftIcon />
+                      </IconButton>
+                      <IconButton
+                        size="sm"
+                        color="neutral"
+                        variant="outlined"
+                        disabled={(page + 1) * rowsPerPage > totalCount ? true : false}
+                        onClick={() => setPage(page + 1)}
+                        sx={{ bgcolor: 'background.surface' }}
+                      >
+                        <KeyboardArrowRightIcon />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </td>
+              </tr>
+            </tfoot>
+          </Table>
+        </Sheet>
+      </td>
+    </tr>
   )
 }
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+PermissionTest.propTypes = {
+  roleId: PropTypes.string.isRequired,
 }
 
 export default function TableSortAndSelection() {
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('name')
-  const [selected, setSelected] = React.useState([])
+  const [selectedRoles, setSelectedRoles] = React.useState([])
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
-  const [data, setData] = React.useState([])
-  const [open, setOpen] = React.useState(false)
+  const [totalCount, setTotalCount] = React.useState(0)
+  const [roles, setRoles] = React.useState([])
+  const [openedId, setOpenedId] = React.useState()
 
   useEffect(() => {
     async function fetchData() {
       const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
-      const rolesData = res.data.roles.map((role) => createData(role.id, role.name, role.createdAt, role.updatedAt))
-      setData(rolesData)
+      setRoles(res.data.roles)
+      setTotalCount(res.data.totalCount)
     }
 
     fetchData()
   }, [page, rowsPerPage, order, orderBy])
 
-  const handleRequestSort = (event, property) => {
+  const deleteRoles = async () => {
+    var res = await RoleManagementService.deleteRolesAsync(openedId, selectedRoles)
+    if (res.success) {
+      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, openedId, order, orderBy)
+      setRoles(rolesData.data.permissions)
+    } else {
+      //TODO: Show error box
+    }
+  }
+
+  const handleOrder = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
 
-  const handleSelectAllClick = (event) => {
+  const handleCollapse = async (id) => {
+    const isOpened = openedId === id
+    setOpenedId(isOpened ? undefined : id)
+  }
+
+  const handleSelectAllRoles = (event) => {
     if (event.target.checked) {
-      const newSelected = data.map((n) => n.name)
-      setSelected(newSelected)
+      const newSelected = roles.map((n) => n.id)
+      setSelectedRoles(newSelected)
       return
     }
-    setSelected([])
+    setSelectedRoles([])
   }
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name)
-    let newSelected = []
+  const handleSelectRole = (event, id) => {
+    const selectedIndex = selectedRoles.indexOf(id)
+    let newSelectedRoles = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
+      newSelectedRoles = newSelectedRoles.concat(selectedRoles, id)
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
+      newSelectedRoles = newSelectedRoles.concat(selectedRoles.slice(1))
+    } else if (selectedIndex === selectedRoles.length - 1) {
+      newSelectedRoles = newSelectedRoles.concat(selectedRoles.slice(0, -1))
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
+      newSelectedRoles = newSelectedRoles.concat(selectedRoles.slice(0, selectedIndex), selectedRoles.slice(selectedIndex + 1))
     }
 
-    setSelected(newSelected)
-  }
-
-  const handleChangePage = (newPage) => {
-    setPage(newPage)
+    setSelectedRoles(newSelectedRoles)
   }
 
   const handleChangeRowsPerPage = (event, newValue) => {
@@ -256,28 +399,60 @@ export default function TableSortAndSelection() {
     setPage(0)
   }
 
-  const getLabelDisplayedRowsTo = () => {
-    if (data.length === -1) {
-      return (page + 1) * rowsPerPage
-    }
-    return rowsPerPage === -1 ? data.length : Math.min(data.length, (page + 1) * rowsPerPage)
-  }
+  const isSelected = (id) => selectedRoles.indexOf(id) !== -1
 
-  const isSelected = (name) => selected.indexOf(name) !== -1
-
-  const emptyRows = Math.max(0, (1 + page) * rowsPerPage - data.length)
+  const emptyRows = Math.max(0, rowsPerPage - roles.length)
 
   return (
     <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}>
-      <EnhancedTableToolbar numSelected={selected.length} />
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          py: 1,
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(selectedRoles.length > 0 && {
+            bgcolor: 'background.level1',
+          }),
+          borderTopLeftRadius: 'var(--unstable_actionRadius)',
+          borderTopRightRadius: 'var(--unstable_actionRadius)',
+        }}
+      >
+        <Typography level="body-lg" sx={{ flex: '1 1 100%' }} id="tableTitle" component="div">
+          Roles
+        </Typography>
+        {selectedRoles.length > 0 && (
+          //TODO: %6'i mobile göre 30'a ayarla
+          <Typography level="body-sm" display="inline" sx={{ flex: '1 1 6%' }} component="div">
+            {selectedRoles.length} selected
+          </Typography>
+        )}
+
+        {selectedRoles.length > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton size="sm" color="danger" variant="solid" onClick={async () => await deleteRoles()}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Filter list">
+            <IconButton size="sm" variant="outlined" color="neutral" disabled>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
       <Table
-        aria-labelledby="tableTitle"
         hoverRow
         sx={{
           '--TableCell-headBackground': 'transparent',
           '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
+          '& tbody tr': {
+            height: '41px',
+          },
           '& thead th:nth-of-type(1)': {
-            width: '30px',
+            width: '40px',
           },
           '& thead th:nth-of-type(2)': {
             width: '40px',
@@ -285,15 +460,15 @@ export default function TableSortAndSelection() {
         }}
       >
         <EnhancedTableHead
-          numSelected={selected.length}
+          numSelected={selectedRoles.length}
           order={order}
           orderBy={orderBy}
-          onSelectAllClick={handleSelectAllClick}
-          onRequestSort={handleRequestSort}
-          rowCount={data.length}
+          onSelectAllClick={handleSelectAllRoles}
+          onRequestSort={handleOrder}
+          rowCount={roles.length}
         />
         <tbody>
-          {stableSort(data, getComparator(order, orderBy)).map((row, index) => {
+          {roles.map((row, index) => {
             const isItemSelected = isSelected(row.id)
             const labelId = `enhanced-table-checkbox-${index}`
             const fragmentKey = `row-${index}`
@@ -301,11 +476,9 @@ export default function TableSortAndSelection() {
             return (
               <React.Fragment key={fragmentKey}>
                 <tr
-                  role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   key={row.id}
-                  // selected={isItemSelected}
                   style={
                     isItemSelected
                       ? {
@@ -315,10 +488,12 @@ export default function TableSortAndSelection() {
                       : {}
                   }
                 >
-                  <th scope="row">
+                  <td>
                     <Checkbox
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleSelectRole(event, row.id)}
                       checked={isItemSelected}
+                      checkedIcon={<RemoveIcon fontSize="sm" />}
+                      color="danger"
                       slotProps={{
                         input: {
                           'aria-labelledby': labelId,
@@ -326,63 +501,34 @@ export default function TableSortAndSelection() {
                       }}
                       sx={{ verticalAlign: 'top' }}
                     />
-                  </th>
-                  <th scope="row">
-                    <IconButton aria-label="expand row" variant="plain" color="neutral" size="sm" onClick={() => setOpen(!open, row.id)}>
-                      {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                  </th>
-                  <th id={labelId} scope="row">
-                    {row.name}
-                  </th>
-                  <td>{row.createdAt}</td>
-                  <td>{row.updatedAt}</td>
-                </tr>
-                <tr>
-                  <td style={{ height: 0, padding: 0 }} colSpan={5}>
-                    {open && (
-                      <Sheet variant="soft" sx={{ p: 1, pl: 6, boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)' }}>
-                        <Typography level="body-md" component="div">
-                          Permissions
-                        </Typography>
-                        <Table
-                          borderAxis="bothBetween"
-                          size="sm"
-                          aria-label="purchases"
-                          sx={{
-                            '--TableCell-headBackground': 'transparent',
-                            '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-                            '& thead > tr > *:nth-of-type(n)': { width: '100%' },
-                          }}
-                        >
-                          <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>Create Date</th>
-                              <th>Update Date</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {row.permissions.map((permission, index) => (
-                              <tr key={permission.id}>
-                                <td>{permission.name}</td>
-                                <td>{permission.createdAt}</td>
-                                <td>{permission.updatedAt}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
-                      </Sheet>
-                    )}
                   </td>
+                  <td
+                    style={{
+                      padding: '4px',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <IconButton
+                      color="neutral"
+                      sx={{ display: 'flex', justifyContent: 'center' }} //TODO: burayı kaldırırsan table height bozuluyor?
+                      size="sm"
+                      onClick={async () => await handleCollapse(row.id)}
+                    >
+                      {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  </td>
+                  <td id={labelId}> {row.name} </td>
+                  <td>{formatDateTime(row.createdAt)}</td>
+                  <td>{formatDateTime(row.updatedAt)}</td>
                 </tr>
+                {openedId === row.id && <PermissionTest roleId={openedId} />}
               </React.Fragment>
             )
           })}
           {emptyRows > 0 && (
             <tr
               style={{
-                height: `calc(${emptyRows} * 40px)`,
+                height: `calc(${emptyRows} * 46px)`,
                 '--TableRow-hoverBackground': 'transparent',
               }}
             >
@@ -409,20 +555,18 @@ export default function TableSortAndSelection() {
                     <Option value={25}>25</Option>
                   </Select>
                 </FormControl>
-                <Typography textAlign="center" sx={{ minWidth: 80 }}>
-                  {labelDisplayedRows({
-                    from: data.length === 0 ? 0 : page * rowsPerPage + 1,
-                    to: getLabelDisplayedRowsTo(),
-                    count: data.length === -1 ? -1 : data.length,
-                  })}
-                </Typography>
+                <FormControl orientation="horizontal" size="sm">
+                  <FormLabel size="sm">
+                    Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
+                  </FormLabel>
+                </FormControl>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <IconButton
                     size="sm"
                     color="neutral"
                     variant="outlined"
                     disabled={page === 0}
-                    onClick={() => handleChangePage(page - 1)}
+                    onClick={() => setPage(page - 1)}
                     sx={{ bgcolor: 'background.surface' }}
                   >
                     <KeyboardArrowLeftIcon />
@@ -431,8 +575,8 @@ export default function TableSortAndSelection() {
                     size="sm"
                     color="neutral"
                     variant="outlined"
-                    disabled={data.length !== -1 ? page >= Math.ceil(data.length / rowsPerPage) - 1 : false}
-                    onClick={() => handleChangePage(page + 1)}
+                    disabled={(page + 1) * rowsPerPage > totalCount ? true : false}
+                    onClick={() => setPage(page + 1)}
                     sx={{ bgcolor: 'background.surface' }}
                   >
                     <KeyboardArrowRightIcon />

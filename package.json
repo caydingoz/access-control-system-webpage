@@ -39,6 +39,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "^3.31.0",
+    "date-fns": "^2.30.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-app-polyfill": "^3.0.0",
