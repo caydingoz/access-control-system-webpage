@@ -258,7 +258,7 @@ function PermissionTest(props) {
               {emptyRows > 0 && (
                 <tr
                   style={{
-                    height: `calc(${emptyRows} * 41px)`,
+                    height: `calc(${emptyRows} * 46.33px)`,
                     '--TableRow-hoverBackground': 'transparent',
                   }}
                 >
