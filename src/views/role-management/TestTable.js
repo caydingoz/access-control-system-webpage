@@ -528,7 +528,7 @@ export default function TableSortAndSelection() {
           {emptyRows > 0 && (
             <tr
               style={{
-                height: `calc(${emptyRows} * 46px)`,
+                height: `calc(${emptyRows} * 41px)`,
                 '--TableRow-hoverBackground': 'transparent',
               }}
             >
