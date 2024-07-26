@@ -1,0 +1,104 @@
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { showError } from '../slices/errorSlice'
+import { loggedOut } from '../slices/authSlice'
+import AuthService from '../services/AuthService'
+
+const API_URL = 'http://localhost:8080/api/'
+
+const useAxiosInterceptors = () => {
+  const dispatch = useDispatch()
+  const authService = AuthService()
+
+  useEffect(() => {
+    const requestInterceptor = axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token')
+        const accessToken = token ? 'Bearer ' + JSON.parse(token).accessToken : ''
+        if (accessToken) {
+          config.headers.Authorization = accessToken
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      },
+    )
+
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => {
+        if (!response.data.success) dispatch(showError(response.data.errorMessage))
+        return response
+      },
+      async (error) => {
+        if (error.code === 'ERR_NETWORK') {
+          dispatch(showError('Server connection failed!'))
+        }
+        if (error.response?.status === 401) {
+          try {
+            await refreshToken()
+            return axios(error.config)
+          } catch (refreshError) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            dispatch(loggedOut())
+            if (window.location.hash !== '#/login') {
+              window.location.replace('#/login')
+            }
+            return Promise.reject(error)
+          }
+        } else if (error.response?.status === 403) {
+          dispatch(showError('You do not have the permissions to perform this action.'))
+          return Promise.reject(error)
+        } else {
+          dispatch(showError(error.response?.data?.message || 'Server error!'))
+        }
+        return Promise.reject(error)
+      },
+    )
+
+    const refreshToken = async () => {
+      const tokenJson = localStorage.getItem('token')
+      if (!tokenJson) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        dispatch(loggedOut())
+      }
+      const token = JSON.parse(tokenJson)
+      const datas = {
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      }
+      try {
+        const response = await axios.post(API_URL + 'auth/refresh-token', datas)
+        if (response.data.success) {
+          localStorage.setItem('token', JSON.stringify(response.data.data))
+          // You should set user
+          await authService.getUserRolesAndPermissions()
+        } else {
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          dispatch(loggedOut())
+          if (window.location.hash !== '#/login') {
+            window.location.replace('#/login')
+          }
+        }
+      } catch {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        dispatch(loggedOut())
+        if (window.location.hash !== '#/login') {
+          window.location.replace('#/login')
+        }
+      }
+    }
+
+    return () => {
+      axios.interceptors.request.eject(requestInterceptor)
+      axios.interceptors.response.eject(responseInterceptor)
+    }
+  }, [dispatch, authService])
+}
+
+export default useAxiosInterceptors

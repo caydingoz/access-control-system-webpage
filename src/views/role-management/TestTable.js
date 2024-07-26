@@ -139,8 +139,6 @@ function PermissionTest(props) {
     if (res.success) {
       const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
-    } else {
-      //TODO: Show error box
     }
   }
 
@@ -155,8 +153,6 @@ function PermissionTest(props) {
     if (res.success) {
       const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
-    } else {
-      //TODO: Show error box
     }
   }
   const emptyRows = Math.max(0, rowsPerPage - permissions.length)
@@ -340,8 +336,10 @@ export default function TableSortAndSelection() {
   useEffect(() => {
     async function fetchData() {
       const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
-      setRoles(res.data.roles)
-      setTotalCount(res.data.totalCount)
+      if (res.success) {
+        setRoles(res.data.roles)
+        setTotalCount(res.data.totalCount)
+      }
     }
 
     fetchData()
@@ -352,8 +350,6 @@ export default function TableSortAndSelection() {
     if (res.success) {
       const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, openedId, order, orderBy)
       setRoles(rolesData.data.permissions)
-    } else {
-      //TODO: Show error box
     }
   }
 
