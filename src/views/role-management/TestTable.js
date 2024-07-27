@@ -346,7 +346,7 @@ export default function TableSortAndSelection() {
   }, [page, rowsPerPage, order, orderBy])
 
   const deleteRoles = async () => {
-    var res = await RoleManagementService.deleteRolesAsync(openedId, selectedRoles)
+    var res = await RoleManagementService.deleteRolesAsync(selectedRoles)
     if (res.success) {
       const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, openedId, order, orderBy)
       setRoles(rolesData.data.permissions)

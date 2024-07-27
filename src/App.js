@@ -5,7 +5,7 @@ import './scss/style.scss'
 import Anonymous from './components/Auth/Anonymous'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
 import useAxiosInterceptors from './helpers/useAxiosInterceptors'
-import Error from './components/Error'
+import AlertVariousStates from './components/AlertVariousStates'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -26,7 +26,7 @@ const App = () => {
   useAxiosInterceptors()
   return (
     <HashRouter className="fixed-scrollbar">
-      <Error />
+      <AlertVariousStates />
       <Suspense fallback={loading}>
         <Routes>
           <Route element={<Anonymous />}>

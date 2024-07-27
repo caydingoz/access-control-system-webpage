@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
-import { showError } from '../slices/errorSlice'
+import { showAlert } from '../slices/alertSlice'
 import { loggedOut } from '../slices/authSlice'
 import AuthService from '../services/AuthService'
 
@@ -28,12 +28,16 @@ const useAxiosInterceptors = () => {
 
     const responseInterceptor = axios.interceptors.response.use(
       (response) => {
-        if (!response.data.success) dispatch(showError(response.data.errorMessage))
+        console.log(response.data.success)
+        if (!response.data.success) dispatch(showAlert({ message: response.data.errorMessage, alertType: 'Error' }))
+        else if (response.config.method !== 'get' && response.config.url !== API_URL + 'auth/refresh-token')
+          dispatch(showAlert({ message: 'Operation completed successfully!', alertType: 'Success' }))
         return response
       },
       async (error) => {
         if (error.code === 'ERR_NETWORK') {
-          dispatch(showError('Server connection failed!'))
+          dispatch(showAlert({ message: 'Server connection failed!', alertType: 'Error' }))
+          return Promise.reject(error)
         }
         if (error.response?.status === 401) {
           try {
@@ -46,13 +50,11 @@ const useAxiosInterceptors = () => {
             if (window.location.hash !== '#/login') {
               window.location.replace('#/login')
             }
-            return Promise.reject(error)
           }
         } else if (error.response?.status === 403) {
-          dispatch(showError('You do not have the permissions to perform this action.'))
-          return Promise.reject(error)
+          dispatch(showAlert({ message: 'You do not have the permissions to perform this action.', alertType: 'Error' }))
         } else {
-          dispatch(showError(error.response?.data?.message || 'Server error!'))
+          dispatch(showAlert({ message: error.response?.data?.message || 'Server error!', alertType: 'Error' }))
         }
         return Promise.reject(error)
       },
