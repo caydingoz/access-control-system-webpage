@@ -137,7 +137,7 @@ function PermissionTest(props) {
   const deletePermission = async (id) => {
     var res = await RoleManagementService.deletePermissionsByIdAsync(roleId, id)
     if (res.success) {
-      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
     }
   }
@@ -151,7 +151,7 @@ function PermissionTest(props) {
 
     var res = await RoleManagementService.changePermissionTypeAsync(roleId, permission.id, permission.type)
     if (res.success) {
-      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 5, roleId, 'asc', 'id')
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
     }
   }
@@ -301,7 +301,7 @@ function PermissionTest(props) {
                         size="sm"
                         color="neutral"
                         variant="outlined"
-                        disabled={(page + 1) * rowsPerPage > totalCount ? true : false}
+                        disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
                         onClick={() => setPage(page + 1)}
                         sx={{ bgcolor: 'background.surface' }}
                       >
@@ -348,8 +348,10 @@ export default function TableSortAndSelection() {
   const deleteRoles = async () => {
     var res = await RoleManagementService.deleteRolesAsync(selectedRoles)
     if (res.success) {
-      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, openedId, order, orderBy)
-      setRoles(rolesData.data.permissions)
+      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      setRoles(rolesData.data.roles)
+      setTotalCount(rolesData.data.totalCount)
+      setSelectedRoles([])
     }
   }
 
@@ -571,7 +573,7 @@ export default function TableSortAndSelection() {
                     size="sm"
                     color="neutral"
                     variant="outlined"
-                    disabled={(page + 1) * rowsPerPage > totalCount ? true : false}
+                    disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
                     onClick={() => setPage(page + 1)}
                     sx={{ bgcolor: 'background.surface' }}
                   >

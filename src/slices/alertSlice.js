@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  visible: false,
-  message: '',
-  alertType: '',
+  alerts: [],
 }
 
 const alertSlice = createSlice({
@@ -11,17 +9,13 @@ const alertSlice = createSlice({
   initialState,
   reducers: {
     showAlert: (state, action) => {
-      state.visible = true
-      state.message = action.payload.message
-      state.alertType = action.payload.alertType
+      state.alerts.push(action.payload)
     },
-    hideAlert: (state) => {
-      state.visible = false
-      state.message = ''
+    hideAlert: (state, action) => {
+      state.alerts = state.alerts.filter((alert) => alert.id !== action.payload)
     },
   },
 })
 
 export const { showAlert, hideAlert } = alertSlice.actions
-
 export default alertSlice.reducer

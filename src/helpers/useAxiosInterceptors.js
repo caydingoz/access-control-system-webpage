@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { showAlert } from '../slices/alertSlice'
 import { loggedOut } from '../slices/authSlice'
 import AuthService from '../services/AuthService'
+import { v4 as uuidv4 } from 'uuid'
 
 const API_URL = 'http://localhost:8080/api/'
 
@@ -28,15 +29,14 @@ const useAxiosInterceptors = () => {
 
     const responseInterceptor = axios.interceptors.response.use(
       (response) => {
-        console.log(response.data.success)
-        if (!response.data.success) dispatch(showAlert({ message: response.data.errorMessage, alertType: 'Error' }))
+        if (!response.data.success) dispatch(showAlert({ id: uuidv4(), message: response.data.errorMessage, alertType: 'Error' }))
         else if (response.config.method !== 'get' && response.config.url !== API_URL + 'auth/refresh-token')
-          dispatch(showAlert({ message: 'Operation completed successfully!', alertType: 'Success' }))
+          dispatch(showAlert({ id: uuidv4(), message: 'Operation completed successfully!', alertType: 'Success' }))
         return response
       },
       async (error) => {
         if (error.code === 'ERR_NETWORK') {
-          dispatch(showAlert({ message: 'Server connection failed!', alertType: 'Error' }))
+          dispatch(showAlert({ id: uuidv4(), message: 'Server connection failed!', alertType: 'Error' }))
           return Promise.reject(error)
         }
         if (error.response?.status === 401) {
@@ -52,9 +52,9 @@ const useAxiosInterceptors = () => {
             }
           }
         } else if (error.response?.status === 403) {
-          dispatch(showAlert({ message: 'You do not have the permissions to perform this action.', alertType: 'Error' }))
+          dispatch(showAlert({ id: uuidv4(), message: 'You do not have the permissions to perform this action.', alertType: 'Error' }))
         } else {
-          dispatch(showAlert({ message: error.response?.data?.message || 'Server error!', alertType: 'Error' }))
+          dispatch(showAlert({ id: uuidv4(), message: error.response?.data?.message || 'Server error!', alertType: 'Error' }))
         }
         return Promise.reject(error)
       },
