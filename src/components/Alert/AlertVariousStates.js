@@ -24,9 +24,8 @@ export default function AlertVariousStates() {
         width: '25%',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        padding: '15px',
         right: '10px',
-        bottom: '15px',
+        bottom: '0',
         zIndex: 9999,
       }}
     >
