@@ -4,7 +4,7 @@ import IconButton from '@mui/joy/IconButton'
 import Typography from '@mui/joy/Typography'
 import LinearProgress from '@mui/joy/LinearProgress'
 import { useDispatch } from 'react-redux'
-import { hideAlert } from '../slices/alertSlice'
+import { hideAlert } from '../../slices/alertSlice'
 import { useCountUp } from 'use-count-up'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 

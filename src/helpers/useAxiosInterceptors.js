@@ -5,6 +5,7 @@ import { showAlert } from '../slices/alertSlice'
 import { loggedOut } from '../slices/authSlice'
 import AuthService from '../services/AuthService'
 import { v4 as uuidv4 } from 'uuid'
+import { hideLoading, showLoading } from 'src/slices/loadingSlice'
 
 const API_URL = 'http://localhost:8080/api/'
 
@@ -20,6 +21,7 @@ const useAxiosInterceptors = () => {
         if (accessToken) {
           config.headers.Authorization = accessToken
         }
+        if (config.url !== API_URL + 'auth/refresh-token') dispatch(showLoading())
         return config
       },
       (error) => {
@@ -30,13 +32,16 @@ const useAxiosInterceptors = () => {
     const responseInterceptor = axios.interceptors.response.use(
       (response) => {
         if (!response.data.success) dispatch(showAlert({ id: uuidv4(), message: response.data.errorMessage, alertType: 'Error' }))
-        else if (response.config.method !== 'get' && response.config.url !== API_URL + 'auth/refresh-token')
+        else if (response.config.method !== 'get' && response.config.url !== API_URL + 'auth/refresh-token') {
           dispatch(showAlert({ id: uuidv4(), message: 'Operation completed successfully!', alertType: 'Success' }))
+        }
+        if (response.config.url !== API_URL + 'auth/refresh-token') dispatch(hideLoading())
         return response
       },
       async (error) => {
         if (error.code === 'ERR_NETWORK') {
           dispatch(showAlert({ id: uuidv4(), message: 'Server connection failed!', alertType: 'Error' }))
+          dispatch(hideLoading())
           return Promise.reject(error)
         }
         if (error.response?.status === 401) {
@@ -56,6 +61,7 @@ const useAxiosInterceptors = () => {
         } else {
           dispatch(showAlert({ id: uuidv4(), message: error.response?.data?.message || 'Server error!', alertType: 'Error' }))
         }
+        dispatch(hideLoading())
         return Promise.reject(error)
       },
     )

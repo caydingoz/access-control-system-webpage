@@ -5,7 +5,7 @@ import './scss/style.scss'
 import Anonymous from './components/Auth/Anonymous'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
 import useAxiosInterceptors from './helpers/useAxiosInterceptors'
-import AlertVariousStates from './components/AlertVariousStates'
+import AlertVariousStates from './components/Alert/AlertVariousStates'
 
 const loading = (
   <div className="pt-3 text-center">

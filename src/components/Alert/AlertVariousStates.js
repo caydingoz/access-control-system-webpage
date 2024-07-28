@@ -31,7 +31,6 @@ export default function AlertVariousStates() {
       }}
     >
       {alerts.map((alert) => {
-        console.log(alert)
         const alertItem = basedItems.find((item) => item.type === alert.alertType)
         return <AlertItem key={alert.id} alert={alert} alertItem={alertItem} />
       })}
