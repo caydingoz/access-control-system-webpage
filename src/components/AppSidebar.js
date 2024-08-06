@@ -2,16 +2,13 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSidebarShow } from '../slices/sidebarSlice'
 
-import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
+import { CSidebar, CSidebarBrand, CSidebarHeader } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
-import { logoNegative } from 'src/assets/brand/logo-negative'
+import { logo } from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
-
-import SimpleBar from 'simplebar-react'
-import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
 import navigation from '../_sideNav'
@@ -20,16 +17,14 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
   return (
-    <CSidebar position="fixed" visible={sidebarShow} onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}>
-      <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
-        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
-      </CSidebarBrand>
-      <CSidebarNav>
-        <SimpleBar>
-          <AppSidebarNav items={navigation} />
-        </SimpleBar>
-      </CSidebarNav>
+    <CSidebar className="border-end" position="fixed" visible={sidebarShow} onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}>
+      <CSidebarHeader className="border-bottom">
+        <CSidebarBrand to="/">
+          <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} />
+          <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} />
+        </CSidebarBrand>
+      </CSidebarHeader>
+      <AppSidebarNav items={navigation} />
     </CSidebar>
   )
 }
