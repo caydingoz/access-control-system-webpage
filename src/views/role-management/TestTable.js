@@ -67,7 +67,7 @@ function EnhancedTableHead(props) {
             checkedIcon={<RemoveIcon />}
             color="danger"
             onChange={onSelectAllClick}
-            sx={{ verticalAlign: 'sub' }}
+            sx={{ verticalAlign: 'sub', paddingLeft: '4px' }}
           />
         </th>
         <th />
@@ -410,9 +410,6 @@ export default function TableSortAndSelection() {
           py: 1,
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
-          ...(selectedRoles.length > 0 && {
-            bgcolor: 'background.level1',
-          }),
           borderTopLeftRadius: 'var(--unstable_actionRadius)',
           borderTopRightRadius: 'var(--unstable_actionRadius)',
         }}
@@ -443,17 +440,22 @@ export default function TableSortAndSelection() {
       </Box>
       <Table
         hoverRow
+        size="md"
         sx={{
           '--TableCell-headBackground': 'transparent',
           '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
           '& tbody tr': {
-            height: '41px',
+            height: '40px',
           },
           '& thead th:nth-of-type(1)': {
             width: '40px',
           },
           '& thead th:nth-of-type(2)': {
             width: '40px',
+          },
+          '& th': {
+            backgroundColor: 'background.level1',
+            height: '40px',
           },
         }}
       >
@@ -497,7 +499,7 @@ export default function TableSortAndSelection() {
                           'aria-labelledby': labelId,
                         },
                       }}
-                      sx={{ verticalAlign: 'top' }}
+                      sx={{ verticalAlign: 'top', paddingLeft: '4px' }}
                     />
                   </td>
                   <td
