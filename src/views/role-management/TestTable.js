@@ -24,6 +24,7 @@ import RoleManagementService from 'src/services/RoleManagementService'
 import { format } from 'date-fns'
 import FlagChecker from '../../helpers/flagChecker'
 import { Input, Button } from '@mui/joy'
+import CloseIcon from '@mui/icons-material/Close'
 
 const PermissionTypes = {
   None: 0,
@@ -63,10 +64,9 @@ function EnhancedTableHead(props) {
       <tr>
         <th>
           <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
+            checked={rowCount > 0 && numSelected >= rowCount}
             checkedIcon={<RemoveIcon />}
-            color="danger"
+            color="primary"
             onChange={onSelectAllClick}
             sx={{ verticalAlign: 'sub', paddingLeft: '4px' }}
           />
@@ -586,7 +586,7 @@ export default function TableSortAndSelection() {
                       <Checkbox
                         onClick={(event) => handleSelectRole(event, row.id)}
                         checked={isItemSelected}
-                        checkedIcon={<RemoveIcon fontSize="sm" />}
+                        checkedIcon={<CloseIcon fontSize="sm" />}
                         color="danger"
                         slotProps={{
                           input: {
