@@ -23,6 +23,7 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import RoleManagementService from 'src/services/RoleManagementService'
 import { format } from 'date-fns'
 import FlagChecker from '../../helpers/flagChecker'
+import { Input, Button } from '@mui/joy'
 
 const PermissionTypes = {
   None: 0,
@@ -402,191 +403,285 @@ export default function TableSortAndSelection() {
   const emptyRows = Math.max(0, rowsPerPage - roles.length)
 
   return (
-    <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          py: 1,
-          pl: { sm: 2 },
-          pr: { xs: 1, sm: 1 },
-          borderTopLeftRadius: 'var(--unstable_actionRadius)',
-          borderTopRightRadius: 'var(--unstable_actionRadius)',
-        }}
-      >
-        <Typography level="body-lg" sx={{ flex: '1 1 100%' }} id="tableTitle" component="div">
-          Roles
-        </Typography>
-        {selectedRoles.length > 0 && (
-          //TODO: %6'i mobile göre 30'a ayarla
-          <Typography level="body-sm" display="inline" sx={{ flex: '1 1 6%' }} component="div">
-            {selectedRoles.length} selected
+    <div>
+      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', marginTop: '20px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '1%',
+            borderTopLeftRadius: 'var(--unstable_actionRadius)',
+            borderTopRightRadius: 'var(--unstable_actionRadius)',
+          }}
+        >
+          <Typography level="h4" sx={{ flex: '1 1 100%' }}>
+            Roles
           </Typography>
-        )}
-
-        {selectedRoles.length > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton size="sm" color="danger" variant="solid" onClick={async () => await deleteRoles()}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton size="sm" variant="outlined" color="neutral" disabled>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Box>
-      <Table
-        hoverRow
-        size="md"
-        sx={{
-          '--TableCell-headBackground': 'transparent',
-          '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-          '& tbody tr': {
-            height: '40px',
-          },
-          '& thead th:nth-of-type(1)': {
-            width: '40px',
-          },
-          '& thead th:nth-of-type(2)': {
-            width: '40px',
-          },
-          '& th': {
-            backgroundColor: 'background.level1',
-            height: '40px',
-          },
-        }}
-      >
-        <EnhancedTableHead
-          numSelected={selectedRoles.length}
-          order={order}
-          orderBy={orderBy}
-          onSelectAllClick={handleSelectAllRoles}
-          onRequestSort={handleOrder}
-          rowCount={roles.length}
-        />
-        <tbody>
-          {roles.map((row, index) => {
-            const isItemSelected = isSelected(row.id)
-            const labelId = `enhanced-table-checkbox-${index}`
-            const fragmentKey = `row-${index}`
-
-            return (
-              <React.Fragment key={fragmentKey}>
-                <tr
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.id}
-                  style={
-                    isItemSelected
-                      ? {
-                          '--TableCell-dataBackground': 'var(--TableCell-selectedBackground)',
-                          '--TableCell-headBackground': 'var(--TableCell-selectedBackground)',
-                        }
-                      : {}
-                  }
-                >
-                  <td>
-                    <Checkbox
-                      onClick={(event) => handleSelectRole(event, row.id)}
-                      checked={isItemSelected}
-                      checkedIcon={<RemoveIcon fontSize="sm" />}
-                      color="danger"
-                      slotProps={{
-                        input: {
-                          'aria-labelledby': labelId,
-                        },
-                      }}
-                      sx={{ verticalAlign: 'top', paddingLeft: '4px' }}
-                    />
-                  </td>
-                  <td
-                    style={{
-                      padding: '4px',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <IconButton
-                      color="neutral"
-                      sx={{ display: 'flex', justifyContent: 'center' }} //TODO: burayı kaldırırsan table height bozuluyor?
-                      size="sm"
-                      onClick={async () => await handleCollapse(row.id)}
-                    >
-                      {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                  </td>
-                  <td id={labelId}> {row.name} </td>
-                  <td>{formatDateTime(row.createdAt)}</td>
-                  <td>{formatDateTime(row.updatedAt)}</td>
-                </tr>
-                {openedId === row.id && <PermissionTest roleId={openedId} />}
-              </React.Fragment>
-            )
-          })}
-          {emptyRows > 0 && (
-            <tr
-              style={{
-                height: `calc(${emptyRows} * 41px)`,
-                '--TableRow-hoverBackground': 'transparent',
-              }}
-            >
-              <td colSpan={5} aria-hidden />
-            </tr>
+          {selectedRoles.length > 0 && (
+            <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
+              {selectedRoles.length} selected
+            </Typography>
           )}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={5}>
-              <Box
+
+          {selectedRoles.length > 0 ? (
+            <Tooltip title="Delete">
+              <IconButton size="sm" color="danger" variant="solid" onClick={async () => await deleteRoles()}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Filter list">
+              <IconButton size="sm" variant="outlined" color="neutral" disabled>
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+
+        <Sheet
+          variant="outlined"
+          sx={{
+            width: '96%',
+            margin: '1% 2%',
+            padding: '15px',
+            borderRadius: 'md',
+            boxShadow: 'md',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              gap: 3,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Box sx={{ flex: 1, minWidth: 250 }}>
+              <Typography level="title-sm" sx={{ mb: 1 }}>
+                What are you looking for?
+              </Typography>
+              <Input
+                placeholder="Search for role, permission, etc."
+                variant="outlined"
+                size="sm"
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  justifyContent: 'flex-end',
+                  width: '100%',
+                  borderRadius: 'md',
+                  boxShadow: 'sm',
+                }}
+              />
+            </Box>
+
+            <Box sx={{ minWidth: 180 }}>
+              <Typography level="title-sm" sx={{ mb: 1 }}>
+                Category
+              </Typography>
+              <Select
+                size="sm"
+                placeholder="All"
+                variant="outlined"
+                sx={{
+                  width: '100%',
+                  borderRadius: 'md',
+                  boxShadow: 'sm',
                 }}
               >
-                <FormControl orientation="horizontal" size="sm">
-                  <FormLabel>Rows per page:</FormLabel>
-                  <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
-                    <Option value={5}>5</Option>
-                    <Option value={10}>10</Option>
-                    <Option value={25}>25</Option>
-                  </Select>
-                </FormControl>
-                <FormControl orientation="horizontal" size="sm">
-                  <FormLabel size="sm">
-                    Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
-                  </FormLabel>
-                </FormControl>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton
-                    size="sm"
-                    color="neutral"
-                    variant="outlined"
-                    disabled={page === 0}
-                    onClick={() => setPage(page - 1)}
-                    sx={{ bgcolor: 'background.surface' }}
+                <Option value="all">All</Option>
+                <Option value="category1">Category 1</Option>
+                <Option value="category2">Category 2</Option>
+              </Select>
+            </Box>
+
+            <Box sx={{ minWidth: 180 }}>
+              <Typography level="title-sm" sx={{ mb: 1 }}>
+                Status
+              </Typography>
+              <Select
+                size="sm"
+                placeholder="All"
+                variant="outlined"
+                sx={{
+                  width: '100%',
+                  borderRadius: 'md',
+                  boxShadow: 'sm',
+                }}
+              >
+                <Option value="all">All</Option>
+                <Option value="status1">Status 1</Option>
+                <Option value="status2">Status 2</Option>
+              </Select>
+            </Box>
+
+            <Button
+              variant="solid"
+              size="sm"
+              sx={{
+                padding: '0 32px',
+                borderRadius: 'md',
+                background: 'linear-gradient(45deg, #007FFF, #0059B2)',
+                boxShadow: 'md',
+                minWidth: 120,
+              }}
+            >
+              Search
+            </Button>
+          </Box>
+        </Sheet>
+        <Table
+          hoverRow
+          size="md"
+          variant="outlined"
+          sx={{
+            borderRadius: 'md',
+            boxShadow: 'md',
+            width: '96%',
+            margin: '2% 2%',
+            '--TableCell-headBackground': 'transparent',
+            '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
+            '& tbody tr': {
+              height: '41px',
+            },
+            '& thead th:nth-of-type(1)': {
+              width: '40px',
+            },
+            '& thead th:nth-of-type(2)': {
+              width: '40px',
+            },
+            '& th': {
+              backgroundColor: 'background.level1',
+              height: '40px',
+            },
+          }}
+        >
+          <EnhancedTableHead
+            numSelected={selectedRoles.length}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllRoles}
+            onRequestSort={handleOrder}
+            rowCount={roles.length}
+          />
+          <tbody>
+            {roles.map((row, index) => {
+              const isItemSelected = isSelected(row.id)
+              const labelId = `enhanced-table-checkbox-${index}`
+              const fragmentKey = `row-${index}`
+
+              return (
+                <React.Fragment key={fragmentKey}>
+                  <tr
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.id}
+                    style={
+                      isItemSelected
+                        ? {
+                            '--TableCell-dataBackground': 'var(--TableCell-selectedBackground)',
+                            '--TableCell-headBackground': 'var(--TableCell-selectedBackground)',
+                          }
+                        : {}
+                    }
                   >
-                    <KeyboardArrowLeftIcon />
-                  </IconButton>
-                  <IconButton
-                    size="sm"
-                    color="neutral"
-                    variant="outlined"
-                    disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
-                    onClick={() => setPage(page + 1)}
-                    sx={{ bgcolor: 'background.surface' }}
-                  >
-                    <KeyboardArrowRightIcon />
-                  </IconButton>
+                    <td>
+                      <Checkbox
+                        onClick={(event) => handleSelectRole(event, row.id)}
+                        checked={isItemSelected}
+                        checkedIcon={<RemoveIcon fontSize="sm" />}
+                        color="danger"
+                        slotProps={{
+                          input: {
+                            'aria-labelledby': labelId,
+                          },
+                        }}
+                        sx={{ verticalAlign: 'top', paddingLeft: '4px' }}
+                      />
+                    </td>
+                    <td
+                      style={{
+                        padding: '4px',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <IconButton
+                        color="neutral"
+                        sx={{ display: 'flex', justifyContent: 'center' }} //TODO: burayı kaldırırsan table height bozuluyor?
+                        size="sm"
+                        onClick={async () => await handleCollapse(row.id)}
+                      >
+                        {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      </IconButton>
+                    </td>
+                    <td id={labelId}> {row.name} </td>
+                    <td>{formatDateTime(row.createdAt)}</td>
+                    <td>{formatDateTime(row.updatedAt)}</td>
+                  </tr>
+                  {openedId === row.id && <PermissionTest roleId={openedId} />}
+                </React.Fragment>
+              )
+            })}
+            {emptyRows > 0 && (
+              <tr
+                style={{
+                  height: `calc(${emptyRows} * 41px)`,
+                  '--TableRow-hoverBackground': 'transparent',
+                }}
+              >
+                <td colSpan={5} aria-hidden />
+              </tr>
+            )}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={5}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <FormControl orientation="horizontal" size="sm">
+                    <FormLabel>Rows per page:</FormLabel>
+                    <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
+                      <Option value={5}>5</Option>
+                      <Option value={10}>10</Option>
+                      <Option value={25}>25</Option>
+                    </Select>
+                  </FormControl>
+                  <FormControl orientation="horizontal" size="sm">
+                    <FormLabel size="sm">
+                      Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
+                    </FormLabel>
+                  </FormControl>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton
+                      size="sm"
+                      color="neutral"
+                      variant="outlined"
+                      disabled={page === 0}
+                      onClick={() => setPage(page - 1)}
+                      sx={{ bgcolor: 'background.surface' }}
+                    >
+                      <KeyboardArrowLeftIcon />
+                    </IconButton>
+                    <IconButton
+                      size="sm"
+                      color="neutral"
+                      variant="outlined"
+                      disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
+                      onClick={() => setPage(page + 1)}
+                      sx={{ bgcolor: 'background.surface' }}
+                    >
+                      <KeyboardArrowRightIcon />
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-            </td>
-          </tr>
-        </tfoot>
-      </Table>
-    </Sheet>
+              </td>
+            </tr>
+          </tfoot>
+        </Table>
+      </Sheet>
+    </div>
   )
 }
