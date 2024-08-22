@@ -123,8 +123,10 @@ function PermissionTest(props) {
   useEffect(() => {
     async function fetchData() {
       const res = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
-      setPermissions(res.data.permissions)
-      setTotalCount(res.data.totalCount)
+      if (res.success) {
+        setPermissions(res.data.permissions)
+        setTotalCount(res.data.totalCount)
+      }
     }
 
     fetchData()
