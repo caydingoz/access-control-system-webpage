@@ -1,7 +1,19 @@
 import axiosClient from '../helpers/axiosClient'
 
-const getRolesAsync = async (page, count, sortType, column) => {
-  const response = await axiosClient.getAsync(`roles?page=${page}&count=${count}&column=${column}&sortType=${sortType}`)
+const getRolesAsync = async (page, count, sortType, column, filterName = null) => {
+  const params = new URLSearchParams({
+    page,
+    count,
+    column,
+    sortType,
+  })
+
+  if (filterName) {
+    params.append('filterName', filterName)
+  }
+
+  const url = `roles?${params.toString()}`
+  const response = await axiosClient.getAsync(url)
   return response
 }
 const deleteRolesAsync = async (ids) => {
@@ -13,11 +25,11 @@ const getPermissionsByRoleIdAsync = async (page, count, roleId, sortType, column
   return response
 }
 const deletePermissionsByIdAsync = async (roleId, id) => {
-  const response = await axiosClient.deleteAsync(`roles/${roleId}/permissions`, { id: id })
+  const response = await axiosClient.deleteAsync(`roles/${roleId}/permissions`, { permissionIds: [id] })
   return response
 }
 const changePermissionTypeAsync = async (roleId, id, newPermissionType) => {
-  const response = await axiosClient.putAsync(`roles/${roleId}/permissions`, { id: id, permissionType: newPermissionType })
+  const response = await axiosClient.putAsync(`roles/${roleId}/permissions`, { permissions: [{ id: id, type: newPermissionType }] })
   return response
 }
 

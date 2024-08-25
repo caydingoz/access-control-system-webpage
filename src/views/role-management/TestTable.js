@@ -327,6 +327,7 @@ PermissionTest.propTypes = {
 }
 
 export default function TableSortAndSelection() {
+  const [filterName, setFilterName] = React.useState(null)
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('name')
   const [selectedRoles, setSelectedRoles] = React.useState([])
@@ -338,7 +339,7 @@ export default function TableSortAndSelection() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterName)
       if (res.success) {
         setRoles(res.data.roles)
         setTotalCount(res.data.totalCount)
@@ -346,7 +347,7 @@ export default function TableSortAndSelection() {
     }
 
     fetchData()
-  }, [page, rowsPerPage, order, orderBy])
+  }, [page, rowsPerPage, order, orderBy, filterName])
 
   const deleteRoles = async () => {
     var res = await RoleManagementService.deleteRolesAsync(selectedRoles)
@@ -440,95 +441,105 @@ export default function TableSortAndSelection() {
           )}
         </Box>
 
-        <Sheet
-          variant="outlined"
-          sx={{
-            width: '96%',
-            margin: '1% 2%',
-            padding: '15px',
-            borderRadius: 'md',
-            boxShadow: 'md',
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            const formElements = event.currentTarget.elements
+            setFilterName(formElements.name.value)
           }}
         >
-          <Box
+          <Sheet
+            variant="outlined"
             sx={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              gap: 3,
-              flexWrap: 'wrap',
+              width: '96%',
+              margin: '1% 2%',
+              padding: '15px',
+              borderRadius: 'md',
+              boxShadow: 'md',
             }}
           >
-            <Box sx={{ flex: 1, minWidth: 250 }}>
-              <Typography level="title-sm" sx={{ mb: 1 }}>
-                What are you looking for?
-              </Typography>
-              <Input
-                placeholder="Search for role, permission, etc."
-                variant="outlined"
-                size="sm"
-                sx={{
-                  width: '100%',
-                  borderRadius: 'md',
-                  boxShadow: 'sm',
-                }}
-              />
-            </Box>
-
-            <Box sx={{ minWidth: 180 }}>
-              <Typography level="title-sm" sx={{ mb: 1 }}>
-                Category
-              </Typography>
-              <Select
-                size="sm"
-                placeholder="All"
-                variant="outlined"
-                sx={{
-                  width: '100%',
-                  borderRadius: 'md',
-                  boxShadow: 'sm',
-                }}
-              >
-                <Option value="all">All</Option>
-                <Option value="category1">Category 1</Option>
-                <Option value="category2">Category 2</Option>
-              </Select>
-            </Box>
-
-            <Box sx={{ minWidth: 180 }}>
-              <Typography level="title-sm" sx={{ mb: 1 }}>
-                Status
-              </Typography>
-              <Select
-                size="sm"
-                placeholder="All"
-                variant="outlined"
-                sx={{
-                  width: '100%',
-                  borderRadius: 'md',
-                  boxShadow: 'sm',
-                }}
-              >
-                <Option value="all">All</Option>
-                <Option value="status1">Status 1</Option>
-                <Option value="status2">Status 2</Option>
-              </Select>
-            </Box>
-
-            <Button
-              variant="solid"
-              size="sm"
+            <Box
               sx={{
-                padding: '0 32px',
-                borderRadius: 'md',
-                background: 'linear-gradient(45deg, #007FFF, #0059B2)',
-                boxShadow: 'md',
-                minWidth: 120,
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: 3,
+                flexWrap: 'wrap',
               }}
             >
-              Search
-            </Button>
-          </Box>
-        </Sheet>
+              <Box sx={{ flex: 1, minWidth: 250 }}>
+                <Typography level="title-sm" sx={{ mb: 1 }}>
+                  What are you looking for?
+                </Typography>
+                <Input
+                  name="name"
+                  placeholder="Search for role, permission, etc."
+                  variant="outlined"
+                  size="sm"
+                  sx={{
+                    width: '100%',
+                    borderRadius: 'md',
+                    boxShadow: 'sm',
+                  }}
+                />
+              </Box>
+
+              <Box sx={{ minWidth: 180 }}>
+                <Typography level="title-sm" sx={{ mb: 1 }}>
+                  Category
+                </Typography>
+                <Select
+                  size="sm"
+                  placeholder="All"
+                  variant="outlined"
+                  sx={{
+                    width: '100%',
+                    borderRadius: 'md',
+                    boxShadow: 'sm',
+                  }}
+                >
+                  <Option value="all">All</Option>
+                  <Option value="category1">Category 1</Option>
+                  <Option value="category2">Category 2</Option>
+                </Select>
+              </Box>
+
+              <Box sx={{ minWidth: 180 }}>
+                <Typography level="title-sm" sx={{ mb: 1 }}>
+                  Status
+                </Typography>
+                <Select
+                  size="sm"
+                  placeholder="All"
+                  variant="outlined"
+                  sx={{
+                    width: '100%',
+                    borderRadius: 'md',
+                    boxShadow: 'sm',
+                  }}
+                >
+                  <Option value="all">All</Option>
+                  <Option value="status1">Status 1</Option>
+                  <Option value="status2">Status 2</Option>
+                </Select>
+              </Box>
+
+              <Button
+                type="submit"
+                variant="solid"
+                size="sm"
+                sx={{
+                  padding: '0 32px',
+                  borderRadius: 'md',
+                  background: 'linear-gradient(45deg, #007FFF, #0059B2)',
+                  boxShadow: 'md',
+                  minWidth: 120,
+                }}
+              >
+                Search
+              </Button>
+            </Box>
+          </Sheet>
+        </form>
         <Table
           hoverRow
           size="md"
