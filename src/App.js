@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
+import 'rsuite/dist/rsuite.min.css'
 
 import Anonymous from './components/Auth/Anonymous'
 import ProtectedRoute from './components/Auth/ProtectedRoute'

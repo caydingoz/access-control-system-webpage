@@ -23,8 +23,9 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import RoleManagementService from 'src/services/RoleManagementService'
 import { format } from 'date-fns'
 import FlagChecker from '../../helpers/flagChecker'
-import { Input, Button } from '@mui/joy'
+import { Button } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close'
+import { DateRangePicker, Input, SelectPicker } from 'rsuite'
 
 const PermissionTypes = {
   None: 0,
@@ -163,10 +164,7 @@ function PermissionTest(props) {
   return (
     <tr>
       <td style={{ height: 0, padding: 0 }} colSpan={5}>
-        <Sheet variant="soft" sx={{ p: 1, pl: 4, boxShadow: 'inset 0 3px 6px 0 rgba(0 0 0 / 0.08)' }}>
-          <Typography level="body-md" component="div">
-            Permissions
-          </Typography>
+        <Sheet variant="soft" sx={{ pr: 1, pl: 4, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)' }}>
           <Table
             borderAxis="bothBetween"
             size="sm"
@@ -202,7 +200,9 @@ function PermissionTest(props) {
                         <RemoveIcon />
                       </IconButton>
                     </td>
-                    <td>{permission.operation}</td>
+                    <td>
+                      <Typography level="body-xs">{permission.operation}</Typography>
+                    </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ flex: '1' }}>
@@ -237,8 +237,12 @@ function PermissionTest(props) {
                         </div>
                       </div>
                     </td>
-                    <td>{formatDateTime(permission.createdAt)}</td>
-                    <td>{formatDateTime(permission.updatedAt)}</td>
+                    <td>
+                      <Typography level="body-xs">{formatDateTime(permission.createdAt)}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -337,6 +341,8 @@ export default function TableSortAndSelection() {
   const [roles, setRoles] = React.useState([])
   const [openedId, setOpenedId] = React.useState()
 
+  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map((item) => ({ label: item, value: item }))
+
   useEffect(() => {
     async function fetchData() {
       const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterName)
@@ -407,9 +413,9 @@ export default function TableSortAndSelection() {
 
   return (
     <div>
-      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', marginTop: '20px' }}>
+      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
         <Box
-          sx={{
+          style={{
             display: 'flex',
             alignItems: 'center',
             padding: '1%',
@@ -417,8 +423,12 @@ export default function TableSortAndSelection() {
             borderTopRightRadius: 'var(--unstable_actionRadius)',
           }}
         >
-          <Typography level="h4" sx={{ flex: '1 1 100%' }}>
+          <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
             Roles
+            <br></br>
+            <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
+              The Roles table contains a list of application roles that define the permissions and access levels for users within the system.
+            </Typography>
           </Typography>
           {selectedRoles.length > 0 && (
             <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
@@ -454,8 +464,9 @@ export default function TableSortAndSelection() {
               width: '96%',
               margin: '1% 2%',
               padding: '15px',
-              borderRadius: 'md',
-              boxShadow: 'md',
+              borderRadius: 'sm',
+              boxShadow: 'sm',
+              backgroundColor: 'transparent',
             }}
           >
             <Box
@@ -477,50 +488,42 @@ export default function TableSortAndSelection() {
                   size="sm"
                   sx={{
                     width: '100%',
-                    borderRadius: 'md',
+                    borderRadius: 'sm',
                     boxShadow: 'sm',
+                    backgroundColor: 'transparent',
                   }}
                 />
               </Box>
-
+              <Box sx={{ minWidth: 180 }}>
+                <Typography level="title-sm" sx={{ mb: 1 }}>
+                  Date
+                </Typography>
+                <DateRangePicker
+                  size="sm"
+                  style={{
+                    width: '100%',
+                    borderRadius: 'sm',
+                    boxShadow: 'sm',
+                    backgroundColor: 'transparent',
+                  }}
+                />
+              </Box>
               <Box sx={{ minWidth: 180 }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
                   Category
                 </Typography>
-                <Select
+                <SelectPicker
                   size="sm"
                   placeholder="All"
                   variant="outlined"
-                  sx={{
+                  style={{
                     width: '100%',
-                    borderRadius: 'md',
+                    borderRadius: 'sm',
                     boxShadow: 'sm',
+                    backgroundColor: 'transparent',
                   }}
-                >
-                  <Option value="all">All</Option>
-                  <Option value="category1">Category 1</Option>
-                  <Option value="category2">Category 2</Option>
-                </Select>
-              </Box>
-
-              <Box sx={{ minWidth: 180 }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Status
-                </Typography>
-                <Select
-                  size="sm"
-                  placeholder="All"
-                  variant="outlined"
-                  sx={{
-                    width: '100%',
-                    borderRadius: 'md',
-                    boxShadow: 'sm',
-                  }}
-                >
-                  <Option value="all">All</Option>
-                  <Option value="status1">Status 1</Option>
-                  <Option value="status2">Status 2</Option>
-                </Select>
+                  data={data}
+                ></SelectPicker>
               </Box>
 
               <Button
@@ -545,7 +548,6 @@ export default function TableSortAndSelection() {
           size="md"
           variant="outlined"
           sx={{
-            borderRadius: 'md',
             boxShadow: 'md',
             width: '96%',
             margin: '2% 2%',
@@ -624,9 +626,15 @@ export default function TableSortAndSelection() {
                         {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                       </IconButton>
                     </td>
-                    <td id={labelId}> {row.name} </td>
-                    <td>{formatDateTime(row.createdAt)}</td>
-                    <td>{formatDateTime(row.updatedAt)}</td>
+                    <td id={labelId}>
+                      <Typography level="body-sm">{row.name}</Typography>
+                    </td>
+                    <td id={labelId}>
+                      <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
+                    </td>
+                    <td id={labelId}>
+                      <Typography level="body-sm">{formatDateTime(row.updatedAt)}</Typography>
+                    </td>
                   </tr>
                   {openedId === row.id && <PermissionTest roleId={openedId} />}
                 </React.Fragment>
