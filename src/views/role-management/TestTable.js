@@ -76,7 +76,11 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => {
           const active = orderBy === headCell.id
           return (
-            <th key={headCell.id} aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}>
+            <th
+              key={headCell.id}
+              aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
+              style={{ verticalAlign: 'middle' }}
+            >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <Link
                 underline="none"
@@ -87,6 +91,9 @@ function EnhancedTableHead(props) {
                 fontWeight="lg"
                 endDecorator={<ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />}
                 sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  height: '100%',
                   '& svg': {
                     transition: '0.2s',
                     transform: active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
@@ -533,7 +540,7 @@ export default function TableSortAndSelection() {
                 sx={{
                   padding: '0 32px',
                   borderRadius: 'md',
-                  background: 'linear-gradient(45deg, #007FFF, #0059B2)',
+                  background: 'linear-gradient(45deg, #3399ff, #126EC9)',
                   boxShadow: 'md',
                   minWidth: 120,
                 }}
@@ -551,10 +558,9 @@ export default function TableSortAndSelection() {
             boxShadow: 'md',
             width: '96%',
             margin: '2% 2%',
-            '--TableCell-headBackground': 'transparent',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
-              height: '41px',
+              height: '40px',
             },
             '& thead th:nth-of-type(1)': {
               width: '40px',
@@ -563,8 +569,10 @@ export default function TableSortAndSelection() {
               width: '40px',
             },
             '& th': {
-              backgroundColor: 'background.level1',
               height: '40px',
+            },
+            '& tfoot td': {
+              backgroundColor: (theme) => theme.vars.palette.background.surface,
             },
           }}
         >
@@ -636,7 +644,7 @@ export default function TableSortAndSelection() {
                       <Typography level="body-sm">{formatDateTime(row.updatedAt)}</Typography>
                     </td>
                   </tr>
-                  {openedId === row.id && <PermissionTest roleId={openedId} />}
+                  {openedId === row.id && <PermissionTest roleId={openedId.toString()} />}
                 </React.Fragment>
               )
             })}
