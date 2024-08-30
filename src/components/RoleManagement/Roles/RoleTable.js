@@ -21,8 +21,10 @@ import { Button } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close'
 import { DateRangePicker, Input, SelectPicker } from 'rsuite'
 import PermissionTable from './PermissionTable'
-import RoleTableHead from './RoleTableHead'
 import { format } from 'date-fns'
+import Link from '@mui/joy/Link'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import RemoveIcon from '@mui/icons-material/Remove'
 
 export default function RoleTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -30,7 +32,7 @@ export default function RoleTable() {
   const [orderBy, setOrderBy] = React.useState('name')
   const [selectedRoles, setSelectedRoles] = React.useState([])
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [roles, setRoles] = React.useState([])
   const [openedId, setOpenedId] = React.useState()
@@ -39,6 +41,20 @@ export default function RoleTable() {
     const date = new Date(inputDateTime)
     return format(date, 'dd-MM-yyyy HH:mm')
   }
+  const headCells = [
+    {
+      id: 'name',
+      label: 'Name',
+    },
+    {
+      id: 'createdAt',
+      label: 'Create Date',
+    },
+    {
+      id: 'updatedAt',
+      label: 'Update Date',
+    },
+  ]
 
   const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map((item) => ({ label: item, value: item }))
 
@@ -268,14 +284,53 @@ export default function RoleTable() {
             },
           }}
         >
-          <RoleTableHead
-            numSelected={selectedRoles.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllRoles}
-            onRequestSort={handleOrder}
-            rowCount={roles.length}
-          />
+          <thead>
+            <tr>
+              <th>
+                <Checkbox
+                  checked={roles.length > 0 && selectedRoles.length >= roles.length}
+                  checkedIcon={<RemoveIcon />}
+                  color="primary"
+                  onChange={handleSelectAllRoles}
+                  sx={{ verticalAlign: 'sub', paddingLeft: '4px' }}
+                />
+              </th>
+              <th />
+              {headCells.map((headCell) => {
+                const active = orderBy === headCell.id
+                return (
+                  <th
+                    key={headCell.id}
+                    aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
+                    style={{ verticalAlign: 'middle' }}
+                  >
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <Link
+                      underline="none"
+                      color="neutral"
+                      textColor={active ? 'primary.plainColor' : undefined}
+                      component="button"
+                      onClick={(event) => handleOrder(event, headCell.id)}
+                      fontWeight="lg"
+                      endDecorator={<ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />}
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        height: '100%',
+                        '& svg': {
+                          transition: '0.2s',
+                          transform: active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                        },
+                        '&:hover': { '& svg': { opacity: 1 } },
+                      }}
+                    >
+                      {headCell.label}
+                    </Link>
+                  </th>
+                )
+              })}
+            </tr>
+          </thead>
           <tbody>
             {roles.map((row, index) => {
               const isItemSelected = isSelected(row.id)
