@@ -7,7 +7,6 @@ import Sheet from '@mui/joy/Sheet'
 import Checkbox from '@mui/joy/Checkbox'
 import FormControl from '@mui/joy/FormControl'
 import FormLabel from '@mui/joy/FormLabel'
-import IconButton from '@mui/joy/IconButton'
 import Select from '@mui/joy/Select'
 import Option from '@mui/joy/Option'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
@@ -16,6 +15,8 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import RoleManagementService from 'src/services/RoleManagementService'
 import FlagChecker from '../../../helpers/flagChecker'
 import { format } from 'date-fns'
+import { IconButton } from 'rsuite'
+import TrashIcon from '@rsuite/icons/Trash'
 
 export default function PermissionTable(props) {
   const PermissionTypes = {
@@ -88,33 +89,24 @@ export default function PermissionTable(props) {
               '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
               '& tbody tr': { height: '41px' },
               '& thead > tr > th:nth-of-type(n)': { width: '100%' },
-              '& thead > tr > th:nth-of-type(1)': { width: '40px' },
+              '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },
+              '& tbody > tr > td:nth-of-type(5)': { width: '30%', textAlign: 'center' },
               pt: 1,
             }}
           >
             <thead style={{ pointerEvents: 'none' }}>
               <tr>
-                <th />
                 <th>Operation</th>
                 <th>Type</th>
                 <th>Create Date</th>
                 <th>Update Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {permissions.length > 0 ? (
                 permissions.map((permission) => (
                   <tr key={permission.id}>
-                    <td>
-                      <IconButton
-                        onClick={async () => await deletePermission(permission.id)}
-                        color="danger"
-                        sx={{ display: 'flex', justifyContent: 'center' }}
-                        size="sm"
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                    </td>
                     <td>
                       <Typography level="body-xs">{permission.operation}</Typography>
                     </td>
@@ -157,6 +149,23 @@ export default function PermissionTable(props) {
                     </td>
                     <td>
                       <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <IconButton
+                        style={{ backgroundColor: '#f5554a' }}
+                        appearance="primary"
+                        onClick={async () => await deletePermission(permission.id)}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          transition: 'background-color 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#ff6347',
+                          },
+                        }}
+                        size="xs"
+                        icon={<TrashIcon />}
+                      />
                     </td>
                   </tr>
                 ))
