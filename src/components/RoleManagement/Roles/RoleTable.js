@@ -240,13 +240,12 @@ export default function RoleTable() {
                   data={data}
                 ></SelectPicker>
               </Box>
-
               <Button
                 type="submit"
                 variant="solid"
                 size="sm"
                 sx={{
-                  padding: '0 32px',
+                  padding: '0 31px',
                   borderRadius: 'md',
                   background: 'linear-gradient(45deg, #3399ff, #126EC9)',
                   boxShadow: 'md',

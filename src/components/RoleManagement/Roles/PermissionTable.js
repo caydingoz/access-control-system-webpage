@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import Table from '@mui/joy/Table'
 import Typography from '@mui/joy/Typography'
@@ -10,7 +10,9 @@ import { format } from 'date-fns'
 import { IconButton } from 'rsuite'
 import TrashIcon from '@rsuite/icons/Trash'
 import PlusIcon from '@rsuite/icons/Plus'
-import { SelectPicker } from 'rsuite'
+import { Card, Stack, Box } from '@mui/joy'
+import { TagPicker, Button } from 'rsuite'
+import CloseIcon from '@rsuite/icons/Close'
 
 export default function PermissionTable(props) {
   const PermissionTypes = {
@@ -19,6 +21,7 @@ export default function PermissionTable(props) {
     Write: 2,
     Delete: 4,
   }
+  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert', 'Albert'].map((item) => ({ label: item, value: item }))
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
@@ -27,6 +30,11 @@ export default function PermissionTable(props) {
   const { roleId } = props
 
   const [permissions, setPermissions] = React.useState([])
+  const [visibleAddPermission, setVisibleAddPermission] = React.useState(false)
+
+  const handleOpenAddPermission = useCallback(() => {
+    setVisibleAddPermission((prev) => !prev)
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -64,7 +72,7 @@ export default function PermissionTable(props) {
   return (
     <tr>
       <td style={{ height: 0, padding: 0 }} colSpan={5}>
-        <Sheet variant="plain" sx={{ height: 350, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)' }}>
+        <Sheet variant="plain" sx={{ height: 350, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)', zIndex: 3 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
               Permissions
@@ -73,9 +81,74 @@ export default function PermissionTable(props) {
                 The Permissions table contains a list of actions that define user access and control within the system.
               </Typography>
             </Typography>
-            <IconButton appearance="primary" color="green" icon={<PlusIcon />} size="xs" style={{ marginBottom: '4px' }}>
-              Add new
-            </IconButton>
+            <div>
+              <IconButton
+                appearance="primary"
+                color="green"
+                icon={<PlusIcon />}
+                size="xs"
+                style={{ marginBottom: '4px' }}
+                onClick={handleOpenAddPermission}
+              >
+                Add new
+              </IconButton>
+              {visibleAddPermission && (
+                <Card
+                  sx={{
+                    position: 'absolute',
+                    marginTop: '5px',
+                    right: '20px',
+                    width: '35%',
+                    zIndex: 20,
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography level="title-sm" sx={{ mb: 1 }}>
+                      New Permissions
+                      <br></br>
+                      <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
+                        Multiple permissions can be selected.
+                      </Typography>
+                    </Typography>
+                    <IconButton color="red" appearance="primary" onClick={handleOpenAddPermission} size="xs" icon={<CloseIcon />} />
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      marginTop: '5px',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <TagPicker
+                      size="sm"
+                      placeholder="All"
+                      variant="outlined"
+                      style={{
+                        width: '300px',
+                        borderRadius: 'sm',
+                        boxShadow: 'sm',
+                      }}
+                      menuStyle={{
+                        fontSize: '12px',
+                      }}
+                      data={data}
+                    ></TagPicker>
+                    <Button appearance="primary" color="green" size="sm" onClick={handleOpenAddPermission} style={{ width: '20%', fontSize: '12px' }}>
+                      Add
+                    </Button>
+                  </Stack>
+                </Card>
+              )}
+            </div>
           </div>
           <Table
             stickyHeader

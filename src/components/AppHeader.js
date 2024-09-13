@@ -22,6 +22,7 @@ import { AppBreadcrumb, AppHeaderDropdown } from './index'
 import { logo } from 'src/assets/brand/logo'
 import { setSidebarShow } from '../slices/sidebarSlice'
 import { useColorScheme } from '@mui/joy/styles'
+import { setThemeMode } from '../slices/rSuiteThemeSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -81,6 +82,7 @@ const AppHeader = () => {
                 onClick={() => {
                   setColorMode('light')
                   setMode('light')
+                  dispatch(setThemeMode('light'))
                 }}
               >
                 <CIcon className="me-2" icon={cilSun} size="lg" /> Light
@@ -93,6 +95,7 @@ const AppHeader = () => {
                 onClick={() => {
                   setColorMode('dark')
                   setMode('dark')
+                  dispatch(setThemeMode('dark'))
                 }}
               >
                 <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
@@ -105,6 +108,7 @@ const AppHeader = () => {
                 onClick={() => {
                   setColorMode('auto')
                   setMode('auto')
+                  dispatch(setThemeMode('light'))
                 }}
               >
                 <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
