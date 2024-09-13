@@ -1,22 +1,16 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Box from '@mui/joy/Box'
 import Table from '@mui/joy/Table'
 import Typography from '@mui/joy/Typography'
 import Sheet from '@mui/joy/Sheet'
 import Checkbox from '@mui/joy/Checkbox'
-import FormControl from '@mui/joy/FormControl'
-import FormLabel from '@mui/joy/FormLabel'
-import Select from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import RemoveIcon from '@mui/icons-material/Remove'
 import RoleManagementService from 'src/services/RoleManagementService'
 import FlagChecker from '../../../helpers/flagChecker'
 import { format } from 'date-fns'
 import { IconButton } from 'rsuite'
 import TrashIcon from '@rsuite/icons/Trash'
+import PlusIcon from '@rsuite/icons/Plus'
+import { SelectPicker } from 'rsuite'
 
 export default function PermissionTable(props) {
   const PermissionTypes = {
@@ -32,32 +26,23 @@ export default function PermissionTable(props) {
   }
   const { roleId } = props
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
-  const [page, setPage] = React.useState(0)
   const [permissions, setPermissions] = React.useState([])
-  const [totalCount, setTotalCount] = React.useState(5)
 
   useEffect(() => {
     async function fetchData() {
-      const res = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
+      const res = await RoleManagementService.getPermissionsByRoleIdAsync(0, 500, roleId, 'asc', 'id')
       if (res.success) {
         setPermissions(res.data.permissions)
-        setTotalCount(res.data.totalCount)
       }
     }
 
     fetchData()
-  }, [page, rowsPerPage, roleId])
-
-  const handleChangeRowsPerPage = (event, newValue) => {
-    setRowsPerPage(parseInt(newValue.toString(), 10))
-    setPage(0)
-  }
+  }, [roleId])
 
   const deletePermission = async (id) => {
     var res = await RoleManagementService.deletePermissionsByIdAsync(roleId, id)
     if (res.success) {
-      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 500, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
     }
   }
@@ -71,23 +56,37 @@ export default function PermissionTable(props) {
 
     var res = await RoleManagementService.changePermissionTypeAsync(roleId, permission.id, permission.type)
     if (res.success) {
-      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(page, rowsPerPage, roleId, 'asc', 'id')
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 500, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
     }
   }
-  const emptyRows = Math.max(0, rowsPerPage - permissions.length)
 
   return (
     <tr>
       <td style={{ height: 0, padding: 0 }} colSpan={5}>
-        <Sheet variant="soft" sx={{ pr: 1, pl: 4, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)' }}>
+        <Sheet variant="plain" sx={{ height: 350, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%' }}>
+            <Typography level="title-sm" sx={{ mb: 1 }}>
+              Permissions
+              <br></br>
+              <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
+                The Permissions table contains a list of actions that define user access and control within the system.
+              </Typography>
+            </Typography>
+            <IconButton appearance="primary" color="green" icon={<PlusIcon />} size="xs" style={{ marginBottom: '4px' }}>
+              Add new
+            </IconButton>
+          </div>
           <Table
+            stickyHeader
+            stickyFooter
             borderAxis="bothBetween"
             size="sm"
             sx={{
               '--TableCell-headBackground': 'transparent',
               '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-              '& tbody tr': { height: '41px' },
+              '& tbody tr': { height: '32px' },
+              '& thead tr': { height: '32px' },
               '& thead > tr > th:nth-of-type(n)': { width: '100%' },
               '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },
               '& tbody > tr > td:nth-of-type(5)': { width: '30%', textAlign: 'center' },
@@ -152,17 +151,9 @@ export default function PermissionTable(props) {
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       <IconButton
-                        style={{ backgroundColor: '#f5554a' }}
+                        color="red"
                         appearance="primary"
                         onClick={async () => await deletePermission(permission.id)}
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          transition: 'background-color 0.3s ease',
-                          '&:hover': {
-                            backgroundColor: '#ff6347',
-                          },
-                        }}
                         size="xs"
                         icon={<TrashIcon />}
                       />
@@ -172,77 +163,15 @@ export default function PermissionTable(props) {
               ) : (
                 <tr
                   style={{
-                    height: `calc(${1} * 40px)`,
                     '--TableRow-hoverBackground': 'transparent',
                   }}
                 >
-                  <td />
                   <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
                     There is no data..
                   </td>
                 </tr>
               )}
-              {emptyRows > 0 && (
-                <tr
-                  style={{
-                    height: `calc(${emptyRows} * 46.33px)`,
-                    '--TableRow-hoverBackground': 'transparent',
-                  }}
-                >
-                  <td colSpan={5} aria-hidden />
-                </tr>
-              )}
             </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan={5}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2,
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <FormControl orientation="horizontal" size="sm">
-                      <FormLabel>Rows per page:</FormLabel>
-                      <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
-                        <Option value={5}>5</Option>
-                        <Option value={10}>10</Option>
-                        <Option value={25}>25</Option>
-                      </Select>
-                    </FormControl>
-                    <FormControl orientation="horizontal" size="sm">
-                      <FormLabel size="sm">
-                        Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
-                      </FormLabel>
-                    </FormControl>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <IconButton
-                        size="sm"
-                        color="neutral"
-                        variant="outlined"
-                        disabled={page === 0}
-                        onClick={() => setPage(page - 1)}
-                        sx={{ bgcolor: 'background.surface' }}
-                      >
-                        <KeyboardArrowLeftIcon />
-                      </IconButton>
-                      <IconButton
-                        size="sm"
-                        color="neutral"
-                        variant="outlined"
-                        disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
-                        onClick={() => setPage(page + 1)}
-                        sx={{ bgcolor: 'background.surface' }}
-                      >
-                        <KeyboardArrowRightIcon />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </td>
-              </tr>
-            </tfoot>
           </Table>
         </Sheet>
       </td>

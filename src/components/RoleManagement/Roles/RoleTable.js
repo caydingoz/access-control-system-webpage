@@ -56,7 +56,7 @@ export default function RoleTable() {
     },
   ]
 
-  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map((item) => ({ label: item, value: item }))
+  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert', 'Albert'].map((item) => ({ label: item, value: item }))
 
   useEffect(() => {
     async function fetchData() {
@@ -251,6 +251,9 @@ export default function RoleTable() {
                   background: 'linear-gradient(45deg, #3399ff, #126EC9)',
                   boxShadow: 'md',
                   minWidth: 120,
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)', // Darker or different gradient on hover
+                  },
                 }}
               >
                 Search
@@ -286,16 +289,16 @@ export default function RoleTable() {
         >
           <thead>
             <tr>
+              <th />
               <th>
                 <Checkbox
                   checked={roles.length > 0 && selectedRoles.length >= roles.length}
                   checkedIcon={<RemoveIcon />}
                   color="primary"
                   onChange={handleSelectAllRoles}
-                  sx={{ verticalAlign: 'sub', paddingLeft: '4px' }}
+                  sx={{ verticalAlign: 'sub' }}
                 />
               </th>
-              <th />
               {headCells.map((headCell) => {
                 const active = orderBy === headCell.id
                 return (
@@ -352,20 +355,6 @@ export default function RoleTable() {
                         : {}
                     }
                   >
-                    <td>
-                      <Checkbox
-                        onClick={(event) => handleSelectRole(event, row.id)}
-                        checked={isItemSelected}
-                        checkedIcon={<CloseIcon fontSize="sm" />}
-                        color="danger"
-                        slotProps={{
-                          input: {
-                            'aria-labelledby': labelId,
-                          },
-                        }}
-                        sx={{ verticalAlign: 'top', paddingLeft: '4px' }}
-                      />
-                    </td>
                     <td
                       style={{
                         padding: '4px',
@@ -380,6 +369,20 @@ export default function RoleTable() {
                       >
                         {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                       </IconButton>
+                    </td>
+                    <td>
+                      <Checkbox
+                        onClick={(event) => handleSelectRole(event, row.id)}
+                        checked={isItemSelected}
+                        checkedIcon={<CloseIcon fontSize="sm" />}
+                        color="danger"
+                        slotProps={{
+                          input: {
+                            'aria-labelledby': labelId,
+                          },
+                        }}
+                        sx={{ verticalAlign: 'top' }}
+                      />
                     </td>
                     <td id={labelId}>
                       <Typography level="body-sm">{row.name}</Typography>
