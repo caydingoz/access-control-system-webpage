@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Table from '@mui/joy/Table'
 import Typography from '@mui/joy/Typography'
@@ -15,26 +15,18 @@ import { TagPicker, Button } from 'rsuite'
 import CloseIcon from '@rsuite/icons/Close'
 
 export default function PermissionTable(props) {
+  const { roleId } = props
   const PermissionTypes = {
     None: 0,
     Read: 1,
     Write: 2,
     Delete: 4,
   }
-  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert', 'Albert'].map((item) => ({ label: item, value: item }))
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
     return format(date, 'dd-MM-yyyy HH:mm')
   }
-  const { roleId } = props
-
-  const [permissions, setPermissions] = React.useState([])
-  const [visibleAddPermission, setVisibleAddPermission] = React.useState(false)
-
-  const handleOpenAddPermission = useCallback(() => {
-    setVisibleAddPermission((prev) => !prev)
-  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -46,6 +38,16 @@ export default function PermissionTable(props) {
 
     fetchData()
   }, [roleId])
+
+  const [permissions, setPermissions] = React.useState([])
+  const [newPermissions, setPermissionsForAddNew] = React.useState([])
+  const [blockedPermissions, setBlockedPermissionsForAddNew] = React.useState([])
+  const [visibleAddPermission, setVisibleAddPermission] = React.useState(false)
+
+  const handleOpenAddPermission = async () => {
+    await getPermissionsForAddNew()
+    setVisibleAddPermission((prev) => !prev)
+  }
 
   const deletePermission = async (id) => {
     var res = await RoleManagementService.deletePermissionsByIdAsync(roleId, id)
@@ -66,6 +68,16 @@ export default function PermissionTable(props) {
     if (res.success) {
       const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 500, roleId, 'asc', 'id')
       setPermissions(permissionsData.data.permissions)
+    }
+  }
+
+  const getPermissionsForAddNew = async () => {
+    var res = await RoleManagementService.getPermissionsAsync()
+    if (res.success) {
+      const allPermissions = res.data.permissions.map((item) => ({ label: item, value: item }))
+      const currentPermissions = permissions.map((item) => item.operation)
+      setPermissionsForAddNew(allPermissions)
+      setBlockedPermissionsForAddNew(allPermissions.filter((item) => currentPermissions.includes(item.value)).map((item) => item.value))
     }
   }
 
@@ -130,18 +142,12 @@ export default function PermissionTable(props) {
                   >
                     <TagPicker
                       size="sm"
-                      placeholder="All"
-                      variant="outlined"
-                      style={{
-                        width: '300px',
-                        borderRadius: 'sm',
-                        boxShadow: 'sm',
-                      }}
-                      menuStyle={{
-                        fontSize: '12px',
-                      }}
-                      data={data}
-                    ></TagPicker>
+                      placeholder="Select"
+                      style={{ width: 300, fontSize: '12px' }}
+                      menuStyle={{ width: 300, fontSize: '12px' }}
+                      data={newPermissions}
+                      disabledItemValues={blockedPermissions}
+                    />
                     <Button appearance="primary" color="green" size="sm" onClick={handleOpenAddPermission} style={{ width: '20%', fontSize: '12px' }}>
                       Add
                     </Button>
