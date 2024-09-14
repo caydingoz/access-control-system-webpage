@@ -16,12 +16,16 @@ const getRolesAsync = async (page, count, sortType, column, filterName = null) =
   const response = await axiosClient.getAsync(url)
   return response
 }
-const getPermissionsAsync = async () => {
-  const response = await axiosClient.getAsync(`roles/permissions`)
+const addRoleAsync = async (name) => {
+  const response = await axiosClient.postAsync(`roles`, { name: name })
   return response
 }
 const deleteRolesAsync = async (ids) => {
   const response = await axiosClient.deleteAsync(`roles`, { ids: ids })
+  return response
+}
+const getPermissionsAsync = async () => {
+  const response = await axiosClient.getAsync(`roles/permissions`)
   return response
 }
 const getPermissionsByRoleIdAsync = async (page, count, roleId, sortType, column) => {
@@ -43,6 +47,7 @@ const changePermissionTypeAsync = async (roleId, id, newPermissionType) => {
 
 const RoleManagementService = {
   getRolesAsync,
+  addRoleAsync,
   deleteRolesAsync,
   getPermissionsAsync,
   getPermissionsByRoleIdAsync,

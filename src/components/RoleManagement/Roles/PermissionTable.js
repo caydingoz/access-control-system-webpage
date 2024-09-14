@@ -55,7 +55,7 @@ export default function PermissionTable(props) {
   const handleCloseAddPermission = async () => {
     setPermissionsForAddNew([])
     setBlockedPermissionsForAddNew([])
-    setVisibleAddPermission((prev) => false)
+    setVisibleAddPermission(false)
   }
 
   const handleAddPermissionToRole = async () => {
@@ -117,14 +117,7 @@ export default function PermissionTable(props) {
               </Typography>
             </Typography>
             <div>
-              <IconButton
-                appearance="primary"
-                color="green"
-                icon={<PlusIcon />}
-                size="xs"
-                style={{ marginBottom: '4px' }}
-                onClick={handleOpenAddPermission}
-              >
+              <IconButton appearance="primary" color="green" icon={<PlusIcon />} size="xs" onClick={handleOpenAddPermission}>
                 Add new
               </IconButton>
               {visibleAddPermission && (

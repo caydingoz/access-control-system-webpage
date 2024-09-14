@@ -10,14 +10,12 @@ import IconButton from '@mui/joy/IconButton'
 import Tooltip from '@mui/joy/Tooltip'
 import Select from '@mui/joy/Select'
 import Option from '@mui/joy/Option'
-import DeleteIcon from '@mui/icons-material/Delete'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import RoleManagementService from 'src/services/RoleManagementService'
-import { Button } from '@mui/joy'
+import { Button, Stack, Card } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close'
 import { DateRangePicker, Input, SelectPicker } from 'rsuite'
 import PermissionTable from './PermissionTable'
@@ -25,6 +23,12 @@ import { format } from 'date-fns'
 import Link from '@mui/joy/Link'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import RemoveIcon from '@mui/icons-material/Remove'
+import { IconButton as RsuiteIconButton } from 'rsuite'
+import { Button as RsuiteButton } from 'rsuite'
+import PlusIcon from '@rsuite/icons/Plus'
+import TrashIcon from '@rsuite/icons/Trash'
+import FunnelIcon from '@rsuite/icons/Funnel'
+import RsuiteCloseIcon from '@rsuite/icons/Close'
 
 export default function RoleTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -36,11 +40,14 @@ export default function RoleTable() {
   const [totalCount, setTotalCount] = React.useState(0)
   const [roles, setRoles] = React.useState([])
   const [openedId, setOpenedId] = React.useState()
+  const [visibleAddRole, setVisibleAddRole] = React.useState(false)
+  const [newRole, setNewRole] = React.useState('')
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
     return format(date, 'dd-MM-yyyy HH:mm')
   }
+
   const headCells = [
     {
       id: 'name',
@@ -78,6 +85,21 @@ export default function RoleTable() {
       setTotalCount(rolesData.data.totalCount)
       setSelectedRoles([])
     }
+  }
+
+  const handleAddNewRole = async () => {
+    setVisibleAddRole(false)
+    var res = await RoleManagementService.addRoleAsync(newRole)
+    if (res.success) {
+      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      setRoles(rolesData.data.roles)
+      setTotalCount(rolesData.data.totalCount)
+      setSelectedRoles([])
+    }
+  }
+
+  const handleNewRoleName = (value) => {
+    setNewRole(value)
   }
 
   const handleOrder = (event, property) => {
@@ -145,27 +167,7 @@ export default function RoleTable() {
               The Roles table contains a list of application roles that define the permissions and access levels for users within the system.
             </Typography>
           </Typography>
-          {selectedRoles.length > 0 && (
-            <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
-              {selectedRoles.length} selected
-            </Typography>
-          )}
-
-          {selectedRoles.length > 0 ? (
-            <Tooltip title="Delete">
-              <IconButton size="sm" color="danger" variant="solid" onClick={async () => await deleteRoles()}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Filter list">
-              <IconButton size="sm" variant="outlined" color="neutral" disabled>
-                <FilterListIcon />
-              </IconButton>
-            </Tooltip>
-          )}
         </Box>
-
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -260,6 +262,110 @@ export default function RoleTable() {
             </Box>
           </Sheet>
         </form>
+        <Box>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ marginLeft: '2%', width: '100px' }}>
+              <RsuiteIconButton
+                appearance="primary"
+                icon={<PlusIcon />}
+                color="green"
+                size="xs"
+                style={{ width: '100%' }}
+                onClick={() => setVisibleAddRole((prev) => !prev)}
+              >
+                Add Role
+              </RsuiteIconButton>
+              {visibleAddRole && (
+                <Card
+                  sx={{
+                    position: 'absolute',
+                    left: '1.6%',
+                    marginTop: '5px',
+                    width: '35%',
+                    zIndex: 20,
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography level="title-sm" sx={{ mb: 1 }}>
+                      New Role
+                      <br></br>
+                      <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
+                        Type the name of the role here.
+                      </Typography>
+                    </Typography>
+                    <RsuiteIconButton
+                      color="red"
+                      appearance="primary"
+                      onClick={() => setVisibleAddRole(false)}
+                      size="xs"
+                      icon={<RsuiteCloseIcon />}
+                    />
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      marginTop: '5px',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Input
+                      value={newRole}
+                      size="sm"
+                      placeholder="Role name.."
+                      style={{ width: 300, fontSize: '12px' }}
+                      onChange={handleNewRoleName}
+                    />
+                    <RsuiteButton
+                      appearance="primary"
+                      color="green"
+                      size="sm"
+                      onClick={handleAddNewRole}
+                      style={{ width: '20%', fontSize: '12px', height: '27px' }}
+                    >
+                      Add
+                    </RsuiteButton>
+                  </Stack>
+                </Card>
+              )}
+            </div>
+            {selectedRoles.length > 0 && (
+              <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
+                {selectedRoles.length} selected
+              </Typography>
+            )}
+            {selectedRoles.length > 0 ? (
+              <Tooltip title="Delete">
+                <RsuiteIconButton
+                  appearance="primary"
+                  icon={<TrashIcon />}
+                  color="red"
+                  size="sm"
+                  onClick={async () => await deleteRoles()}
+                  style={{ marginRight: '2%' }}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip title="Filter list">
+                <RsuiteIconButton appearance="subtle" size="sm" icon={<FunnelIcon />} style={{ marginRight: '2%' }} disabled />
+              </Tooltip>
+            )}
+          </Stack>
+        </Box>
         <Table
           hoverRow
           size="md"
@@ -267,7 +373,7 @@ export default function RoleTable() {
           sx={{
             boxShadow: 'md',
             width: '96%',
-            margin: '2% 2%',
+            margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
               height: '40px',
