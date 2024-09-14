@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 import { IconButton } from 'rsuite'
 import TrashIcon from '@rsuite/icons/Trash'
 import PlusIcon from '@rsuite/icons/Plus'
-import { Card, Stack, Box } from '@mui/joy'
+import { Card, Stack } from '@mui/joy'
 import { TagPicker, Button } from 'rsuite'
 import CloseIcon from '@rsuite/icons/Close'
 
@@ -40,13 +40,36 @@ export default function PermissionTable(props) {
   }, [roleId])
 
   const [permissions, setPermissions] = React.useState([])
+  const [visibleAddPermission, setVisibleAddPermission] = React.useState(false)
   const [newPermissions, setPermissionsForAddNew] = React.useState([])
   const [blockedPermissions, setBlockedPermissionsForAddNew] = React.useState([])
-  const [visibleAddPermission, setVisibleAddPermission] = React.useState(false)
+  const [selectedNewPermissions, setSelectedPermissionsForAddNew] = React.useState([])
 
   const handleOpenAddPermission = async () => {
+    setPermissionsForAddNew([])
+    setBlockedPermissionsForAddNew([])
     await getPermissionsForAddNew()
     setVisibleAddPermission((prev) => !prev)
+  }
+
+  const handleCloseAddPermission = async () => {
+    setPermissionsForAddNew([])
+    setBlockedPermissionsForAddNew([])
+    setVisibleAddPermission((prev) => false)
+  }
+
+  const handleAddPermissionToRole = async () => {
+    var res = await RoleManagementService.addPermissionToRoleAsync(roleId, selectedNewPermissions)
+    if (res.success) {
+      setPermissionsForAddNew([])
+      setBlockedPermissionsForAddNew([])
+      const permissionsData = await RoleManagementService.getPermissionsByRoleIdAsync(0, 500, roleId, 'asc', 'id')
+      setPermissions(permissionsData.data.permissions)
+      setVisibleAddPermission(false)
+    }
+  }
+  const handleSelectNewPermission = (value) => {
+    setSelectedPermissionsForAddNew(value.map((item) => ({ operation: item })))
   }
 
   const deletePermission = async (id) => {
@@ -129,7 +152,7 @@ export default function PermissionTable(props) {
                         Multiple permissions can be selected.
                       </Typography>
                     </Typography>
-                    <IconButton color="red" appearance="primary" onClick={handleOpenAddPermission} size="xs" icon={<CloseIcon />} />
+                    <IconButton color="red" appearance="primary" onClick={handleCloseAddPermission} size="xs" icon={<CloseIcon />} />
                   </Stack>
                   <Stack
                     direction="row"
@@ -147,8 +170,15 @@ export default function PermissionTable(props) {
                       menuStyle={{ width: 300, fontSize: '12px' }}
                       data={newPermissions}
                       disabledItemValues={blockedPermissions}
+                      onChange={handleSelectNewPermission}
                     />
-                    <Button appearance="primary" color="green" size="sm" onClick={handleOpenAddPermission} style={{ width: '20%', fontSize: '12px' }}>
+                    <Button
+                      appearance="primary"
+                      color="green"
+                      size="sm"
+                      onClick={handleAddPermissionToRole}
+                      style={{ width: '20%', fontSize: '12px' }}
+                    >
                       Add
                     </Button>
                   </Stack>

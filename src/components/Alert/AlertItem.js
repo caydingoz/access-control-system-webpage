@@ -27,7 +27,7 @@ const AlertItem = ({ alert, alertItem }) => {
 
   return (
     <Alert
-      sx={{ alignItems: 'flex-start', width: '100%', marginBottom: '10px' }}
+      sx={{ alignItems: 'flex-start', width: '90%', marginBottom: '10px' }}
       startDecorator={alertItem.icon}
       variant="soft"
       color={alertItem.color}
@@ -47,7 +47,7 @@ const AlertItem = ({ alert, alertItem }) => {
     >
       <div style={{ width: '80%', paddingBottom: '5px' }}>
         <div>{alertItem.type}</div>
-        <Typography level="body-sm" color={alertItem.color}>
+        <Typography level="body-xs" color={alertItem.color}>
           {alert.message}
         </Typography>
         {alertItem.type !== 'Error' && (
