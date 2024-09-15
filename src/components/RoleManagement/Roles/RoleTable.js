@@ -345,14 +345,26 @@ export default function RoleTable() {
               )}
             </div>
             {selectedRoles.length > 0 && (
-              <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
+              <Typography
+                level="body-sm"
+                display="inline"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  flex: '1 1 30%',
+                  textAlign: 'right',
+                  paddingRight: '5px',
+                }}
+                component="div"
+              >
                 {selectedRoles.length} selected
               </Typography>
             )}
             {selectedRoles.length > 0 ? (
               <Tooltip title="Delete">
                 <RsuiteIconButton
-                  appearance="primary" //TODO: Yukarıdaki selected'ı centerla
+                  appearance="primary"
                   icon={<TrashIcon />}
                   color="red"
                   size="sm"
