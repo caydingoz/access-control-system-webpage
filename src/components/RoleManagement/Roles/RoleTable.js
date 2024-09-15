@@ -296,7 +296,6 @@ export default function RoleTable() {
                     spacing={1}
                     sx={{
                       justifyContent: 'space-between',
-                      alignItems: 'center',
                     }}
                   >
                     <Typography level="title-sm" sx={{ mb: 1 }}>
@@ -306,13 +305,15 @@ export default function RoleTable() {
                         Type the name of the role here.
                       </Typography>
                     </Typography>
-                    <RsuiteIconButton
-                      color="red"
-                      appearance="primary"
-                      onClick={() => setVisibleAddRole(false)}
-                      size="xs"
-                      icon={<RsuiteCloseIcon />}
-                    />
+                    <div>
+                      <RsuiteIconButton
+                        color="red"
+                        appearance="primary"
+                        onClick={() => setVisibleAddRole(false)}
+                        size="xs"
+                        icon={<RsuiteCloseIcon />}
+                      />
+                    </div>
                   </Stack>
                   <Stack
                     direction="row"
@@ -335,7 +336,7 @@ export default function RoleTable() {
                       color="green"
                       size="sm"
                       onClick={handleAddNewRole}
-                      style={{ width: '20%', fontSize: '12px', height: '27px' }}
+                      style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '30px' }}
                     >
                       Add
                     </RsuiteButton>
@@ -506,7 +507,7 @@ export default function RoleTable() {
             {emptyRows > 0 && (
               <tr
                 style={{
-                  height: `calc(${emptyRows} * 41px)`,
+                  height: `calc((${emptyRows} * 40.67px) - 0.67px)`,
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >

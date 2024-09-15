@@ -135,7 +135,6 @@ export default function PermissionTable(props) {
                     spacing={1}
                     sx={{
                       justifyContent: 'space-between',
-                      alignItems: 'center',
                     }}
                   >
                     <Typography level="title-sm" sx={{ mb: 1 }}>
@@ -145,7 +144,9 @@ export default function PermissionTable(props) {
                         Multiple permissions can be selected.
                       </Typography>
                     </Typography>
-                    <IconButton color="red" appearance="primary" onClick={handleCloseAddPermission} size="xs" icon={<CloseIcon />} />
+                    <div>
+                      <IconButton color="red" appearance="primary" onClick={handleCloseAddPermission} size="xs" icon={<CloseIcon />} />
+                    </div>
                   </Stack>
                   <Stack
                     direction="row"
