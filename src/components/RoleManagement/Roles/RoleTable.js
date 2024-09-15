@@ -346,7 +346,7 @@ export default function RoleTable() {
             </div>
             {selectedRoles.length > 0 && (
               <Typography level="body-sm" display="inline" sx={{ flex: '1 1 30%', textAlign: 'right', paddingRight: '5px' }} component="div">
-                {selectedRoles.length} selected 
+                {selectedRoles.length} selected
               </Typography>
             )}
             {selectedRoles.length > 0 ? (
