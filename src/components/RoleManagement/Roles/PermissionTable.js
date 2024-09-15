@@ -126,7 +126,7 @@ export default function PermissionTable(props) {
                     position: 'absolute',
                     marginTop: '5px',
                     right: '20px',
-                    width: '35%',
+                    width: '300px',
                     zIndex: 20,
                   }}
                 >
@@ -160,8 +160,8 @@ export default function PermissionTable(props) {
                     <TagPicker
                       size="sm"
                       placeholder="Select"
-                      style={{ width: 300, fontSize: '12px' }}
-                      menuStyle={{ width: 300, fontSize: '12px' }}
+                      style={{ width: 250, fontSize: '12px' }}
+                      menuStyle={{ width: 200, fontSize: '12px' }}
                       data={newPermissions}
                       disabledItemValues={blockedPermissions}
                       onChange={handleSelectNewPermission}

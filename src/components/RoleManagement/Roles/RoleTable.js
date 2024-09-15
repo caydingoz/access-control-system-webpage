@@ -287,7 +287,7 @@ export default function RoleTable() {
                     position: 'absolute',
                     left: '1.6%',
                     marginTop: '5px',
-                    width: '35%',
+                    width: '350px',
                     zIndex: 20,
                   }}
                 >
