@@ -18,11 +18,11 @@ import CIcon from '@coreui/icons-react'
 import { cilEnvelopeOpen, cilMenu, cilBell, cilList } from '@coreui/icons'
 import { cilContrast, cilMoon, cilSun } from '@coreui/icons'
 
-import { AppBreadcrumb, AppHeaderDropdown } from './index'
+import { AppBreadcrumb, AppHeaderDropdown } from '../index'
 import { logo } from 'src/assets/brand/logo'
-import { setSidebarShow } from '../slices/sidebarSlice'
+import { setSidebarShow } from '../../slices/sidebarSlice'
 import { useColorScheme } from '@mui/joy/styles'
-import { setThemeMode } from '../slices/rSuiteThemeSlice'
+import { setThemeMode } from '../../slices/rSuiteThemeSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()

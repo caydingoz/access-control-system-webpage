@@ -3,8 +3,8 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
 
 // routes config
-import routes from '../routes'
-const Page404 = React.lazy(() => import('../views/errors/Page404'))
+import routes from '../../routes'
+const Page404 = React.lazy(() => import('../../views/errors/Page404'))
 
 const AppContent = () => {
   return (

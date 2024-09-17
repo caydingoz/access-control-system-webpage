@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSidebarShow } from '../slices/sidebarSlice'
+import { setSidebarShow } from '../../slices/sidebarSlice'
 
 import { CSidebar, CSidebarBrand, CSidebarHeader } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -11,7 +11,7 @@ import { logo } from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
-import navigation from '../_sideNav'
+import navigation from '../../_sideNav'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()

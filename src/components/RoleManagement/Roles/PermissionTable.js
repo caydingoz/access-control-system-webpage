@@ -118,7 +118,7 @@ export default function PermissionTable(props) {
             </Typography>
             <div>
               <IconButton appearance="primary" color="green" icon={<PlusIcon />} size="xs" onClick={handleOpenAddPermission}>
-                Add new
+                Add Permission
               </IconButton>
               {visibleAddPermission && (
                 <Card

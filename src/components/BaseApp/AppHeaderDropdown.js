@@ -4,8 +4,8 @@ import { CAvatar, CBadge, CDropdown, CDropdownDivider, CDropdownHeader, CDropdow
 import { cilEnvelopeOpen, cilSettings, cilUser, cilAccountLogout } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
-import avatar from './../assets/images/avatar.jpg'
-import AuthService from '../services/AuthService'
+import avatar from '../../assets/images/avatar.jpg'
+import AuthService from '../../services/AuthService'
 
 const AppHeaderDropdown = () => {
   const authService = AuthService()
