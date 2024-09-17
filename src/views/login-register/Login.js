@@ -17,6 +17,8 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded'
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded'
 import { useNavigate } from 'react-router-dom'
 import { useColorModes } from '@coreui/react'
+import { useSelector } from 'react-redux'
+import LoadingSpinner from '../../components/LoadingSpinner'
 
 import AuthService from '../../services/AuthService'
 
@@ -49,9 +51,11 @@ function ColorSchemeToggle(props) {
 export default function JoySignInSideTemplate() {
   const authService = AuthService()
   const navigate = useNavigate()
+  const { isLoading } = useSelector((state) => state.loading)
 
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
+      {isLoading && <LoadingSpinner />}
       <CssBaseline />
       <GlobalStyles
         styles={{
