@@ -18,7 +18,7 @@ import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded'
 import { useNavigate } from 'react-router-dom'
 import { useColorModes } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import LoadingSpinner from '../../components/LoadingSpinner'
+import LoadingSpinner from '../../components/BaseApp/LoadingSpinner'
 
 import AuthService from '../../services/AuthService'
 

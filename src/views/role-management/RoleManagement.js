@@ -1,10 +1,10 @@
 import React from 'react'
-import TableSortAndSelection from '../../components/RoleManagement/Roles/RoleTable'
+import RoleTable from '../../components/RoleManagement/RoleTable'
 
 const RoleManagement = () => {
   return (
     <React.Fragment>
-      <TableSortAndSelection />
+      <RoleTable />
     </React.Fragment>
   )
 }

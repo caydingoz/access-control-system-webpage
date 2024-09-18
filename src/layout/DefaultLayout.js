@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 import { useSelector } from 'react-redux'
-import LoadingSpinner from '../components/LoadingSpinner'
+import LoadingSpinner from '../components/BaseApp/LoadingSpinner'
 import { CssVarsProvider } from '@mui/joy/styles'
 import { CustomProvider } from 'rsuite'
 
