@@ -113,9 +113,11 @@ export default function UserTable() {
   }
 
   const handleOrder = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
+    if (property !== 'roles') {
+      const isAsc = orderBy === property && order === 'asc'
+      setOrder(isAsc ? 'desc' : 'asc')
+      setOrderBy(property)
+    }
   }
 
   const handleSelectAllUsers = (event) => {
@@ -248,7 +250,6 @@ export default function UserTable() {
                     backgroundColor: 'transparent',
                   }}
                   data={userStatusData}
-                  // onChange={handleFilterStatus}
                 ></SelectPicker>
               </Box>
               <Button
@@ -445,7 +446,7 @@ export default function UserTable() {
                       component="button"
                       onClick={(event) => handleOrder(event, headCell.id)}
                       fontWeight="lg"
-                      endDecorator={<ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />}
+                      endDecorator={<ArrowDownwardIcon sx={{ opacity: headCell.id === 'roles' ? 0 : active ? 1 : 0 }} />}
                       sx={{
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -454,7 +455,7 @@ export default function UserTable() {
                           transition: '0.2s',
                           transform: active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
                         },
-                        '&:hover': { '& svg': { opacity: 1 } },
+                        '&:hover': { '& svg': { opacity: headCell.id === 'roles' ? 0 : 1 } },
                       }}
                     >
                       {headCell.label}

@@ -1,6 +1,6 @@
 import axiosClient from '../helpers/axiosClient'
 
-const getRolesAsync = async (page, count, sortType, column, filterName = null) => {
+const getRolesAsync = async (page, count, sortType, column, filterPermission = null, filterName = null) => {
   const params = new URLSearchParams({
     page,
     count,
@@ -10,6 +10,9 @@ const getRolesAsync = async (page, count, sortType, column, filterName = null) =
 
   if (filterName) {
     params.append('filterName', filterName)
+  }
+  if (filterPermission) {
+    params.append('operation', filterPermission)
   }
 
   const url = `role?${params.toString()}`

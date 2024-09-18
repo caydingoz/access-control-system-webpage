@@ -32,6 +32,7 @@ import RsuiteCloseIcon from '@rsuite/icons/Close'
 
 export default function RoleTable() {
   const [filterName, setFilterName] = React.useState(null)
+  const [filterPermissions, setFilterPermissions] = React.useState(null)
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('name')
   const [selectedRoles, setSelectedRoles] = React.useState([])
@@ -39,6 +40,7 @@ export default function RoleTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [roles, setRoles] = React.useState([])
+  const [permissions, setPermissions] = React.useState([])
   const [openedId, setOpenedId] = React.useState()
   const [visibleAddRole, setVisibleAddRole] = React.useState(false)
   const [newRole, setNewRole] = React.useState('')
@@ -63,24 +65,27 @@ export default function RoleTable() {
     },
   ]
 
-  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert', 'Albert'].map((item) => ({ label: item, value: item }))
-
   useEffect(() => {
     async function fetchData() {
-      const res = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterName)
-      if (res.success) {
-        setRoles(res.data.roles)
-        setTotalCount(res.data.totalCount)
+      const roleRes = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterPermissions, filterName)
+      if (roleRes.success) {
+        setRoles(roleRes.data.roles)
+        setTotalCount(roleRes.data.totalCount)
+
+        const permissionRes = await RoleManagementService.getPermissionsAsync()
+        if (permissionRes.success) {
+          setPermissions(permissionRes.data.permissions.map((item) => ({ label: item, value: item })))
+        }
       }
     }
 
     fetchData()
-  }, [page, rowsPerPage, order, orderBy, filterName])
+  }, [page, rowsPerPage, order, orderBy, filterPermissions, filterName])
 
   const deleteRoles = async () => {
     var res = await RoleManagementService.deleteRolesAsync(selectedRoles)
     if (res.success) {
-      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterPermissions, filterName)
       setRoles(rolesData.data.roles)
       setTotalCount(rolesData.data.totalCount)
       setSelectedRoles([])
@@ -91,7 +96,7 @@ export default function RoleTable() {
     setVisibleAddRole(false)
     var res = await RoleManagementService.addRoleAsync(newRole)
     if (res.success) {
-      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy)
+      const rolesData = await RoleManagementService.getRolesAsync(page, rowsPerPage, order, orderBy, filterPermissions, filterName)
       setRoles(rolesData.data.roles)
       setTotalCount(rolesData.data.totalCount)
       setSelectedRoles([])
@@ -173,6 +178,7 @@ export default function RoleTable() {
             event.preventDefault()
             const formElements = event.currentTarget.elements
             setFilterName(formElements.name.value)
+            setFilterPermissions(formElements.permissions.value)
           }}
         >
           <Sheet
@@ -227,9 +233,10 @@ export default function RoleTable() {
               </Box>
               <Box sx={{ minWidth: 180 }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Category
+                  Permissions
                 </Typography>
                 <SelectPicker
+                  name="permissions"
                   size="sm"
                   placeholder="All"
                   variant="outlined"
@@ -239,7 +246,7 @@ export default function RoleTable() {
                     boxShadow: 'sm',
                     backgroundColor: 'transparent',
                   }}
-                  data={data}
+                  data={permissions}
                 ></SelectPicker>
               </Box>
               <Button
