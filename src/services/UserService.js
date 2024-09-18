@@ -1,15 +1,18 @@
 import axiosClient from '../helpers/axiosClient'
 
-const getUsersAsync = async (page, count, sortType, column, filterName = null) => {
+const getUsersAsync = async (page, count, status, sortType, column, filterName = null) => {
   const params = new URLSearchParams({
     page,
     count,
-    column,
     sortType,
+    column,
   })
 
   if (filterName) {
     params.append('filterName', filterName)
+  }
+  if (status) {
+    params.append('status', status)
   }
 
   const url = `user?${params.toString()}`

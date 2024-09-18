@@ -30,6 +30,7 @@ import { CBadge } from '@coreui/react'
 
 export default function UserTable() {
   const [filterName, setFilterName] = React.useState(null)
+  const [filterStatus, setFilterStatus] = React.useState(null)
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('firstName')
   const [selectedUsers, setSelectedUsers] = React.useState([])
@@ -63,8 +64,8 @@ export default function UserTable() {
       label: 'Roles',
     },
     {
-      id: 'updatedAt',
-      label: 'LastUpdate',
+      id: 'createdAt',
+      label: 'CreateDate',
     },
   ]
   const userStatus = {
@@ -73,11 +74,11 @@ export default function UserTable() {
     2: { status: 'Deleted', color: 'danger' },
   }
 
-  const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert', 'Albert'].map((item) => ({ label: item, value: item }))
+  const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   useEffect(() => {
     async function fetchData() {
-      const res = await UserService.getUsersAsync(page, rowsPerPage, order, orderBy, filterName)
+      const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
       if (res.success) {
         setUsers(res.data.users)
         setTotalCount(res.data.totalCount)
@@ -85,12 +86,12 @@ export default function UserTable() {
     }
 
     fetchData()
-  }, [page, rowsPerPage, order, orderBy, filterName])
+  }, [page, rowsPerPage, order, orderBy, filterName, filterStatus])
 
   const deleteUsers = async () => {
     var res = await UserService.deleteUsersAsync(selectedUsers)
     if (res.success) {
-      const usersData = await UserService.getUsersAsync(page, rowsPerPage, order, orderBy)
+      const usersData = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy)
       setUsers(usersData.data.users)
       setTotalCount(usersData.data.totalCount)
       setSelectedUsers([])
@@ -101,13 +102,12 @@ export default function UserTable() {
     setVisibleAddUser(false)
     var res = await UserService.addUserAsync(newUser)
     if (res.success) {
-      const usersData = await UserService.getUsersAsync(page, rowsPerPage, order, orderBy)
+      const usersData = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy)
       setUsers(usersData.data.users)
       setTotalCount(usersData.data.totalCount)
       setSelectedUsers([])
     }
   }
-
   const handleNewUserName = (value) => {
     setNewUser(value)
   }
@@ -179,6 +179,7 @@ export default function UserTable() {
             event.preventDefault()
             const formElements = event.currentTarget.elements
             setFilterName(formElements.name.value)
+            setFilterStatus(formElements.status.value)
           }}
         >
           <Sheet
@@ -233,9 +234,10 @@ export default function UserTable() {
               </Box>
               <Box sx={{ minWidth: 180 }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Category
+                  Status
                 </Typography>
                 <SelectPicker
+                  name="status"
                   size="sm"
                   placeholder="All"
                   variant="outlined"
@@ -245,7 +247,8 @@ export default function UserTable() {
                     boxShadow: 'sm',
                     backgroundColor: 'transparent',
                   }}
-                  data={data}
+                  data={userStatusData}
+                  // onChange={handleFilterStatus}
                 ></SelectPicker>
               </Box>
               <Button
@@ -497,7 +500,6 @@ export default function UserTable() {
                       />
                     </td>
                     <td id={labelId}>
-                      {console.log('../../assets/images/' + row.image)}
                       <Avatar src={`/images/${row.image}`} />
                     </td>
                     <td id={labelId}>
@@ -517,14 +519,14 @@ export default function UserTable() {
                     <td id={labelId}>
                       {row.roles.map((role, index) => {
                         return (
-                          <Chip key={index} sx={{ fontSize: '13px' }}>
+                          <Chip key={index} sx={{ fontSize: '13px', marginRight: '3px' }}>
                             {role}
                           </Chip>
                         )
                       })}
                     </td>
                     <td id={labelId}>
-                      <Typography level="body-sm">{formatDateTime(row.updatedAt)}</Typography>
+                      <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
                     </td>
                   </tr>
                 </React.Fragment>
