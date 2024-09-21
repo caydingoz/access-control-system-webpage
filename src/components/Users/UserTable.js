@@ -209,7 +209,7 @@ export default function UserTable() {
                 </Typography>
                 <Input
                   name="name"
-                  placeholder="Search for role, permission, etc."
+                  placeholder="Search for name, email, etc."
                   variant="outlined"
                   size="sm"
                   sx={{
@@ -512,7 +512,9 @@ export default function UserTable() {
                       </Stack>
                     </td>
                     <td id={labelId}>
-                      <CBadge color={userStatus[row.status].color}>{userStatus[row.status].status}</CBadge>
+                      <Chip color={userStatus[row.status].color} size="sm">
+                        {userStatus[row.status].status}
+                      </Chip>
                     </td>
                     <td id={labelId}>
                       <Typography level="body-sm">{row.title}</Typography>
@@ -520,7 +522,7 @@ export default function UserTable() {
                     <td id={labelId}>
                       {row.roles.map((role, index) => {
                         return (
-                          <Chip key={index} sx={{ fontSize: '13px', marginRight: '3px' }}>
+                          <Chip key={index} size="sm" sx={{ marginRight: '3px' }}>
                             {role}
                           </Chip>
                         )
