@@ -20,7 +20,7 @@ const getUsersAsync = async (page, count, status, sortType, column, filterName =
   return response
 }
 const addUserAsync = async (user) => {
-  const response = await axiosClient.postAsync(`user`, { user: user })
+  const response = await axiosClient.postAsync(`user`, user)
   return response
 }
 const deleteUsersAsync = async (ids) => {

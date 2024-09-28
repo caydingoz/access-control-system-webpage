@@ -13,9 +13,10 @@ import Option from '@mui/joy/Option'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import UserService from 'src/services/UserService'
+import RoleManagementService from 'src/services/RoleManagementService'
 import { Button, Stack, Card, Avatar, Chip } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close'
-import { DateRangePicker, Input, SelectPicker } from 'rsuite'
+import { DateRangePicker, Input, InputGroup, SelectPicker, TagPicker } from 'rsuite'
 import { format } from 'date-fns'
 import Link from '@mui/joy/Link'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
@@ -26,7 +27,10 @@ import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
-import { CBadge } from '@coreui/react'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+import UserBadgeIcon from '@rsuite/icons/UserBadge'
+import LocationIcon from '@rsuite/icons/Location'
+import PhoneIcon from '@rsuite/icons/Phone'
 
 export default function UserTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -39,11 +43,19 @@ export default function UserTable() {
   const [totalCount, setTotalCount] = React.useState(0)
   const [users, setUsers] = React.useState([])
   const [visibleAddUser, setVisibleAddUser] = React.useState(false)
-  const [newUser, setNewUser] = React.useState('')
+  const [newUser, setNewUser] = React.useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    email: '',
+    title: '',
+    roleIds: [],
+  })
+  const [roles, setRoles] = React.useState([])
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
-    return format(date, 'dd-MM-yyyy HH:mm')
+    return format(date, 'dd-MM-yyyy')
   }
 
   const headCells = [
@@ -98,6 +110,13 @@ export default function UserTable() {
     }
   }
 
+  const getAllRoles = async () => {
+    var res = await RoleManagementService.getRolesAsync(0, 10000, 'asc', 'name')
+    if (res.success) {
+      setRoles(res.data.roles.map((item) => ({ label: item.name, value: item.id })))
+    }
+  }
+
   const handleAddNewUser = async () => {
     setVisibleAddUser(false)
     var res = await UserService.addUserAsync(newUser)
@@ -108,8 +127,12 @@ export default function UserTable() {
       setSelectedUsers([])
     }
   }
-  const handleNewUserName = (value) => {
-    setNewUser(value)
+
+  const handleInputChangeForNewUser = (key, value) => {
+    setNewUser({
+      ...newUser,
+      [key]: value,
+    })
   }
 
   const handleOrder = (event, property) => {
@@ -234,7 +257,7 @@ export default function UserTable() {
                   }}
                 />
               </Box>
-              <Box sx={{ minWidth: 180 }}>
+              <Box sx={{ width: 180 }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
                   Status
                 </Typography>
@@ -249,6 +272,8 @@ export default function UserTable() {
                     boxShadow: 'sm',
                     backgroundColor: 'transparent',
                   }}
+                  searchable={false}
+                  menuStyle={{ width: 180 }}
                   data={userStatusData}
                 ></SelectPicker>
               </Box>
@@ -286,8 +311,11 @@ export default function UserTable() {
                 icon={<PlusIcon />}
                 color="green"
                 size="xs"
-                style={{ width: '100%' }}
-                onClick={() => setVisibleAddUser((prev) => !prev)}
+                style={{ width: '100%', fontSize: '13px' }}
+                onClick={() => {
+                  setVisibleAddUser((prev) => !prev)
+                  getAllRoles()
+                }}
               >
                 Add User
               </RsuiteIconButton>
@@ -297,7 +325,7 @@ export default function UserTable() {
                     position: 'absolute',
                     left: '1.6%',
                     marginTop: '5px',
-                    width: '350px',
+                    width: 400,
                     zIndex: 20,
                   }}
                 >
@@ -312,7 +340,7 @@ export default function UserTable() {
                       New User
                       <br></br>
                       <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-                        Type the name of the role here.
+                        Please fill in the fields below to create a new user.
                       </Typography>
                     </Typography>
                     <div>
@@ -325,28 +353,106 @@ export default function UserTable() {
                       />
                     </div>
                   </Stack>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{
-                      marginTop: '5px',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Input
-                      value={newUser}
-                      size="sm"
-                      placeholder="User name.."
-                      style={{ width: 300, fontSize: '12px' }}
-                      onChange={handleNewUserName}
+                  <Stack direction="column" spacing={1}>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <IconButton
+                        variant="outlined"
+                        sx={{
+                          width: 100,
+                          height: 120,
+                          borderRadius: '5px',
+                          backgroundColor: 'white',
+                        }}
+                      >
+                        <AddAPhotoIcon />
+                      </IconButton>
+                      <Stack direction="column" spacing={1}>
+                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
+                          <InputGroup.Addon>
+                            <LocationIcon />
+                          </InputGroup.Addon>
+                          <Input
+                            value={newUser.firstName}
+                            size="sm"
+                            placeholder="First name.."
+                            style={{ fontSize: '12px' }}
+                            onChange={(value) => handleInputChangeForNewUser('firstName', value)}
+                          />
+                        </InputGroup>
+                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
+                          <InputGroup.Addon>
+                            <LocationIcon />
+                          </InputGroup.Addon>
+                          <Input
+                            value={newUser.lastName}
+                            size="sm"
+                            placeholder="Last name.."
+                            style={{ fontSize: '12px' }}
+                            onChange={(value) => handleInputChangeForNewUser('lastName', value)}
+                          />
+                        </InputGroup>
+                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
+                          <InputGroup.Addon>
+                            <PhoneIcon />
+                          </InputGroup.Addon>
+                          <Input
+                            value={newUser.phoneNumber}
+                            size="sm"
+                            placeholder="Phone number.."
+                            style={{ fontSize: '12px' }}
+                            onChange={(value) => handleInputChangeForNewUser('phoneNumber', value)}
+                          />
+                        </InputGroup>
+                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
+                          <InputGroup.Addon> @</InputGroup.Addon>
+                          <Input
+                            value={newUser.email}
+                            size="sm"
+                            placeholder="Email.."
+                            style={{ fontSize: '12px' }}
+                            onChange={(value) => handleInputChangeForNewUser('email', value)}
+                          />
+                        </InputGroup>
+                        <InputGroup style={{ fontSize: '12px' }}>
+                          <InputGroup.Addon>
+                            <UserBadgeIcon />
+                          </InputGroup.Addon>
+                          <Input
+                            value={newUser.title}
+                            size="sm"
+                            placeholder="Title.."
+                            style={{ fontSize: '12px' }}
+                            onChange={(value) => handleInputChangeForNewUser('title', value)}
+                          />
+                        </InputGroup>
+                      </Stack>
+                    </Stack>
+                    <Typography level="body-sm" sx={{ fontSize: '13px' }}>
+                      Roles
+                    </Typography>
+                    <TagPicker
+                      size="xs"
+                      placeholder="Select.."
+                      style={{ fontSize: '12px', padding: '4px 0' }}
+                      menuStyle={{ fontSize: '12px', zIndex: '50' }}
+                      data={roles}
+                      onChange={(selectedIds) => {
+                        handleInputChangeForNewUser('roleIds', selectedIds)
+                      }}
                     />
                     <RsuiteButton
                       appearance="primary"
                       color="green"
                       size="sm"
                       onClick={handleAddNewUser}
-                      style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '30px' }}
+                      style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
                     >
                       Add
                     </RsuiteButton>
@@ -408,7 +514,7 @@ export default function UserTable() {
               width: '60px',
             },
             '& thead th:nth-of-type(3)': {
-              width: '300px',
+              width: '30%',
             },
             '& th': {
               height: '40px',
