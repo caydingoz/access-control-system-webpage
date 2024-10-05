@@ -12,15 +12,13 @@ const AlertItem = ({ alert, alertItem }) => {
   const dispatch = useDispatch()
   const { value, reset } = useCountUp({
     isCounting: true,
-    duration: 2,
+    duration: alert.alertType === 'Success' ? 2 : 6,
     easing: 'linear',
-    start: 0,
-    end: 100,
+    start: 100,
+    end: 0,
     onComplete: () => {
-      if (alert.alertType === 'Success') {
-        dispatch(hideAlert(alert.id))
-        reset()
-      }
+      dispatch(hideAlert(alert.id))
+      reset()
       return { shouldRepeat: false }
     },
   })
@@ -50,11 +48,9 @@ const AlertItem = ({ alert, alertItem }) => {
         <Typography level="body-xs" color={alertItem.color}>
           {alert.message}
         </Typography>
-        {alertItem.type !== 'Error' && (
-          <div style={{ paddingTop: '5px' }}>
-            <LinearProgress color={alertItem.color} size="sm" determinate value={Number(value)} />
-          </div>
-        )}
+        <div style={{ paddingTop: '5px' }}>
+          <LinearProgress color={alertItem.color} size="sm" determinate value={Number(value)} />
+        </div>
       </div>
     </Alert>
   )
