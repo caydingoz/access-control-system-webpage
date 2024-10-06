@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
-import { Button, Stack, Card, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
-import { DateRangePicker, Input, InputGroup, SelectPicker, TagPicker } from 'rsuite'
-import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
+import { Button, Stack, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
+import { DateRangePicker, Input, SelectPicker } from 'rsuite'
+import { IconButton as RsuiteIconButton } from 'rsuite'
+import UserInfo from './UserInfo'
 import UserService from 'src/services/UserService'
 import RoleManagementService from 'src/services/RoleManagementService'
 import { format } from 'date-fns'
 import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
-import RsuiteCloseIcon from '@rsuite/icons/Close'
-import UserBadgeIcon from '@rsuite/icons/UserBadge'
-import LocationIcon from '@rsuite/icons/Location'
-import PhoneIcon from '@rsuite/icons/Phone'
 import RemoveIcon from '@mui/icons-material/Remove'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import CloseIcon from '@mui/icons-material/Close'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
@@ -32,15 +28,7 @@ export default function UserTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [users, setUsers] = React.useState([])
-  const [visibleAddUser, setVisibleAddUser] = React.useState(false)
-  const [newUser, setNewUser] = React.useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    email: '',
-    title: '',
-    roleIds: [],
-  })
+  const [visibleInfoUser, setVisibleUserInfo] = React.useState(false)
   const [roles, setRoles] = React.useState([])
   const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
   const menuRef = React.useRef(null)
@@ -60,6 +48,10 @@ export default function UserTable() {
       label: 'Status',
     },
     {
+      id: 'phoneNumber',
+      label: 'Phone Number',
+    },
+    {
       id: 'title',
       label: 'Title',
     },
@@ -69,7 +61,7 @@ export default function UserTable() {
     },
     {
       id: 'createdAt',
-      label: 'CreateDate',
+      label: 'Create Date',
     },
   ]
   const userStatus = {
@@ -122,16 +114,8 @@ export default function UserTable() {
     }
   }
 
-  const handleOptionsMenu = (event) => {
-    setOptionsMenuAnchorEl(optionsMenuAnchorEl && event.currentTarget === optionsMenuAnchorEl ? null : event.currentTarget)
-  }
-
-  const handleCloseOptionsMenu = () => {
-    setOptionsMenuAnchorEl(null)
-  }
-
-  const handleAddNewUser = async () => {
-    setVisibleAddUser(false)
+  const handleAddNewUser = async (newUser) => {
+    setVisibleUserInfo(false)
     var res = await UserService.addUserAsync(newUser)
     if (res.success) {
       const usersData = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy)
@@ -141,11 +125,16 @@ export default function UserTable() {
     }
   }
 
-  const handleInputChangeForNewUser = (key, value) => {
-    setNewUser({
-      ...newUser,
-      [key]: value,
-    })
+  const handleCloseUserInfo = () => {
+    setVisibleUserInfo(false)
+  }
+
+  const handleOptionsMenu = (event) => {
+    setOptionsMenuAnchorEl(optionsMenuAnchorEl && event.currentTarget === optionsMenuAnchorEl ? null : event.currentTarget)
+  }
+
+  const handleCloseOptionsMenu = () => {
+    setOptionsMenuAnchorEl(null)
   }
 
   const handleOrder = (event, property) => {
@@ -326,152 +315,13 @@ export default function UserTable() {
                 size="xs"
                 style={{ width: '100%', fontSize: '13px' }}
                 onClick={() => {
-                  setVisibleAddUser((prev) => !prev)
+                  setVisibleUserInfo((prev) => !prev)
                   getAllRoles()
                 }}
               >
                 Add User
               </RsuiteIconButton>
-              {visibleAddUser && (
-                <Card
-                  sx={{
-                    position: 'absolute',
-                    left: '1.6%',
-                    marginTop: '5px',
-                    width: 400,
-                    zIndex: 20,
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Typography level="title-sm" sx={{ mb: 1 }}>
-                      New User
-                      <br></br>
-                      <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-                        Please fill in the fields below to create a new user.
-                      </Typography>
-                    </Typography>
-                    <div>
-                      <RsuiteIconButton
-                        color="red"
-                        appearance="primary"
-                        onClick={() => setVisibleAddUser(false)}
-                        size="xs"
-                        icon={<RsuiteCloseIcon />}
-                      />
-                    </div>
-                  </Stack>
-                  <Stack direction="column" spacing={1}>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <IconButton
-                        variant="outlined"
-                        sx={{
-                          width: 100,
-                          height: 120,
-                          borderRadius: '5px',
-                          backgroundColor: 'white',
-                        }}
-                      >
-                        <AddAPhotoIcon />
-                      </IconButton>
-                      <Stack direction="column" spacing={1}>
-                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
-                          <InputGroup.Addon>
-                            <LocationIcon />
-                          </InputGroup.Addon>
-                          <Input
-                            value={newUser.firstName}
-                            size="sm"
-                            placeholder="First name.."
-                            style={{ fontSize: '12px' }}
-                            onChange={(value) => handleInputChangeForNewUser('firstName', value)}
-                          />
-                        </InputGroup>
-                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
-                          <InputGroup.Addon>
-                            <LocationIcon />
-                          </InputGroup.Addon>
-                          <Input
-                            value={newUser.lastName}
-                            size="sm"
-                            placeholder="Last name.."
-                            style={{ fontSize: '12px' }}
-                            onChange={(value) => handleInputChangeForNewUser('lastName', value)}
-                          />
-                        </InputGroup>
-                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
-                          <InputGroup.Addon>
-                            <PhoneIcon />
-                          </InputGroup.Addon>
-                          <Input
-                            value={newUser.phoneNumber}
-                            size="sm"
-                            placeholder="Phone number.."
-                            style={{ fontSize: '12px' }}
-                            onChange={(value) => handleInputChangeForNewUser('phoneNumber', value)}
-                          />
-                        </InputGroup>
-                        <InputGroup style={{ width: 250, fontSize: '12px' }}>
-                          <InputGroup.Addon> @</InputGroup.Addon>
-                          <Input
-                            value={newUser.email}
-                            size="sm"
-                            placeholder="Email.."
-                            style={{ fontSize: '12px' }}
-                            onChange={(value) => handleInputChangeForNewUser('email', value)}
-                          />
-                        </InputGroup>
-                        <InputGroup style={{ fontSize: '12px' }}>
-                          <InputGroup.Addon>
-                            <UserBadgeIcon />
-                          </InputGroup.Addon>
-                          <Input
-                            value={newUser.title}
-                            size="sm"
-                            placeholder="Title.."
-                            style={{ fontSize: '12px' }}
-                            onChange={(value) => handleInputChangeForNewUser('title', value)}
-                          />
-                        </InputGroup>
-                      </Stack>
-                    </Stack>
-                    <Typography level="body-sm" sx={{ fontSize: '13px' }}>
-                      Roles
-                    </Typography>
-                    <TagPicker
-                      size="xs"
-                      placeholder="Select.."
-                      style={{ fontSize: '12px', padding: '4px 0' }}
-                      menuStyle={{ fontSize: '12px', zIndex: '50' }}
-                      data={roles}
-                      onChange={(selectedIds) => {
-                        handleInputChangeForNewUser('roleIds', selectedIds)
-                      }}
-                    />
-                    <RsuiteButton
-                      appearance="primary"
-                      color="green"
-                      size="sm"
-                      onClick={handleAddNewUser}
-                      style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
-                    >
-                      Add
-                    </RsuiteButton>
-                  </Stack>
-                </Card>
-              )}
+              {visibleInfoUser && <UserInfo roles={roles} isNew={true} onSubmit={handleAddNewUser} onClose={handleCloseUserInfo} />}
             </div>
             {selectedUsers.length > 0 && (
               <Typography
@@ -529,8 +379,11 @@ export default function UserTable() {
             '& thead th:nth-of-type(3)': {
               width: '28%',
             },
-            '& thead th:nth-of-type(7)': {
-              width: '14%',
+            '& thead th:nth-of-type(4)': {
+              width: '9%',
+            },
+            '& thead th:nth-of-type(8)': {
+              width: '90px',
             },
             '& thead th:last-of-type': {
               width: '50px',
@@ -640,6 +493,9 @@ export default function UserTable() {
                       </Chip>
                     </td>
                     <td id={labelId}>
+                      <Typography level="body-sm">{row.phoneNumber}</Typography>
+                    </td>
+                    <td id={labelId}>
                       <Typography level="body-sm">{row.title}</Typography>
                     </td>
                     <td id={labelId}>
@@ -684,13 +540,13 @@ export default function UserTable() {
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
-                <td colSpan={8} aria-hidden />
+                <td colSpan={9} aria-hidden />
               </tr>
             )}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={8}>
+              <td colSpan={9}>
                 <Box
                   sx={{
                     display: 'flex',
