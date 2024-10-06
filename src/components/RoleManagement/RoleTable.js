@@ -526,7 +526,7 @@ export default function RoleTable() {
             {emptyRows > 0 && (
               <tr
                 style={{
-                  height: `calc((${emptyRows} * 40.67px) - 0.67px)`,
+                  height: `calc((${emptyRows} * 40.72px) - 0.72px)`,
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
@@ -553,7 +553,7 @@ export default function RoleTable() {
                       <Option value={25}>25</Option>
                     </Select>
                   </FormControl>
-                  <FormControl orientation="horizontal" size="sm">
+                  <FormControl orientation="horizontal" size="sm" sx={{ width: '5%' }}>
                     <FormLabel size="sm">
                       Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
                     </FormLabel>

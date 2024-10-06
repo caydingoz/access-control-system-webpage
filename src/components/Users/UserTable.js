@@ -1,36 +1,26 @@
 import React, { useEffect } from 'react'
-import Box from '@mui/joy/Box'
-import Table from '@mui/joy/Table'
-import Typography from '@mui/joy/Typography'
-import Sheet from '@mui/joy/Sheet'
-import Checkbox from '@mui/joy/Checkbox'
-import FormControl from '@mui/joy/FormControl'
-import FormLabel from '@mui/joy/FormLabel'
-import IconButton from '@mui/joy/IconButton'
-import Tooltip from '@mui/joy/Tooltip'
-import Select from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
+import { Button, Stack, Card, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
+import { DateRangePicker, Input, InputGroup, SelectPicker, TagPicker } from 'rsuite'
+import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import UserService from 'src/services/UserService'
 import RoleManagementService from 'src/services/RoleManagementService'
-import { Button, Stack, Card, Avatar, Chip } from '@mui/joy'
-import CloseIcon from '@mui/icons-material/Close'
-import { DateRangePicker, Input, InputGroup, SelectPicker, TagPicker } from 'rsuite'
 import { format } from 'date-fns'
-import Link from '@mui/joy/Link'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import RemoveIcon from '@mui/icons-material/Remove'
-import { IconButton as RsuiteIconButton } from 'rsuite'
-import { Button as RsuiteButton } from 'rsuite'
 import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import UserBadgeIcon from '@rsuite/icons/UserBadge'
 import LocationIcon from '@rsuite/icons/Location'
 import PhoneIcon from '@rsuite/icons/Phone'
+import RemoveIcon from '@mui/icons-material/Remove'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+import CloseIcon from '@mui/icons-material/Close'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import EditIcon from '@mui/icons-material/Edit'
 
 export default function UserTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -52,6 +42,8 @@ export default function UserTable() {
     roleIds: [],
   })
   const [roles, setRoles] = React.useState([])
+  const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
+  const menuRef = React.useRef(null)
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
@@ -89,6 +81,19 @@ export default function UserTable() {
   const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target) && optionsMenuAnchorEl) {
+        handleCloseOptionsMenu()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [optionsMenuAnchorEl])
+
+  useEffect(() => {
     async function fetchData() {
       const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
       if (res.success) {
@@ -115,6 +120,14 @@ export default function UserTable() {
     if (res.success) {
       setRoles(res.data.roles.map((item) => ({ label: item.name, value: item.id })))
     }
+  }
+
+  const handleOptionsMenu = (event) => {
+    setOptionsMenuAnchorEl(optionsMenuAnchorEl && event.currentTarget === optionsMenuAnchorEl ? null : event.currentTarget)
+  }
+
+  const handleCloseOptionsMenu = () => {
+    setOptionsMenuAnchorEl(null)
   }
 
   const handleAddNewUser = async () => {
@@ -505,7 +518,7 @@ export default function UserTable() {
             margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
-              height: '40px',
+              height: '57px',
             },
             '& thead th:nth-of-type(1)': {
               width: '40px',
@@ -514,10 +527,13 @@ export default function UserTable() {
               width: '60px',
             },
             '& thead th:nth-of-type(3)': {
-              width: '30%',
+              width: '28%',
             },
-            '& th': {
-              height: '40px',
+            '& thead th:nth-of-type(7)': {
+              width: '14%',
+            },
+            '& thead th:last-of-type': {
+              width: '50px',
             },
             '& tfoot td': {
               backgroundColor: (theme) => theme.vars.palette.background.surface,
@@ -569,6 +585,7 @@ export default function UserTable() {
                   </th>
                 )
               })}
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -637,6 +654,25 @@ export default function UserTable() {
                     <td id={labelId}>
                       <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
                     </td>
+                    <td id={labelId}>
+                      <IconButton size="sm" onClick={handleOptionsMenu}>
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        sx={{ p: 0, boxShadow: '0px 0.2px 4px rgba(0, 0, 0, 0.1)' }}
+                        anchorEl={optionsMenuAnchorEl}
+                        open={Boolean(optionsMenuAnchorEl)}
+                        onClose={handleCloseOptionsMenu}
+                        placement="bottom-end"
+                        ref={menuRef}
+                        size="sm"
+                      >
+                        <MenuItem sx={{ height: '20px', width: 100, p: 1 }} onClick={handleCloseOptionsMenu} size="sm">
+                          <EditIcon fontSize="small" />
+                          <Typography level="body-sm">Edit</Typography>
+                        </MenuItem>
+                      </Menu>
+                    </td>
                   </tr>
                 </React.Fragment>
               )
@@ -644,17 +680,17 @@ export default function UserTable() {
             {emptyRows > 0 && (
               <tr
                 style={{
-                  height: `calc((${emptyRows} * 40.67px) - 0.67px)`,
+                  height: `calc(${emptyRows} * 57px)`,
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
-                <td colSpan={7} aria-hidden />
+                <td colSpan={8} aria-hidden />
               </tr>
             )}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={7}>
+              <td colSpan={8}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -671,7 +707,7 @@ export default function UserTable() {
                       <Option value={25}>25</Option>
                     </Select>
                   </FormControl>
-                  <FormControl orientation="horizontal" size="sm">
+                  <FormControl orientation="horizontal" size="sm" sx={{ width: '5%' }}>
                     <FormLabel size="sm">
                       Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
                     </FormLabel>
