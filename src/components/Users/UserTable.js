@@ -75,6 +75,7 @@ export default function UserTable() {
   const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   useEffect(() => {
+    //close modal if clicked outside
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target) && optionsMenuAnchorEl) {
         handleCloseOptionsMenu()
@@ -86,6 +87,18 @@ export default function UserTable() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [optionsMenuAnchorEl])
+
+  useEffect(() => {
+    //hide scroll when update model opened
+    if (visibleUpdateUser) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [visibleUpdateUser])
 
   useEffect(() => {
     async function fetchData() {
