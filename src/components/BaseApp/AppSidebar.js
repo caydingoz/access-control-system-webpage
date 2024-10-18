@@ -22,7 +22,7 @@ const AppSidebar = () => {
       position="fixed"
       visible={sidebarShow}
       onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}
-      style={{ zIndex: 500 }}
+      style={{ zIndex: 2000 }}
     >
       <CSidebarHeader>
         <CSidebarBrand to="/">
