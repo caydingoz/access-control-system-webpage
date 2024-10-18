@@ -487,12 +487,7 @@ export default function RoleTable() {
                         alignItems: 'center',
                       }}
                     >
-                      <IconButton
-                        color="neutral"
-                        sx={{ display: 'flex', justifyContent: 'center' }} //TODO: burayı kaldırırsan table height bozuluyor?
-                        size="sm"
-                        onClick={async () => await handleCollapse(row.id)}
-                      >
+                      <IconButton color="neutral" size="sm" onClick={async () => await handleCollapse(row.id)}>
                         {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                       </IconButton>
                     </td>

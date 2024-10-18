@@ -190,8 +190,6 @@ export default function UserTable() {
     setPage(0)
   }
 
-  const isSelected = (id) => selectedUsers.indexOf(id) !== -1
-
   const emptyRows = Math.max(0, rowsPerPage - users.length)
 
   return (
@@ -468,7 +466,7 @@ export default function UserTable() {
           </thead>
           <tbody>
             {users.map((row, index) => {
-              const isItemSelected = isSelected(row.id)
+              const isItemSelected = selectedUsers.indexOf(row.id) !== -1
               const labelId = `enhanced-table-checkbox-${index}`
               const fragmentKey = `row-${index}`
 
