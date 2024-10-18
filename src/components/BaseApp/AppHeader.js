@@ -31,7 +31,7 @@ const AppHeader = () => {
   const { setMode } = useColorScheme()
 
   return (
-    <CHeader position="sticky" className="mb-4 p-0">
+    <CHeader position="sticky" className="mb-4 p-0" style={{ zIndex: 500 }}>
       <CContainer fluid>
         <CHeaderToggler onClick={() => dispatch(setSidebarShow(!sidebarShow))}>
           <CIcon icon={cilMenu} size="lg" />

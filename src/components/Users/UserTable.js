@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
 import { Button, Stack, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
-import { DateRangePicker, Input, SelectPicker } from 'rsuite'
-import { IconButton as RsuiteIconButton } from 'rsuite'
+import { DateRangePicker, Input, SelectPicker, IconButton as RsuiteIconButton } from 'rsuite'
 import UserInfo from './UserInfo'
 import UserService from 'src/services/UserService'
 import RoleManagementService from 'src/services/RoleManagementService'
@@ -17,6 +16,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import EditIcon from '@mui/icons-material/Edit'
+import 'src/css/style.css'
 
 export default function UserTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -28,7 +28,9 @@ export default function UserTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [users, setUsers] = React.useState([])
-  const [visibleInfoUser, setVisibleUserInfo] = React.useState(false)
+  const [visibleAddUser, setVisibleAddUser] = React.useState(false)
+  const [visibleUpdateUser, setVisibleUpdateUser] = React.useState(false)
+  const [updatedUserId, setUpdatedUserId] = React.useState(null)
   const [roles, setRoles] = React.useState([])
   const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
   const menuRef = React.useRef(null)
@@ -64,12 +66,12 @@ export default function UserTable() {
       label: 'Create Date',
     },
   ]
+
   const userStatus = {
     0: { status: 'Passive', color: 'warning' },
     1: { status: 'Active', color: 'success' },
     2: { status: 'Deleted', color: 'danger' },
   }
-
   const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   useEffect(() => {
@@ -87,23 +89,20 @@ export default function UserTable() {
 
   useEffect(() => {
     async function fetchData() {
+      await getAllRoles()
       const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
       if (res.success) {
         setUsers(res.data.users)
         setTotalCount(res.data.totalCount)
       }
     }
-
     fetchData()
   }, [page, rowsPerPage, order, orderBy, filterName, filterStatus])
 
   const deleteUsers = async () => {
     var res = await UserService.deleteUsersAsync(selectedUsers)
     if (res.success) {
-      const usersData = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy)
-      setUsers(usersData.data.users)
-      setTotalCount(usersData.data.totalCount)
-      setSelectedUsers([])
+      await getUsers()
     }
   }
 
@@ -114,23 +113,38 @@ export default function UserTable() {
     }
   }
 
-  const handleAddNewUser = async (newUser) => {
-    setVisibleUserInfo(false)
-    var res = await UserService.addUserAsync(newUser)
+  const getUsers = async () => {
+    const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
     if (res.success) {
-      const usersData = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy)
-      setUsers(usersData.data.users)
-      setTotalCount(usersData.data.totalCount)
+      setUsers(res.data.users)
+      setTotalCount(res.data.totalCount)
       setSelectedUsers([])
     }
   }
 
-  const handleCloseUserInfo = () => {
-    setVisibleUserInfo(false)
+  const handleAddNewUser = async (newUser) => {
+    setVisibleAddUser(false)
+    var res = await UserService.addUserAsync(newUser)
+    if (res.success) {
+      await getUsers()
+    }
   }
 
-  const handleOptionsMenu = (event) => {
+  const handleUpdateUser = async (user) => {
+    var res = await UserService.updateUserAsync(user)
+    if (res.success) {
+      await getUsers()
+    }
+  }
+
+  const handleOpenUpdateUser = () => {
+    setVisibleUpdateUser(true)
+    setOptionsMenuAnchorEl(null)
+  }
+
+  const handleOptionsMenu = (event, userId) => {
     setOptionsMenuAnchorEl(optionsMenuAnchorEl && event.currentTarget === optionsMenuAnchorEl ? null : event.currentTarget)
+    setUpdatedUserId(userId)
   }
 
   const handleCloseOptionsMenu = () => {
@@ -194,7 +208,7 @@ export default function UserTable() {
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
             Users
-            <br></br>
+            <br />
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
               The Users table stores information about individuals who have access to the application, including their credentials, roles, and
               relevant user details.
@@ -272,12 +286,11 @@ export default function UserTable() {
                     width: '100%',
                     borderRadius: 'sm',
                     boxShadow: 'sm',
-                    backgroundColor: 'transparent',
                   }}
                   searchable={false}
                   menuStyle={{ width: 180 }}
                   data={userStatusData}
-                ></SelectPicker>
+                />
               </Box>
               <Button
                 type="submit"
@@ -290,7 +303,7 @@ export default function UserTable() {
                   boxShadow: 'md',
                   minWidth: 120,
                   '&:hover': {
-                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)', // Darker or different gradient on hover
+                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)',
                   },
                 }}
               >
@@ -315,13 +328,25 @@ export default function UserTable() {
                 size="xs"
                 style={{ width: '100%', fontSize: '13px' }}
                 onClick={() => {
-                  setVisibleUserInfo((prev) => !prev)
+                  setVisibleAddUser((prev) => !prev)
                   getAllRoles()
                 }}
               >
                 Add User
               </RsuiteIconButton>
-              {visibleInfoUser && <UserInfo roles={roles} isNew={true} onSubmit={handleAddNewUser} onClose={handleCloseUserInfo} />}
+              {visibleAddUser && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '1.6%',
+                    marginTop: '5px',
+                    width: 400,
+                    zIndex: 20,
+                  }}
+                >
+                  <UserInfo roles={roles} isNew={true} onSubmit={handleAddNewUser} onClose={() => setVisibleAddUser(false)} />
+                </div>
+              )}
             </div>
             {selectedUsers.length > 0 && (
               <Typography
@@ -502,7 +527,7 @@ export default function UserTable() {
                       {row.roles.map((role, index) => {
                         return (
                           <Chip key={index} size="sm" sx={{ marginRight: '3px' }}>
-                            {role}
+                            {role.name}
                           </Chip>
                         )
                       })}
@@ -511,11 +536,11 @@ export default function UserTable() {
                       <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
                     </td>
                     <td id={labelId}>
-                      <IconButton size="sm" onClick={handleOptionsMenu}>
+                      <IconButton size="sm" onClick={(event) => handleOptionsMenu(event, row.id)}>
                         <MoreVertIcon />
                       </IconButton>
                       <Menu
-                        sx={{ p: 0, boxShadow: '0px 0.2px 4px rgba(0, 0, 0, 0.1)' }}
+                        sx={{ p: 0, boxShadow: '0px 0.1px 2px rgba(0, 0, 0, 0.1)' }}
                         anchorEl={optionsMenuAnchorEl}
                         open={Boolean(optionsMenuAnchorEl)}
                         onClose={handleCloseOptionsMenu}
@@ -523,7 +548,7 @@ export default function UserTable() {
                         ref={menuRef}
                         size="sm"
                       >
-                        <MenuItem sx={{ height: '20px', width: 100, p: 1 }} onClick={handleCloseOptionsMenu} size="sm">
+                        <MenuItem sx={{ height: '20px', width: 100, p: 1 }} onClick={() => handleOpenUpdateUser()} size="sm">
                           <EditIcon fontSize="small" />
                           <Typography level="body-sm">Edit</Typography>
                         </MenuItem>
@@ -595,6 +620,19 @@ export default function UserTable() {
             </tr>
           </tfoot>
         </Table>
+        {visibleUpdateUser && (
+          <div className="overlay">
+            <div style={{ width: 400 }}>
+              <UserInfo
+                user={users.find((user) => user.id === updatedUserId)}
+                isNew={false}
+                onClose={() => setVisibleUpdateUser(false)}
+                roles={roles}
+                onSubmit={handleUpdateUser}
+              />
+            </div>
+          </div>
+        )}
       </Sheet>
     </div>
   )

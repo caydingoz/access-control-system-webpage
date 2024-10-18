@@ -1,6 +1,5 @@
 import React from 'react'
-import { Typography, IconButton } from '@mui/joy'
-import { Stack, Card } from '@mui/joy'
+import { Typography, IconButton, Stack, Card } from '@mui/joy'
 import { Input, InputGroup, TagPicker } from 'rsuite'
 import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import UserBadgeIcon from '@rsuite/icons/UserBadge'
@@ -9,35 +8,29 @@ import PhoneIcon from '@rsuite/icons/Phone'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
 
-export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose }) {
+export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClose }) {
   const [userInfo, setUserInfo] = React.useState({
-    id: user.Id || '',
+    id: user.id || '',
     firstName: user.firstName || '',
     lastName: user.lastName || '',
     phoneNumber: user.phoneNumber || '',
     email: user.email || '',
     title: user.title || '',
-    roleIds: user.roleIds || [],
+    image: user.image || '',
+    roleIds: user.roles.map((role) => role.id) || [],
   })
 
   const handleInputChange = (key, value) => {
-    console.log(key, value)
     setUserInfo({
       ...userInfo,
       [key]: value,
     })
-    console.log(userInfo)
   }
 
   return (
     <Card
       sx={{
-        position: 'absolute',
-        left: '1.6%',
-        marginTop: '5px',
-        width: 400,
-        zIndex: 20,
-        boxShadow: '0px 0.2px 4px rgba(0, 0, 0, 0.1)',
+        width: '100%',
       }}
     >
       <Stack
@@ -84,7 +77,7 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
                 <LocationIcon />
               </InputGroup.Addon>
               <Input
-                value={user.firstName}
+                value={userInfo.firstName}
                 size="sm"
                 placeholder="First name.."
                 style={{ fontSize: '12px' }}
@@ -96,7 +89,7 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
                 <LocationIcon />
               </InputGroup.Addon>
               <Input
-                value={user.lastName}
+                value={userInfo.lastName}
                 size="sm"
                 placeholder="Last name.."
                 style={{ fontSize: '12px' }}
@@ -108,7 +101,7 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
                 <PhoneIcon />
               </InputGroup.Addon>
               <Input
-                value={user.phoneNumber}
+                value={userInfo.phoneNumber}
                 size="sm"
                 placeholder="Phone number.."
                 style={{ fontSize: '12px' }}
@@ -118,7 +111,7 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
             <InputGroup style={{ width: 250, fontSize: '12px' }}>
               <InputGroup.Addon> @</InputGroup.Addon>
               <Input
-                value={user.email}
+                value={userInfo.email}
                 size="sm"
                 placeholder="Email.."
                 style={{ fontSize: '12px' }}
@@ -130,7 +123,7 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
                 <UserBadgeIcon />
               </InputGroup.Addon>
               <Input
-                value={user.title}
+                value={userInfo.title}
                 size="sm"
                 placeholder="Title.."
                 style={{ fontSize: '12px' }}
@@ -146,20 +139,21 @@ export default function UserInfo({ user = {}, roles, isNew, onSubmit, onClose })
           size="xs"
           placeholder="Select.."
           style={{ fontSize: '12px', padding: '4px 0' }}
-          menuStyle={{ fontSize: '12px', zIndex: '50' }}
+          menuStyle={{ fontSize: '12px', zIndex: '1100' }}
           data={roles}
+          value={roles.filter((role) => userInfo.roleIds.includes(role.value)).map((role) => role.value)}
           onChange={(selectedIds) => {
             handleInputChange('roleIds', selectedIds)
           }}
         />
         <RsuiteButton
           appearance="primary"
-          color="green"
+          color={isNew ? 'green' : 'yellow'}
           size="sm"
           onClick={() => onSubmit(userInfo)}
           style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
         >
-          Add
+          {isNew ? 'Add' : 'Update'}
         </RsuiteButton>
       </Stack>
     </Card>

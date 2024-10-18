@@ -23,6 +23,10 @@ const addUserAsync = async (user) => {
   const response = await axiosClient.postAsync(`user`, user)
   return response
 }
+const updateUserAsync = async (user) => {
+  const response = await axiosClient.putAsync(`user`, user)
+  return response
+}
 const deleteUsersAsync = async (ids) => {
   const response = await axiosClient.deleteAsync(`user`, { ids: ids })
   return response
@@ -31,6 +35,7 @@ const deleteUsersAsync = async (ids) => {
 const UserService = {
   getUsersAsync,
   addUserAsync,
+  updateUserAsync,
   deleteUsersAsync,
 }
 

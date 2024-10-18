@@ -17,7 +17,13 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
   return (
-    <CSidebar className="border-end" position="fixed" visible={sidebarShow} onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}>
+    <CSidebar
+      className="border-end"
+      position="fixed"
+      visible={sidebarShow}
+      onVisibleChange={(visible) => dispatch(setSidebarShow(visible))}
+      style={{ zIndex: 500 }}
+    >
       <CSidebarHeader>
         <CSidebarBrand to="/">
           <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} />
