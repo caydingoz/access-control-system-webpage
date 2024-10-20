@@ -177,6 +177,7 @@ export default function RoleTable() {
         <form
           onSubmit={(event) => {
             event.preventDefault()
+            setOpenedId(null)
             const formElements = event.currentTarget.elements
             setFilterName(formElements.name.value)
             setFilterPermissions(formElements.permissions.value)

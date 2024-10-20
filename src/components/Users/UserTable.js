@@ -437,7 +437,7 @@ export default function UserTable() {
                   checkedIcon={<RemoveIcon />}
                   color="primary"
                   onChange={handleSelectAllUsers}
-                  sx={{ verticalAlign: 'sub' }}
+                  sx={{ verticalAlign: 'sub', marginLeft: '5px' }}
                 />
               </th>
               <th />
@@ -447,7 +447,7 @@ export default function UserTable() {
                   <th
                     key={headCell.id}
                     aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
-                    style={{ verticalAlign: 'middle' }}
+                    style={{ verticalAlign: 'top' }}
                   >
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <Link
@@ -509,7 +509,7 @@ export default function UserTable() {
                             'aria-labelledby': labelId,
                           },
                         }}
-                        sx={{ verticalAlign: 'top' }}
+                        sx={{ verticalAlign: 'top', marginLeft: '5px' }}
                       />
                     </td>
                     <td id={labelId}>

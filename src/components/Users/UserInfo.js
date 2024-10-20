@@ -17,7 +17,7 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
     email: user.email || '',
     title: user.title || '',
     image: user.image || '',
-    roleIds: user.roles.map((role) => role.id) || [],
+    roleIds: Array.isArray(user.roles) ? user.roles.map((role) => role.id) : [],
   })
 
   const handleInputChange = (key, value) => {

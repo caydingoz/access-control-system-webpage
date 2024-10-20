@@ -1,26 +1,20 @@
-import React, { useState } from 'react'
-import { Box, Typography, Grid, IconButton, Sheet } from '@mui/joy'
+import React from 'react'
+import { Box, Typography, Grid, IconButton, Sheet, Tooltip } from '@mui/joy'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
-const MonthCalendar = () => {
-  const today = new Date()
-  const [currentDate, setCurrentDate] = useState(today)
-
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] // Günleri düzenledik
+const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate }) => {
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
   // Helper functions
-  const getDaysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate()
-  }
-
+  const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate()
   const getFirstDayOfMonth = (month, year) => {
     const firstDay = new Date(year, month, 1).getDay()
-    // Eğer gün Pazar (0) ise onu haftanın sonuna koymak için 6'ya çeviriyoruz
     return firstDay === 0 ? 6 : firstDay - 1
   }
 
   const handlePreviousMonth = () => {
+    setActivities([])
     setCurrentDate((prevDate) => {
       const prevMonth = prevDate.getMonth() - 1
       return new Date(prevDate.getFullYear(), prevMonth, 1)
@@ -28,6 +22,7 @@ const MonthCalendar = () => {
   }
 
   const handleNextMonth = () => {
+    setActivities([])
     setCurrentDate((prevDate) => {
       const nextMonth = prevDate.getMonth() + 1
       return new Date(prevDate.getFullYear(), nextMonth, 1)
@@ -40,11 +35,90 @@ const MonthCalendar = () => {
   const daysInMonth = getDaysInMonth(currentMonth, currentYear)
   const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear)
 
+  const renderActivitiesForDay = (day) => {
+    const dayActivities = activities.filter((activity) => new Date(activity.startTime).getDate() === day)
+
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          overflowY: 'auto',
+          paddingTop: '5px',
+          '::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '::-webkit-scrollbar-thumb': {
+            backgroundColor: '#888',
+            borderRadius: '4px',
+          },
+          '::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#555',
+          },
+          '::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f1f1',
+            borderRadius: '4px',
+          },
+        }}
+      >
+        {dayActivities.map((activity, index) => (
+          <Tooltip
+            key={index}
+            placement="right"
+            variant="outlined"
+            arrow
+            title={
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  maxWidth: 320,
+                  borderRadius: '5px',
+                }}
+              >
+                <Typography textColor="grey" sx={{ fontSize: 'sm', fontWeight: 'bold' }}>
+                  {activity.workItem.title}
+                </Typography>
+                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
+                  {activity.description}
+                </Typography>
+                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
+                  {`Start: ${new Date(activity.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                </Typography>
+                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
+                  {`End: ${new Date(activity.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                </Typography>
+              </Box>
+            }
+          >
+            <Box
+              key={index}
+              sx={{
+                width: '90%',
+                backgroundColor: '#3d99f5',
+                color: 'white',
+                borderRadius: '5px',
+                padding: '5px',
+                marginBottom: '5px',
+                textAlign: 'center',
+                fontSize: '12px',
+              }}
+            >
+              {activity.description}
+            </Box>
+          </Tooltip>
+        ))}
+      </Box>
+    )
+  }
+
   const renderCalendarDays = () => {
     const daysArray = []
-    const totalSlots = 42 // 6 weeks * 7 days
+    const totalSlots = 42
 
-    // Empty slots before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       daysArray.push(
         <Box
@@ -52,17 +126,13 @@ const MonthCalendar = () => {
           sx={{
             position: 'relative',
             width: '100%',
-            height: '100px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            height: '120px',
             border: '1px solid #ddd',
           }}
         ></Box>,
       )
     }
 
-    // Actual days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       daysArray.push(
         <Box
@@ -70,17 +140,18 @@ const MonthCalendar = () => {
           sx={{
             position: 'relative',
             width: '100%',
-            height: '100px',
+            height: '120px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             border: '1px solid #ddd',
             cursor: 'pointer',
             ':hover': { backgroundColor: '#C0C0C0' },
+            paddingTop: '25px',
+            paddingBottom: '5px',
           }}
         >
           <Typography
-            level="body2"
             sx={{
               position: 'absolute',
               top: '5px',
@@ -91,11 +162,11 @@ const MonthCalendar = () => {
           >
             {day}
           </Typography>
+          {renderActivitiesForDay(day)}
         </Box>,
       )
     }
 
-    // Empty slots after the last day of the month
     const totalFilledSlots = firstDayOfMonth + daysInMonth
     const remainingEmptySlots = totalSlots - totalFilledSlots
 
@@ -106,10 +177,7 @@ const MonthCalendar = () => {
           sx={{
             position: 'relative',
             width: '100%',
-            height: '100px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            height: '120px',
             border: '1px solid #ddd',
           }}
         ></Box>,
