@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography, Grid, IconButton, Sheet, Tooltip } from '@mui/joy'
+import { Box, Typography, Grid, IconButton, Tooltip } from '@mui/joy'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
@@ -19,6 +19,16 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
       const prevMonth = prevDate.getMonth() - 1
       return new Date(prevDate.getFullYear(), prevMonth, 1)
     })
+  }
+  const calculateDuration = (startTime, endTime) => {
+    const start = new Date(startTime)
+    const end = new Date(endTime)
+    const diffMs = end - start // Difference in milliseconds
+
+    const hours = Math.floor(diffMs / (1000 * 60 * 60))
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+
+    return `${hours}h ${minutes}m`
   }
 
   const handleNextMonth = () => {
@@ -75,22 +85,45 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
-                  maxWidth: 320,
-                  borderRadius: '5px',
+                  gap: 0.5,
+                  p: 1,
+                  borderRadius: 1,
+                  backgroundColor: '#f5f5f5',
+                  boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                  maxWidth: '17rem',
+                  minWidth: '13rem',
                 }}
               >
-                <Typography textColor="grey" sx={{ fontSize: 'sm', fontWeight: 'bold' }}>
+                <Typography
+                  sx={{
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    mb: 0.5,
+                  }}
+                >
                   {activity.workItem.title}
                 </Typography>
-                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
-                  {activity.description}
-                </Typography>
-                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
-                  {`Start: ${new Date(activity.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-                </Typography>
-                <Typography textColor="grey" sx={{ fontSize: 'sm' }}>
-                  {`End: ${new Date(activity.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-                </Typography>
+                <Typography sx={{ fontSize: '0.80rem', color: '#666' }}>{activity.description}</Typography>
+                <Box sx={{ mt: 0.5 }}>
+                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center' }}>
+                    ⏲️ Start:{' '}
+                    {new Date(activity.startTime).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
+                    ⏰ End:{' '}
+                    {new Date(activity.endTime).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
+                    ⏳ Duration: {calculateDuration(activity.startTime, activity.endTime)}
+                  </Typography>
+                </Box>
               </Box>
             }
           >
@@ -98,7 +131,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
               key={index}
               sx={{
                 width: '90%',
-                backgroundColor: '#3d99f5',
+                backgroundColor: '#37AFE1',
                 color: 'white',
                 borderRadius: '5px',
                 padding: '5px',
@@ -107,7 +140,20 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 fontSize: '12px',
               }}
             >
-              {activity.description}
+              <Typography
+                level="body-xs"
+                sx={{
+                  textAlign: 'center',
+                  fontSize: '11px',
+                  color: 'white',
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 3, // Change this number to adjust how many lines to display
+                }}
+              >
+                {activity.description}
+              </Typography>
             </Box>
           </Tooltip>
         ))}
@@ -188,23 +234,13 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
   }
 
   return (
-    <Sheet
-      variant="outlined"
-      sx={{
-        width: '96%',
-        margin: '1% 2%',
-        padding: '15px 20px',
-        boxShadow: 'sm',
-        borderRadius: 'sm',
-        backgroundColor: 'transparent',
-      }}
-    >
+    <div>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '15px',
+          marginBottom: '10px',
         }}
       >
         <IconButton variant="plain" color="neutral" onClick={handlePreviousMonth} size="sm">
@@ -235,7 +271,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           ))}
         </Grid>
       </Box>
-    </Sheet>
+    </div>
   )
 }
 

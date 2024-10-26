@@ -238,7 +238,7 @@ export default function UserTable() {
             variant="outlined"
             sx={{
               width: '96%',
-              margin: '1% 2%',
+              margin: '0% 2% 1% 2%',
               padding: '15px',
               borderRadius: 'sm',
               boxShadow: 'sm',

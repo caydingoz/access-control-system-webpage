@@ -57,11 +57,23 @@ const BigCalendar = () => {
           </Button>
         </Box>
       </Box>
-      {calendarType === 'Month' ? (
-        <MonthCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
-      ) : (
-        <WeekCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
-      )}
+      <Sheet
+        variant="outlined"
+        sx={{
+          width: '96%',
+          margin: '0% 2% 1% 2%',
+          padding: '10px 20px 20px 20px',
+          boxShadow: 'sm',
+          borderRadius: 'sm',
+          backgroundColor: 'transparent',
+        }}
+      >
+        {calendarType === 'Month' ? (
+          <MonthCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+        ) : (
+          <WeekCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+        )}
+      </Sheet>
     </Sheet>
   )
 }
