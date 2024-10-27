@@ -299,7 +299,7 @@ export default function UserTable() {
                     boxShadow: 'sm',
                   }}
                   searchable={false}
-                  menuStyle={{ width: 180 }}
+                  menuStyle={{ width: 180, fontSize: '13px' }}
                   data={userStatusData}
                 />
               </Box>

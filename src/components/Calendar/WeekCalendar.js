@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { Box, Typography, Table, IconButton, Tooltip } from '@mui/joy'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import ActivityDetail from './ActivityDetail'
 
-const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate }) => {
+const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, handleCreateActivity, handleUpdateActivity }) => {
   const theme = useSelector((state) => state.rSuiteTheme.themeMode)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -25,13 +26,6 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
   const changeWeek = (increment) => {
     setActivities([]) // Yeni hafta gösterildiğinde aktiviteleri sıfırlıyoruz
     setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + increment * 7)))
-  }
-
-  const calculateDuration = (startTime, endTime) => {
-    const diffMs = new Date(endTime) - new Date(startTime)
-    const hours = Math.floor(diffMs / (1000 * 60 * 60))
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
-    return `${hours}h ${minutes}m`
   }
 
   const formatHeaderDate = (date) => {
@@ -77,52 +71,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
           sx={{
             backgroundColor: '#f5f5f5',
           }}
-          title={
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 0.5,
-                p: 1,
-                borderRadius: 1,
-                backgroundColor: '#f5f5f5',
-                boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                maxWidth: '17rem',
-                minWidth: '13rem',
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  color: '#333',
-                  mb: 0.5,
-                }}
-              >
-                {activity.workItem.title}
-              </Typography>
-              <Typography sx={{ fontSize: '0.80rem', color: '#666' }}>{activity.description}</Typography>
-              <Box sx={{ mt: 0.5 }}>
-                <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center' }}>
-                  ⏲️ Start:{' '}
-                  {new Date(activity.startTime).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
-                  ⏰ End:{' '}
-                  {new Date(activity.endTime).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
-                  ⏳ Duration: {calculateDuration(activity.startTime, activity.endTime)}
-                </Typography>
-              </Box>
-            </Box>
-          }
+          title={<ActivityDetail activity={activity} />}
           arrow
           placement="right-start"
         >

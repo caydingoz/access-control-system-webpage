@@ -10,6 +10,7 @@ const BigCalendar = () => {
   const [calendarType, setCalendarType] = useState('Month')
   const [currentDate, setCurrentDate] = useState(today)
   const [activities, setActivities] = useState([])
+  const [workItems, setWorkItems] = useState([])
 
   useEffect(() => {
     const currentMonth = currentDate.getMonth()
@@ -17,18 +18,54 @@ const BigCalendar = () => {
     const daysInMonth = getDaysInMonth(currentMonth, currentYear)
 
     async function fetchData() {
-      const res = await ActivityCalendarService.getActivitiesAsync(
+      const activityRes = await ActivityCalendarService.getActivitiesAsync(
         new Date(currentYear, currentMonth, 1).toISOString(),
         new Date(currentYear, currentMonth, daysInMonth).toISOString(),
       )
-      if (res.success) {
-        setActivities(res.data.activities)
+      if (activityRes.success) {
+        setActivities(activityRes.data.activities)
+      }
+      const workItemRes = await ActivityCalendarService.getUserWorkItemsAsync()
+      if (workItemRes.success) {
+        setWorkItems(workItemRes.data.workItems)
       }
     }
     fetchData()
   }, [currentDate])
 
   const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate()
+
+  const handleUpdateActivity = async (activity) => {
+    const res = await ActivityCalendarService.updateActivityAsync(activity)
+    if (res.success) {
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
+      const activityRes = await ActivityCalendarService.getActivitiesAsync(
+        new Date(currentYear, currentMonth, 1).toISOString(),
+        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
+      )
+      if (activityRes.success) {
+        setActivities(activityRes.data.activities)
+      }
+    }
+  }
+
+  const handleCreateActivity = async (activity) => {
+    const res = await ActivityCalendarService.createActivityAsync(activity)
+    if (res.success) {
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
+      const activityRes = await ActivityCalendarService.getActivitiesAsync(
+        new Date(currentYear, currentMonth, 1).toISOString(),
+        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
+      )
+      if (activityRes.success) {
+        setActivities(activityRes.data.activities)
+      }
+    }
+  }
 
   return (
     <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
@@ -69,9 +106,25 @@ const BigCalendar = () => {
         }}
       >
         {calendarType === 'Month' ? (
-          <MonthCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+          <MonthCalendar
+            activities={activities}
+            setActivities={setActivities}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            workItems={workItems}
+            handleCreateActivity={handleCreateActivity}
+            handleUpdateActivity={handleUpdateActivity}
+          />
         ) : (
-          <WeekCalendar activities={activities} setActivities={setActivities} currentDate={currentDate} setCurrentDate={setCurrentDate} />
+          <WeekCalendar
+            activities={activities}
+            setActivities={setActivities}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            workItems={workItems}
+            handleCreateActivity={handleCreateActivity}
+            handleUpdateActivity={handleUpdateActivity}
+          />
         )}
       </Sheet>
     </Sheet>

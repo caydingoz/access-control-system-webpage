@@ -248,8 +248,9 @@ export default function RoleTable() {
                     boxShadow: 'sm',
                     backgroundColor: 'transparent',
                   }}
+                  menuStyle={{ width: 180, fontSize: '13px' }}
                   data={permissions}
-                ></SelectPicker>
+                />
               </Box>
               <Button
                 type="submit"

@@ -1,16 +1,35 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography, Grid, IconButton, Tooltip } from '@mui/joy'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import ActivityInfo from './ActivityInfo'
+import ActivityDetail from './ActivityDetail'
+import 'src/css/style.css'
 
-const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate }) => {
+const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, workItems, handleCreateActivity, handleUpdateActivity }) => {
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
+  const [selectedActivityId, setSelectedActivityId] = React.useState(null)
+  const currentMonth = currentDate.getMonth()
+  const currentYear = currentDate.getFullYear()
 
-  // Helper functions
   const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate()
   const getFirstDayOfMonth = (month, year) => {
     const firstDay = new Date(year, month, 1).getDay()
     return firstDay === 0 ? 6 : firstDay - 1
+  }
+
+  const daysInMonth = getDaysInMonth(currentMonth, currentYear)
+  const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear)
+
+  const openUpdateActivity = (activityId) => {
+    setSelectedActivityId(activityId)
+    setVisibleActivityInfo(true)
+  }
+
+  const openCreateActivity = () => {
+    setSelectedActivityId(null)
+    setVisibleActivityInfo(true)
   }
 
   const handlePreviousMonth = () => {
@@ -19,16 +38,6 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
       const prevMonth = prevDate.getMonth() - 1
       return new Date(prevDate.getFullYear(), prevMonth, 1)
     })
-  }
-  const calculateDuration = (startTime, endTime) => {
-    const start = new Date(startTime)
-    const end = new Date(endTime)
-    const diffMs = end - start // Difference in milliseconds
-
-    const hours = Math.floor(diffMs / (1000 * 60 * 60))
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
-
-    return `${hours}h ${minutes}m`
   }
 
   const handleNextMonth = () => {
@@ -39,11 +48,17 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
     })
   }
 
-  // Variables for the current calendar
-  const currentMonth = currentDate.getMonth()
-  const currentYear = currentDate.getFullYear()
-  const daysInMonth = getDaysInMonth(currentMonth, currentYear)
-  const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear)
+  useEffect(() => {
+    //hide scroll when update model opened
+    if (visibleActivityInfo) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [visibleActivityInfo])
 
   const renderActivitiesForDay = (day) => {
     const dayActivities = activities.filter((activity) => new Date(activity.startTime).getDate() === day)
@@ -72,61 +87,11 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             backgroundColor: '#f1f1f1',
             borderRadius: '4px',
           },
+          zIndex: '10',
         }}
       >
         {dayActivities.map((activity, index) => (
-          <Tooltip
-            key={index}
-            placement="right"
-            variant="outlined"
-            arrow
-            title={
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 0.5,
-                  p: 1,
-                  borderRadius: 1,
-                  backgroundColor: '#f5f5f5',
-                  boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                  maxWidth: '17rem',
-                  minWidth: '13rem',
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: '0.9rem',
-                    fontWeight: 'bold',
-                    color: '#333',
-                    mb: 0.5,
-                  }}
-                >
-                  {activity.workItem.title}
-                </Typography>
-                <Typography sx={{ fontSize: '0.80rem', color: '#666' }}>{activity.description}</Typography>
-                <Box sx={{ mt: 0.5 }}>
-                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center' }}>
-                    ⏲️ Start:{' '}
-                    {new Date(activity.startTime).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
-                    ⏰ End:{' '}
-                    {new Date(activity.endTime).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: '#999', display: 'flex', alignItems: 'center', mt: 0.25 }}>
-                    ⏳ Duration: {calculateDuration(activity.startTime, activity.endTime)}
-                  </Typography>
-                </Box>
-              </Box>
-            }
-          >
+          <Tooltip key={index} placement="right" variant="outlined" arrow title={<ActivityDetail activity={activity} />}>
             <Box
               key={index}
               sx={{
@@ -138,6 +103,10 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 marginBottom: '5px',
                 textAlign: 'center',
                 fontSize: '12px',
+              }}
+              onClick={(e) => {
+                e.stopPropagation() // Gün kutusuna tıklamayı durdurur
+                openUpdateActivity(activity.id)
               }}
             >
               <Typography
@@ -172,7 +141,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '120px',
+            height: '110px',
             border: '1px solid #ddd',
           }}
         ></Box>,
@@ -186,7 +155,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '120px',
+            height: '110px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -195,7 +164,9 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             ':hover': { backgroundColor: '#C0C0C0' },
             paddingTop: '25px',
             paddingBottom: '5px',
+            zIndex: '8',
           }}
+          onClick={() => openCreateActivity()}
         >
           <Typography
             sx={{
@@ -223,7 +194,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '120px',
+            height: '110px',
             border: '1px solid #ddd',
           }}
         ></Box>,
@@ -271,6 +242,19 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           ))}
         </Grid>
       </Box>
+      {visibleActivityInfo && (
+        <div className="overlay">
+          <div style={{ width: 450 }}>
+            <ActivityInfo
+              activity={activities.find((activity) => activity.id === selectedActivityId)}
+              isNew={selectedActivityId === null ? true : false}
+              onClose={() => setVisibleActivityInfo(false)}
+              workItems={workItems}
+              onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
