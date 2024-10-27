@@ -72,7 +72,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           flexDirection: 'column',
           alignItems: 'center',
           overflowY: 'auto',
-          paddingTop: '5px',
+          paddingTop: '1px',
           '::-webkit-scrollbar': {
             width: '4px',
           },
@@ -141,10 +141,10 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '110px',
+            height: '100px',
             border: '1px solid #ddd',
           }}
-        ></Box>,
+        />,
       )
     }
 
@@ -155,7 +155,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '110px',
+            height: '100px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -194,10 +194,10 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           sx={{
             position: 'relative',
             width: '100%',
-            height: '110px',
+            height: '100px',
             border: '1px solid #ddd',
           }}
-        ></Box>,
+        />,
       )
     }
 
