@@ -105,6 +105,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
               paddingLeft: '5px',
               paddingRight: '3px',
               bottom: `${differenceInHours * -40 + 2}px`,
+              cursor: 'pointer',
             }}
             onClick={(e) => {
               e.stopPropagation() // Gün kutusuna tıklamayı durdurur
