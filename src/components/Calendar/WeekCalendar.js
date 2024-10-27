@@ -169,19 +169,20 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
         </IconButton>
       </Box>
       <Table
-        hoverRow
         size="md"
         variant="outlined"
         borderAxis="both"
         sx={{
           boxShadow: 'sm',
           width: '100%',
-          '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
           '& thead th:nth-of-type(1)': {
             width: '100px',
           },
           '& tbody tr': {
             height: '40px',
+          },
+          '& tbody td:hover': {
+            backgroundColor: (theme) => theme.vars.palette.primary.softBg, // Hover arka plan rengi
           },
         }}
       >

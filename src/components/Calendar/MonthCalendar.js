@@ -161,7 +161,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             alignItems: 'center',
             border: '1px solid #ddd',
             cursor: 'pointer',
-            ':hover': { backgroundColor: '#C0C0C0' },
+            ':hover': { backgroundColor: (theme) => theme.vars.palette.primary.softBg },
             paddingTop: '25px',
             paddingBottom: '5px',
             zIndex: '8',
