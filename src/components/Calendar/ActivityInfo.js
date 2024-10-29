@@ -129,7 +129,7 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                   onChange={(value) =>
                     handleInputChange('startTime', new Date(value).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T'))
                   }
-                  value={activityInfo ? new Date(new Date(selectedDate).setHours(9)) : new Date(activityInfo.startTime)}
+                  value={activityInfo.id === '' ? new Date(new Date(selectedDate).setHours(9)) : new Date(activityInfo.startTime)}
                   isoWeek
                 />
               </InputGroup>
@@ -160,7 +160,7 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                   onChange={(value) =>
                     handleInputChange('endTime', new Date(value).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T'))
                   }
-                  value={activityInfo ? new Date(new Date(selectedDate).setHours(18)) : new Date(activityInfo.endTime)}
+                  value={activityInfo.id === '' ? new Date(new Date(selectedDate).setHours(18)) : new Date(activityInfo.endTime)}
                   isoWeek
                 />
               </InputGroup>
