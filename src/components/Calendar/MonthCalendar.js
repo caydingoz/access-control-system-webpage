@@ -1,16 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Typography, Grid, IconButton, Tooltip } from '@mui/joy'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import ActivityInfo from './ActivityInfo'
 import ActivityDetail from './ActivityDetail'
 import 'src/css/style.css'
 
-const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, workItems, handleCreateActivity, handleUpdateActivity }) => {
+const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, openUpdateActivity, openCreateActivity }) => {
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
-  const [selectedActivityId, setSelectedActivityId] = React.useState(null)
-  const [selectedDate, setSelectedDate] = React.useState(null)
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
 
@@ -22,17 +18,6 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
 
   const daysInMonth = getDaysInMonth(currentMonth, currentYear)
   const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear)
-
-  const openUpdateActivity = (activityId) => {
-    setSelectedActivityId(activityId)
-    setVisibleActivityInfo(true)
-  }
-
-  const openCreateActivity = (date) => {
-    setSelectedActivityId(null)
-    setSelectedDate(date)
-    setVisibleActivityInfo(true)
-  }
 
   const handlePreviousMonth = () => {
     setActivities([])
@@ -49,18 +34,6 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
       return new Date(prevDate.getFullYear(), nextMonth, 1)
     })
   }
-
-  useEffect(() => {
-    //hide scroll when update model opened
-    if (visibleActivityInfo) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
-    return () => {
-      document.body.style.overflow = 'auto'
-    }
-  }, [visibleActivityInfo])
 
   const renderActivitiesForDay = (day) => {
     const dayActivities = activities.filter((activity) => new Date(activity.startTime).getDate() === day)
@@ -245,24 +218,6 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           ))}
         </Grid>
       </Box>
-      {visibleActivityInfo && (
-        <div className="overlay">
-          <div style={{ width: 450 }}>
-            <ActivityInfo
-              activity={
-                activities.find((activity) => activity.id === selectedActivityId) ?? {
-                  startTime: new Date(new Date(selectedDate).setHours(9)),
-                  endTime: new Date(new Date(selectedDate).setHours(18)),
-                }
-              }
-              isNew={selectedActivityId === null ? true : false}
-              onClose={() => setVisibleActivityInfo(false)}
-              workItems={workItems}
-              onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

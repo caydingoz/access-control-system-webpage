@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { Box, Typography, Table, IconButton, Tooltip } from '@mui/joy'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import ActivityInfo from './ActivityInfo'
 import ActivityDetail from './ActivityDetail'
 
-const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, workItems, handleCreateActivity, handleUpdateActivity }) => {
+const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, openUpdateActivity }) => {
   const theme = useSelector((state) => state.rSuiteTheme.themeMode)
-  const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
-  const [selectedActivityId, setSelectedActivityId] = React.useState(null)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const hours = Array.from({ length: 24 }, (_, i) => `${i < 10 ? '0' : ''}${i}:00`)
@@ -18,16 +15,6 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
   const borderColors = ['#54B8C0', '#6CBF9E', '#A5C98D', '#D4DBA4']
   const layerColorsDark = ['#142850', '#27496D', '#0C7B93', '#00A8CC'] //dark mode
   const borderColorsDark = ['#C53C3D', '#D76B30', '#FFD460', '#FFE080'] //dark mode ['#4B6B9A', '#6E8BAD', '#66B8D0', '#99D7EA']
-
-  const openUpdateActivity = (activityId) => {
-    setSelectedActivityId(activityId)
-    setVisibleActivityInfo(true)
-  }
-
-  const openCreateActivity = () => {
-    setSelectedActivityId(null)
-    setVisibleActivityInfo(true)
-  }
 
   const startOfWeek = () => {
     const firstDay = new Date(currentDate)
@@ -227,19 +214,6 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
           ))}
         </tbody>
       </Table>
-      {visibleActivityInfo && (
-        <div className="overlay">
-          <div style={{ width: 450 }}>
-            <ActivityInfo
-              activity={activities.find((activity) => activity.id === selectedActivityId)}
-              isNew={selectedActivityId === null ? true : false}
-              onClose={() => setVisibleActivityInfo(false)}
-              workItems={workItems}
-              onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

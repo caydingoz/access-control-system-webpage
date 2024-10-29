@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Typography, Sheet, Button, IconButton } from '@mui/joy'
+import { Box, Typography, Sheet, Button } from '@mui/joy'
+import { IconButton as RsuiteIconButton } from 'rsuite'
 import MonthCalendar from '../Calendar/MonthCalendar'
 import WeekCalendar from '../Calendar/WeekCalendar'
 import ActivityCalendarService from '../../services/ActivityCalendarService'
-import AddIcon from '@mui/icons-material/Add'
+import PlusIcon from '@rsuite/icons/Plus'
 import ActivityInfo from './ActivityInfo'
 
 const BigCalendar = () => {
@@ -13,6 +14,8 @@ const BigCalendar = () => {
   const [currentDate, setCurrentDate] = useState(today)
   const [activities, setActivities] = useState([])
   const [workItems, setWorkItems] = useState([])
+  const [selectedDate, setSelectedDate] = React.useState(currentDate)
+  const [selectedActivityId, setSelectedActivityId] = React.useState(null)
   const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
 
   useEffect(() => {
@@ -36,6 +39,28 @@ const BigCalendar = () => {
     fetchData()
   }, [currentDate])
 
+  useEffect(() => {
+    //hide scroll when update model opened
+    if (visibleActivityInfo) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [visibleActivityInfo])
+
+  const openUpdateActivity = (activityId) => {
+    setSelectedActivityId(activityId)
+    setVisibleActivityInfo(true)
+  }
+  const openCreateActivity = (date) => {
+    setSelectedActivityId(null)
+    setSelectedDate(date)
+    setVisibleActivityInfo(true)
+  }
+
   const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate()
 
   const handleUpdateActivity = async (activity) => {
@@ -52,6 +77,7 @@ const BigCalendar = () => {
         setActivities(activityRes.data.activities)
       }
     }
+    setVisibleActivityInfo(false)
   }
 
   const handleCreateActivity = async (activity) => {
@@ -68,6 +94,24 @@ const BigCalendar = () => {
         setActivities(activityRes.data.activities)
       }
     }
+    setVisibleActivityInfo(false)
+  }
+
+  const handleDeleteActivity = async (id) => {
+    const res = await ActivityCalendarService.deleteActivityByIdAsync(id)
+    if (res.success) {
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
+      const activityRes = await ActivityCalendarService.getActivitiesAsync(
+        new Date(currentYear, currentMonth, 1).toISOString(),
+        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
+      )
+      if (activityRes.success) {
+        setActivities(activityRes.data.activities)
+      }
+    }
+    setVisibleActivityInfo(false)
   }
 
   return (
@@ -97,11 +141,30 @@ const BigCalendar = () => {
           </Button>
         </Box>
       </Box>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <RsuiteIconButton
+          appearance="primary"
+          icon={<PlusIcon />}
+          color="green"
+          size="sm"
+          style={{
+            width: '120px',
+            fontSize: '13px',
+            marginRight: '2%',
+          }}
+          onClick={() => {
+            setSelectedDate(new Date(today))
+            setVisibleActivityInfo(true)
+          }}
+        >
+          Add Activity
+        </RsuiteIconButton>
+      </div>
       <Sheet
         variant="outlined"
         sx={{
           width: '96%',
-          margin: '0% 2% 1% 2%',
+          margin: '1% 2% 1% 2%',
           padding: '10px 20px 20px 20px',
           boxShadow: 'sm',
           borderRadius: 'sm',
@@ -114,9 +177,8 @@ const BigCalendar = () => {
             setActivities={setActivities}
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
-            workItems={workItems}
-            handleCreateActivity={handleCreateActivity}
-            handleUpdateActivity={handleUpdateActivity}
+            openUpdateActivity={openUpdateActivity}
+            openCreateActivity={openCreateActivity}
           />
         ) : (
           <WeekCalendar
@@ -124,40 +186,25 @@ const BigCalendar = () => {
             setActivities={setActivities}
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
-            workItems={workItems}
-            handleCreateActivity={handleCreateActivity}
-            handleUpdateActivity={handleUpdateActivity}
+            openUpdateActivity={openUpdateActivity}
           />
         )}
       </Sheet>
-      <IconButton
-        sx={{
-          position: 'fixed',
-          display: 'flex',
-          right: '10px',
-          paddingBottom: '10px',
-          bottom: '0',
-          zIndex: 99999,
-        }}
-        variant="plain"
-        color="neutral"
-        onClick={() => setVisibleActivityInfo(true)}
-        size="sm"
-      >
-        <AddIcon />
-      </IconButton>
       {visibleActivityInfo && (
         <div className="overlay">
           <div style={{ width: 450 }}>
             <ActivityInfo
-              activity={{
-                startTime: new Date(new Date(currentDate).setHours(9, 0, 0, 0, 0)),
-                endTime: new Date(new Date(currentDate).setHours(18, 0, 0, 0, 0)),
-              }}
-              isNew={true}
+              activity={
+                activities.find((activity) => activity.id === selectedActivityId) ?? {
+                  startTime: new Date(new Date(selectedDate).setHours(9, 0, 0, 0, 0)),
+                  endTime: new Date(new Date(selectedDate).setHours(18, 0, 0, 0, 0)),
+                }
+              }
+              isNew={selectedActivityId === null}
               onClose={() => setVisibleActivityInfo(false)}
               workItems={workItems}
-              onSubmit={handleCreateActivity}
+              onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
+              onDelete={handleDeleteActivity}
             />
           </div>
         </div>

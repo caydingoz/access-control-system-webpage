@@ -286,7 +286,7 @@ export default function RoleTable() {
                 icon={<PlusIcon />}
                 color="green"
                 size="xs"
-                style={{ width: '100%' }}
+                style={{ width: '100%', fontSize: '13px' }}
                 onClick={() => setVisibleAddRole((prev) => !prev)}
               >
                 Add Role

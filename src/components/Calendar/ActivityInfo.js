@@ -3,9 +3,10 @@ import { Typography, Stack, Card } from '@mui/joy'
 import { Input, InputGroup, SelectPicker, DatePicker } from 'rsuite'
 import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
+import DeleteIcon from '@mui/icons-material/Delete'
 import 'src/css/style.css'
 
-export default function ActivityInfo({ activity = {}, workItems = [], isNew, onSubmit, onClose }) {
+export default function ActivityInfo({ activity = {}, workItems = [], isNew, onSubmit, onClose, onDelete }) {
   const [activityInfo, setActivityInfo] = React.useState({
     id: activity.id || '',
     description: activity.description || '',
@@ -163,15 +164,35 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
             </Stack>
           </Stack>
         </Stack>
-        <RsuiteButton
-          appearance="primary"
-          color={isNew ? 'green' : 'yellow'}
-          size="sm"
-          onClick={() => onSubmit(activityInfo)}
-          style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}
         >
-          {isNew ? 'Create' : 'Update'}
-        </RsuiteButton>
+          {!isNew && (
+            <RsuiteButton
+              appearance="primary"
+              color="red"
+              size="sm"
+              onClick={() => onDelete(activityInfo.id)}
+              style={{ width: '35px', fontSize: '12px', height: '30px', borderRadius: '5px', marginTop: '20px' }}
+            >
+              <DeleteIcon sx={{ color: 'white' }} />
+            </RsuiteButton>
+          )}
+          <RsuiteButton
+            appearance="primary"
+            color={isNew ? 'green' : 'yellow'}
+            size="sm"
+            onClick={() => onSubmit(activityInfo)}
+            style={{ width: '20%', fontSize: '12px', height: '30px', borderRadius: '5px', marginTop: '20px' }}
+          >
+            {isNew ? 'Create' : 'Update'}
+          </RsuiteButton>
+        </Stack>
       </Stack>
     </Card>
   )

@@ -27,6 +27,11 @@ const updateActivityAsync = async (activity) => {
   return response
 }
 
+const deleteActivityByIdAsync = async (id) => {
+  const response = await axiosClient.deleteAsync(`activity?id=${id}`)
+  return response
+}
+
 const getUserWorkItemsAsync = async () => {
   const url = 'activity/workItem/user'
   const response = await axiosClient.getAsync(url)
@@ -38,6 +43,7 @@ const ActivityCalendarService = {
   getUserWorkItemsAsync,
   createActivityAsync,
   updateActivityAsync,
+  deleteActivityByIdAsync,
 }
 
 export default ActivityCalendarService
