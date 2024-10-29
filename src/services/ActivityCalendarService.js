@@ -12,12 +12,16 @@ const getActivitiesAsync = async (startTime, endTime) => {
 }
 
 const createActivityAsync = async (activity) => {
+  activity.startTime = new Date(activity.startTime).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T')
+  activity.endTime = new Date(activity.endTime).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T')
   const url = 'activity'
   const response = await axiosClient.postAsync(url, activity)
   return response
 }
 
 const updateActivityAsync = async (activity) => {
+  activity.startTime = new Date(activity.startTime).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T')
+  activity.endTime = new Date(activity.endTime).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T')
   const url = 'activity'
   const response = await axiosClient.putAsync(url, activity)
   return response

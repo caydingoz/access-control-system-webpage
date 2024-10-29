@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Typography, Sheet, Button } from '@mui/joy'
+import { Box, Typography, Sheet, Button, IconButton } from '@mui/joy'
 import MonthCalendar from '../Calendar/MonthCalendar'
 import WeekCalendar from '../Calendar/WeekCalendar'
 import ActivityCalendarService from '../../services/ActivityCalendarService'
+import AddIcon from '@mui/icons-material/Add'
+import ActivityInfo from './ActivityInfo'
 
 const BigCalendar = () => {
   const today = new Date()
@@ -11,6 +13,7 @@ const BigCalendar = () => {
   const [currentDate, setCurrentDate] = useState(today)
   const [activities, setActivities] = useState([])
   const [workItems, setWorkItems] = useState([])
+  const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
 
   useEffect(() => {
     const currentMonth = currentDate.getMonth()
@@ -127,6 +130,38 @@ const BigCalendar = () => {
           />
         )}
       </Sheet>
+      <IconButton
+        sx={{
+          position: 'fixed',
+          display: 'flex',
+          right: '10px',
+          paddingBottom: '10px',
+          bottom: '0',
+          zIndex: 99999,
+        }}
+        variant="plain"
+        color="neutral"
+        onClick={() => setVisibleActivityInfo(true)}
+        size="sm"
+      >
+        <AddIcon />
+      </IconButton>
+      {visibleActivityInfo && (
+        <div className="overlay">
+          <div style={{ width: 450 }}>
+            <ActivityInfo
+              activity={{
+                startTime: new Date(new Date(currentDate).setHours(9, 0, 0, 0, 0)),
+                endTime: new Date(new Date(currentDate).setHours(18, 0, 0, 0, 0)),
+              }}
+              isNew={true}
+              onClose={() => setVisibleActivityInfo(false)}
+              workItems={workItems}
+              onSubmit={handleCreateActivity}
+            />
+          </div>
+        </div>
+      )}
     </Sheet>
   )
 }

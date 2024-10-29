@@ -249,12 +249,16 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
         <div className="overlay">
           <div style={{ width: 450 }}>
             <ActivityInfo
-              activity={activities.find((activity) => activity.id === selectedActivityId)}
+              activity={
+                activities.find((activity) => activity.id === selectedActivityId) ?? {
+                  startTime: new Date(new Date(selectedDate).setHours(9)),
+                  endTime: new Date(new Date(selectedDate).setHours(18)),
+                }
+              }
               isNew={selectedActivityId === null ? true : false}
               onClose={() => setVisibleActivityInfo(false)}
               workItems={workItems}
               onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
-              selectedDate={selectedDate}
             />
           </div>
         </div>

@@ -5,7 +5,7 @@ import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
 import 'src/css/style.css'
 
-export default function ActivityInfo({ activity = {}, workItems = [], isNew, onSubmit, onClose, selectedDate }) {
+export default function ActivityInfo({ activity = {}, workItems = [], isNew, onSubmit, onClose }) {
   const [activityInfo, setActivityInfo] = React.useState({
     id: activity.id || '',
     description: activity.description || '',
@@ -126,10 +126,8 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                     backgroundColor: 'transparent',
                   }}
                   menuStyle={{ zIndex: '12000' }}
-                  onChange={(value) =>
-                    handleInputChange('startTime', new Date(value).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T'))
-                  }
-                  value={activityInfo.id === '' ? new Date(new Date(selectedDate).setHours(9)) : new Date(activityInfo.startTime)}
+                  onChange={(value) => handleInputChange('startTime', new Date(value))}
+                  value={new Date(activityInfo.startTime)}
                   isoWeek
                 />
               </InputGroup>
@@ -157,10 +155,8 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                     backgroundColor: 'transparent',
                   }}
                   menuStyle={{ zIndex: '12000' }}
-                  onChange={(value) =>
-                    handleInputChange('endTime', new Date(value).toLocaleString('sv-SE', { timeZone: 'Europe/Istanbul' }).replace(' ', 'T'))
-                  }
-                  value={activityInfo.id === '' ? new Date(new Date(selectedDate).setHours(18)) : new Date(activityInfo.endTime)}
+                  onChange={(value) => handleInputChange('endTime', new Date(value))}
+                  value={new Date(activityInfo.endTime)}
                   isoWeek
                 />
               </InputGroup>
