@@ -10,6 +10,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
   const [selectedActivityId, setSelectedActivityId] = React.useState(null)
+  const [selectedDate, setSelectedDate] = React.useState(null)
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
 
@@ -27,8 +28,9 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
     setVisibleActivityInfo(true)
   }
 
-  const openCreateActivity = () => {
+  const openCreateActivity = (date) => {
     setSelectedActivityId(null)
+    setSelectedDate(date)
     setVisibleActivityInfo(true)
   }
 
@@ -149,6 +151,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
+      const fullDate = new Date(currentYear, currentMonth, day)
       daysArray.push(
         <Box
           key={day}
@@ -166,7 +169,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             paddingBottom: '5px',
             zIndex: '8',
           }}
-          onClick={() => openCreateActivity()}
+          onClick={() => openCreateActivity(fullDate)}
         >
           <Typography
             sx={{
@@ -214,13 +217,13 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
           marginBottom: '10px',
         }}
       >
-        <IconButton variant="plain" color="neutral" onClick={handlePreviousMonth} size="sm">
+        <IconButton variant="plain" color="neutral" onClick={() => handlePreviousMonth()} size="sm">
           <ArrowBackIosNewIcon />
         </IconButton>
         <Typography level="title-lg" sx={{ fontWeight: 'bold' }}>
           {currentDate.toLocaleString('default', { month: 'long' })} {currentYear}
         </Typography>
-        <IconButton variant="plain" color="neutral" onClick={handleNextMonth} size="sm">
+        <IconButton variant="plain" color="neutral" onClick={() => handleNextMonth()} size="sm">
           <ArrowForwardIosIcon />
         </IconButton>
       </Box>
@@ -251,6 +254,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
               onClose={() => setVisibleActivityInfo(false)}
               workItems={workItems}
               onSubmit={selectedActivityId === null ? handleCreateActivity : handleUpdateActivity}
+              selectedDate={selectedDate}
             />
           </div>
         </div>

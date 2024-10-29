@@ -17,7 +17,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
   const layerColors = ['#D3F7FC', '#A5F1DB', '#D0F5BE', '#FBFFDC']
   const borderColors = ['#54B8C0', '#6CBF9E', '#A5C98D', '#D4DBA4']
   const layerColorsDark = ['#142850', '#27496D', '#0C7B93', '#00A8CC'] //dark mode
-  const borderColorsDark = ['#C53C3D', '#D76B30', '#FFD460', '#FFE080'] //dark mode
+  const borderColorsDark = ['#C53C3D', '#D76B30', '#FFD460', '#FFE080'] //dark mode ['#4B6B9A', '#6E8BAD', '#66B8D0', '#99D7EA']
 
   const openUpdateActivity = (activityId) => {
     setSelectedActivityId(activityId)
