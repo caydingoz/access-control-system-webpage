@@ -87,15 +87,14 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
               zIndex: 2,
               top: '0px',
               left: `${activity.layer * 6}px`,
-              right: '4px',
+              right: '2px',
               paddingTop: '2px',
               paddingLeft: '5px',
               paddingRight: '3px',
               bottom: `${differenceInHours * -40 + 2}px`,
               cursor: 'pointer',
             }}
-            onClick={(e) => {
-              e.stopPropagation() // Gün kutusuna tıklamayı durdurur
+            onClick={() => {
               openUpdateActivity(activity.id)
             }}
           >

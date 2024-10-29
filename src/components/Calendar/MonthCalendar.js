@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Box, Typography, Grid, IconButton, Tooltip } from '@mui/joy'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -6,6 +7,8 @@ import ActivityDetail from './ActivityDetail'
 import 'src/css/style.css'
 
 const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, openUpdateActivity, openCreateActivity }) => {
+  const theme = useSelector((state) => state.rSuiteTheme.themeMode)
+
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
@@ -137,6 +140,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             alignItems: 'center',
             border: '1px solid #ddd',
             cursor: 'pointer',
+            backgroundColor: theme === 'dark' ? '#181a20' : '#fafcff',
             ':hover': { backgroundColor: (theme) => theme.vars.palette.primary.softBg },
             paddingTop: '25px',
             paddingBottom: '5px',
