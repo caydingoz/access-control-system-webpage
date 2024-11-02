@@ -1,10 +1,10 @@
 import React from 'react'
-import UserTable from '../../components/Users/UserTable'
+import AbsenceTable from '../components/AbsenceManagement/AbsenceTable'
 
 const AbsenceManagement = () => {
   return (
     <React.Fragment>
-      <UserTable />
+      <AbsenceTable />
     </React.Fragment>
   )
 }

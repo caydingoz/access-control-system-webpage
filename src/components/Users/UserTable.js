@@ -259,7 +259,7 @@ export default function UserTable() {
                 </Typography>
                 <Input
                   name="name"
-                  placeholder="Search for name, email, etc."
+                  placeholder="Search for name, email, phone number, etc."
                   variant="outlined"
                   size="sm"
                   sx={{
@@ -532,7 +532,7 @@ export default function UserTable() {
                       </Stack>
                     </td>
                     <td id={labelId}>
-                      <Chip color={userStatus[row.status].color} size="sm">
+                      <Chip color={userStatus[row.status].color} size="sm" sx={{ padding: '0 10px' }}>
                         {userStatus[row.status].status}
                       </Chip>
                     </td>

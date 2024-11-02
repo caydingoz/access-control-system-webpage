@@ -71,14 +71,13 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
               <Typography level="body-md" sx={{ fontSize: '13px' }}>
                 Description
               </Typography>
-              <InputGroup style={{ width: 300, fontSize: '12px' }}>
-                <Input
-                  value={activityInfo.description}
-                  size="sm"
-                  placeholder="Description.."
-                  onChange={(value) => handleInputChange('description', value)}
-                />
-              </InputGroup>
+              <Input
+                value={activityInfo.description}
+                size="sm"
+                placeholder="Activity description.."
+                style={{ width: '300px', paddingLeft: '9px' }}
+                onChange={(value) => handleInputChange('description', value)}
+              />
             </Stack>
             <Stack
               direction="row"
@@ -93,7 +92,7 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
               </Typography>
               <SelectPicker
                 size="sm"
-                placeholder="Select.."
+                placeholder="Select subject.."
                 style={{ width: '300px' }}
                 menuStyle={{ fontSize: '13px', zIndex: '12000', padding: 0 }}
                 data={workItemsData}
