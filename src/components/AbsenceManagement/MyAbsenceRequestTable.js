@@ -303,60 +303,72 @@ export default function MyAbsenceRequestTable() {
             </tr>
           </thead>
           <tbody>
-            {absences.map((row, index) => {
-              const labelId = `enhanced-table-checkbox-${index}`
-              const fragmentKey = `row-${index}`
+            {absences.length > 0 ? (
+              absences.map((row, index) => {
+                const labelId = `enhanced-table-checkbox-${index}`
+                const fragmentKey = `row-${index}`
 
-              return (
-                <React.Fragment key={fragmentKey}>
-                  <tr tabIndex={-1} key={row.id}>
-                    <td id={labelId}>
-                      <Typography level="body-sm" color="primary">
-                        {AbsenceTypes[row.type].type}
-                      </Typography>
-                    </td>
-                    <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Chip color={AbsenceStatus[row.status].color} size="sm" sx={{ padding: '0 10px' }}>
-                        {AbsenceStatus[row.status].status}
-                      </Chip>
-                    </td>
-                    <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Typography level="body-sm">{row.duration} day</Typography>
-                    </td>
-                    <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Typography level="body-sm">{formatDateTime(row.startTime)}</Typography>
-                    </td>
-                    <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Typography level="body-sm">{formatDateTime(row.endTime)}</Typography>
-                    </td>
-                    <td id={labelId}>
-                      <Typography level="body-sm" style={{ textAlign: 'center' }}>
-                        {row.description.length > 0 ? row.description : '-'}
-                      </Typography>
-                    </td>
-                    <td id={labelId} style={{ borderLeft: '1.5px solid #ddd', borderRadius: '5px' }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Button
-                          disabled={row.status !== 0}
-                          variant="soft"
-                          color="danger"
-                          onClick={() => handleCancelAbsenceRequest(row.id)}
-                          sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
+                return (
+                  <React.Fragment key={fragmentKey}>
+                    <tr tabIndex={-1} key={row.id}>
+                      <td id={labelId}>
+                        <Typography level="body-sm" color="primary">
+                          {AbsenceTypes[row.type].type}
+                        </Typography>
+                      </td>
+                      <td id={labelId} style={{ textAlign: 'center' }}>
+                        <Chip color={AbsenceStatus[row.status].color} size="sm" sx={{ padding: '0 10px' }}>
+                          {AbsenceStatus[row.status].status}
+                        </Chip>
+                      </td>
+                      <td id={labelId} style={{ textAlign: 'center' }}>
+                        <Typography level="body-sm">{row.duration} day</Typography>
+                      </td>
+                      <td id={labelId} style={{ textAlign: 'center' }}>
+                        <Typography level="body-sm">{formatDateTime(row.startTime)}</Typography>
+                      </td>
+                      <td id={labelId} style={{ textAlign: 'center' }}>
+                        <Typography level="body-sm">{formatDateTime(row.endTime)}</Typography>
+                      </td>
+                      <td id={labelId}>
+                        <Typography level="body-sm" style={{ textAlign: 'center' }}>
+                          {row.description.length > 0 ? row.description : '-'}
+                        </Typography>
+                      </td>
+                      <td id={labelId} style={{ borderLeft: '1.5px solid #ddd', borderRadius: '5px' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
                         >
-                          Cancel
-                        </Button>
-                      </Box>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              )
-            })}
+                          <Button
+                            disabled={row.status !== 0}
+                            variant="soft"
+                            color="danger"
+                            onClick={() => handleCancelAbsenceRequest(row.id)}
+                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                )
+              })
+            ) : (
+              <tr
+                style={{
+                  '--TableRow-hoverBackground': 'transparent',
+                }}
+              >
+                <td colSpan={7} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                  There is no data..
+                </td>
+              </tr>
+            )}
             {emptyRows > 0 && (
               <tr
                 style={{
