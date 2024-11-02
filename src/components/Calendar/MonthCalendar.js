@@ -39,7 +39,9 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
   }
 
   const renderActivitiesForDay = (day) => {
-    const dayActivities = activities.filter((activity) => new Date(activity.startTime).getDate() === day)
+    const dayActivities = activities.filter(
+      (activity) => new Date(activity.startTime).getDate() <= day && new Date(activity.endTime).getDate() >= day,
+    )
 
     return (
       <Box

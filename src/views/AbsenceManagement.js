@@ -1,7 +1,7 @@
 import React from 'react'
 import UserTable from '../../components/Users/UserTable'
 
-const Users = () => {
+const AbsenceManagement = () => {
   return (
     <React.Fragment>
       <UserTable />
@@ -9,4 +9,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default AbsenceManagement

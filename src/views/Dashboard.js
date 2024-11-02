@@ -45,9 +45,9 @@ import {
 
 import avatar from 'src/assets/images/avatar.jpg'
 
-import WidgetsBrand from '../../components/Dashboard/widgets/WidgetsBrand'
-import WidgetsDropdown from '../../components/Dashboard/widgets/WidgetsDropdown'
-import MainChart from '../../components/Dashboard/MainChart'
+import WidgetsBrand from '../components/Dashboard/widgets/WidgetsBrand'
+import WidgetsDropdown from '../components/Dashboard/widgets/WidgetsDropdown'
+import MainChart from '../components/Dashboard/MainChart'
 
 const Dashboard = () => {
   const progressExample = [

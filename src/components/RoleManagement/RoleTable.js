@@ -287,6 +287,14 @@ export default function RoleTable() {
                 color="green"
                 size="xs"
                 style={{ width: '100%', fontSize: '13px' }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.02)'
+                  e.currentTarget.style.boxShadow = '0 3px 9px rgba(0, 128, 0, 0.3)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 128, 0, 0.2)'
+                }}
                 onClick={() => setVisibleAddRole((prev) => !prev)}
               >
                 Add Role

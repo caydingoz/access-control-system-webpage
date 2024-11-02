@@ -18,9 +18,9 @@ import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded'
 import { useNavigate } from 'react-router-dom'
 import { useColorModes } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import LoadingSpinner from '../../components/BaseApp/LoadingSpinner'
+import LoadingSpinner from '../components/BaseApp/LoadingSpinner'
 
-import AuthService from '../../services/AuthService'
+import AuthService from '../services/AuthService'
 
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props

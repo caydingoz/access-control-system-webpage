@@ -141,16 +141,24 @@ const BigCalendar = () => {
           </Button>
         </Box>
       </Box>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ padding: '0.5% 0% 0.5% 1%' }}>
         <RsuiteIconButton
           appearance="primary"
           icon={<PlusIcon />}
           color="green"
-          size="sm"
+          size="xs"
           style={{
             width: '120px',
             fontSize: '13px',
             marginRight: '2%',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'scale(1.02)'
+            e.currentTarget.style.boxShadow = '0 3px 9px rgba(0, 128, 0, 0.3)'
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 128, 0, 0.2)'
           }}
           onClick={() => {
             setSelectedDate(new Date(today))

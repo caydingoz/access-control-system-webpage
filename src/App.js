@@ -18,8 +18,8 @@ const loading = (
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 // Pages
-const Login = React.lazy(() => import('./views/login-register/Login'))
-const Register = React.lazy(() => import('./views/login-register/Register'))
+const Login = React.lazy(() => import('./views/Login'))
+const Register = React.lazy(() => import('./views/Register'))
 const Page500 = React.lazy(() => import('./views/errors/Page500'))
 
 //Buraya eklenen componentler full sayfa açılıyor.
