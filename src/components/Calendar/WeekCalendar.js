@@ -19,7 +19,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
   const startOfWeek = () => {
     const firstDay = new Date(currentDate)
     const dayOfWeek = firstDay.getDay() || 7 // Sunday = 0
-    firstDay.setUTCDate(firstDay.getDate() - dayOfWeek + 1) // Monday as first day of week
+    firstDay.setDate(firstDay.getDate() - dayOfWeek + 1) // Monday as first day of week
     return firstDay
   }
 
