@@ -33,10 +33,21 @@ const _sideNav = [
     icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
+    component: CNavGroup,
     name: 'Absence Management',
-    to: '/absence-management',
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Absence Requests',
+        to: '/absence-management/all',
+      },
+      {
+        component: CNavItem,
+        name: 'My Absence Requests',
+        to: '/absence-management/user',
+      },
+    ],
   },
   {
     component: CNavItem,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option } from '@mui/joy'
-import { Button, Stack, Chip, Link } from '@mui/joy'
+import { Button, Chip, Link } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
 import { format } from 'date-fns'
@@ -8,8 +8,8 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import 'src/css/style.css'
 
-export default function AbsenceTable() {
-  const [filterName, setFilterName] = React.useState(null)
+export default function MyAbsenceRequestTable() {
+  const [filterDescription, setFilterDescription] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterType, setFilterType] = React.useState(null)
   const [order, setOrder] = React.useState('asc')
@@ -21,29 +21,29 @@ export default function AbsenceTable() {
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
-    return format(date, 'dd/MM/yyyy')
+    return format(date, 'dd/MM/yyyy HH:mm')
   }
 
   const headCells = [
     {
-      id: 'fullName',
-      label: 'Name',
+      id: 'type',
+      label: 'Type',
     },
     {
       id: 'status',
       label: 'Status',
     },
     {
-      id: 'type',
-      label: 'Type',
-    },
-    {
       id: 'duration',
       label: 'Duration',
     },
     {
-      id: 'date',
-      label: 'Date',
+      id: 'startTime',
+      label: 'Start Time',
+    },
+    {
+      id: 'endTime',
+      label: 'End Time',
     },
     {
       id: 'description',
@@ -79,25 +79,26 @@ export default function AbsenceTable() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await AbsenceManagementService.getAllAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterName)
+      const res = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (res.success) {
         setAbsences(res.data.absences)
         setTotalCount(res.data.totalCount)
       }
     }
     fetchData()
-  }, [page, rowsPerPage, filterStatus, filterType, filterName])
+  }, [page, rowsPerPage, filterStatus, filterType, filterDescription])
 
-  const handleChangeAbsenceStatus = async (id, status) => {
-    const res = await AbsenceManagementService.updateAbsenceRequestStatusAsync(id, status)
+  const handleCancelAbsenceRequest = async (id) => {
+    const res = await AbsenceManagementService.deleteAbsenceRequestAsync(id)
     if (res.success) {
-      const dataRes = await AbsenceManagementService.getAllAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterName)
+      const dataRes = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (dataRes.success) {
         setAbsences(dataRes.data.absences)
         setTotalCount(dataRes.data.totalCount)
       }
     }
   }
+
   const handleChangeRowsPerPage = (event, newValue) => {
     setRowsPerPage(parseInt(newValue.toString(), 10))
     setPage(0)
@@ -130,7 +131,7 @@ export default function AbsenceTable() {
           onSubmit={(event) => {
             event.preventDefault()
             const formElements = event.currentTarget.elements
-            setFilterName(formElements.name.value)
+            setFilterDescription(formElements.name.value)
             setFilterType(formElements.type.value)
             setFilterStatus(formElements.status.value)
           }}
@@ -160,7 +161,7 @@ export default function AbsenceTable() {
                 </Typography>
                 <Input
                   name="name"
-                  placeholder="Search for name, email, phone number, etc."
+                  placeholder="Search for description, etc."
                   variant="outlined"
                   size="sm"
                   sx={{
@@ -250,22 +251,22 @@ export default function AbsenceTable() {
               width: '18%',
             },
             '& thead th:nth-of-type(2)': {
-              width: '8%',
+              width: '10%',
             },
             '& thead th:nth-of-type(3)': {
-              width: '15%',
+              width: '10%',
             },
             '& thead th:nth-of-type(4)': {
-              width: '6%',
+              width: '13%',
             },
             '& thead th:nth-of-type(5)': {
               width: '13%',
             },
             '& thead th:nth-of-type(6)': {
-              width: '15%',
+              width: '20%',
             },
-            '& thead th:last-of-type': {
-              width: '15%',
+            '& thead th:nth-of-type(7)': {
+              width: '13%',
             },
             '& tfoot td': {
               backgroundColor: (theme) => theme.vars.palette.background.surface,
@@ -280,7 +281,7 @@ export default function AbsenceTable() {
                   <th
                     key={headCell.id}
                     aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
-                    style={{ verticalAlign: 'top', textAlign: headCell.label === 'Name' ? '' : 'center' }}
+                    style={{ verticalAlign: 'top', textAlign: headCell.label === 'Type' ? '' : 'center' }}
                   >
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <Link
@@ -310,12 +311,9 @@ export default function AbsenceTable() {
                 <React.Fragment key={fragmentKey}>
                   <tr tabIndex={-1} key={row.id}>
                     <td id={labelId}>
-                      <Stack direction="column">
-                        <Typography level="title-sm" sx={{ fontSize: '13px' }}>
-                          {row.firstName + ' ' + row.lastName}
-                        </Typography>
-                        <Typography level="body-sm">{row.email}</Typography>
-                      </Stack>
+                      <Typography level="body-sm" color="primary">
+                        {AbsenceTypes[row.type].type}
+                      </Typography>
                     </td>
                     <td id={labelId} style={{ textAlign: 'center' }}>
                       <Chip color={AbsenceStatus[row.status].color} size="sm" sx={{ padding: '0 10px' }}>
@@ -323,17 +321,13 @@ export default function AbsenceTable() {
                       </Chip>
                     </td>
                     <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Typography level="body-sm" color="primary">
-                        {AbsenceTypes[row.type].type}
-                      </Typography>
-                    </td>
-                    <td id={labelId} style={{ textAlign: 'center' }}>
                       <Typography level="body-sm">{row.duration} day</Typography>
                     </td>
                     <td id={labelId} style={{ textAlign: 'center' }}>
-                      <Typography level="body-sm">
-                        {formatDateTime(row.startTime)} - {formatDateTime(row.endTime)}
-                      </Typography>
+                      <Typography level="body-sm">{formatDateTime(row.startTime)}</Typography>
+                    </td>
+                    <td id={labelId} style={{ textAlign: 'center' }}>
+                      <Typography level="body-sm">{formatDateTime(row.endTime)}</Typography>
                     </td>
                     <td id={labelId}>
                       <Typography level="body-sm" style={{ textAlign: 'center' }}>
@@ -346,25 +340,16 @@ export default function AbsenceTable() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          flexWrap: 'wrap', // Alan daraldığında alt satıra geçmesini sağlar
-                          gap: 1,
                         }}
                       >
                         <Button
-                          variant="soft"
-                          color="success"
-                          onClick={() => handleChangeAbsenceStatus(row.id, 1)}
-                          sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
-                        >
-                          Approve
-                        </Button>
-                        <Button
+                          disabled={row.status !== 0}
                           variant="soft"
                           color="danger"
-                          onClick={() => handleChangeAbsenceStatus(row.id, 2)}
+                          onClick={() => handleCancelAbsenceRequest(row.id)}
                           sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
                         >
-                          Reject
+                          Cancel
                         </Button>
                       </Box>
                     </td>

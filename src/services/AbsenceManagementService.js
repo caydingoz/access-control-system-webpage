@@ -21,11 +21,21 @@ const getAllAbsenceRequestsAsync = async (page, count, status = null, type = nul
   return response
 }
 
-const getUserAbsenceRequestsAsync = async (page, count) => {
+const getUserAbsenceRequestsAsync = async (page, count, status, type, description) => {
   const params = new URLSearchParams({
     page,
     count,
   })
+
+  if (status) {
+    params.append('status', status)
+  }
+  if (type) {
+    params.append('type', type)
+  }
+  if (description) {
+    params.append('description', description)
+  }
   const url = `absence/user?${params.toString()}`
   const response = await axiosClient.getAsync(url)
   return response
@@ -43,7 +53,7 @@ const updateAbsenceRequestStatusAsync = async (id, status) => {
   return response
 }
 const deleteAbsenceRequestAsync = async (id) => {
-  const url = `absence/user?${id}`
+  const url = `absence/user?id=${id}`
   const response = await axiosClient.deleteAsync(url)
   return response
 }
