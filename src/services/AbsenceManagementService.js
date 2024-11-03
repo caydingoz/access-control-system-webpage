@@ -16,7 +16,7 @@ const getAllAbsenceRequestsAsync = async (page, count, status = null, type = nul
     params.append('filterName', filterName)
   }
 
-  const url = `absence?${params.toString()}`
+  const url = `absence/admin/requests?${params.toString()}`
   const response = await axiosClient.getAsync(url)
   return response
 }
@@ -36,7 +36,16 @@ const getUserAbsenceRequestsAsync = async (page, count, status, type, descriptio
   if (description) {
     params.append('description', description)
   }
-  const url = `absence/user?${params.toString()}`
+  const url = `absence/user/requests?${params.toString()}`
+  const response = await axiosClient.getAsync(url)
+  return response
+}
+const getUserAbsenceInfoAsync = async (page, count) => {
+  const params = new URLSearchParams({
+    page,
+    count,
+  })
+  const url = `absence/user/accurals?${params.toString()}`
   const response = await axiosClient.getAsync(url)
   return response
 }
@@ -61,6 +70,7 @@ const deleteAbsenceRequestAsync = async (id) => {
 const AbsenceManagementService = {
   getAllAbsenceRequestsAsync,
   getUserAbsenceRequestsAsync,
+  getUserAbsenceInfoAsync,
   createAbsenceRequestAsync,
   updateAbsenceRequestStatusAsync,
   deleteAbsenceRequestAsync,

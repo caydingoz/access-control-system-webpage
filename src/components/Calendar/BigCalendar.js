@@ -158,7 +158,7 @@ const BigCalendar = () => {
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.transform = 'scale(1)'
-            e.currentTarget.style.boxShadow = '0 4px 10px rgba(0, 128, 0, 0.2)'
+            e.currentTarget.style.boxShadow = 'none'
           }}
           onClick={() => {
             setSelectedDate(new Date(today))

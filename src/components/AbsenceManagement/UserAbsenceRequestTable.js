@@ -8,7 +8,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import 'src/css/style.css'
 
-export default function MyAbsenceRequestTable() {
+export default function UserAbsenceRequestTable() {
   const [filterDescription, setFilterDescription] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterType, setFilterType] = React.useState(null)
@@ -21,7 +21,7 @@ export default function MyAbsenceRequestTable() {
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
-    return format(date, 'dd/MM/yyyy HH:mm')
+    return format(date, 'dd-MM-yyyy HH:mm')
   }
 
   const headCells = [
@@ -240,7 +240,7 @@ export default function MyAbsenceRequestTable() {
             margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
-              height: '57px',
+              height: '40px',
             },
             '& tbody td:nth-of-type(1)': {
               paddingLeft: '20px',
@@ -348,7 +348,7 @@ export default function MyAbsenceRequestTable() {
                             variant="soft"
                             color="danger"
                             onClick={() => handleCancelAbsenceRequest(row.id)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
+                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
                           >
                             Cancel
                           </Button>
@@ -372,7 +372,7 @@ export default function MyAbsenceRequestTable() {
             {emptyRows > 0 && (
               <tr
                 style={{
-                  height: `calc(${emptyRows} * 57px)`,
+                  height: `calc(${emptyRows} * 40px)`,
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >

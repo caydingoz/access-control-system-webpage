@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option } from '@mui/joy'
+import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option, Avatar } from '@mui/joy'
 import { Button, Stack, Chip, Link } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
@@ -8,7 +8,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import 'src/css/style.css'
 
-export default function AbsenceRequestTable() {
+export default function AdminAbsenceRequestTable() {
   const [filterName, setFilterName] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterType, setFilterType] = React.useState(null)
@@ -46,8 +46,8 @@ export default function AbsenceRequestTable() {
       label: 'Date',
     },
     {
-      id: 'description',
-      label: 'Description',
+      id: 'note',
+      label: 'Note',
     },
     {
       id: 'action',
@@ -87,6 +87,18 @@ export default function AbsenceRequestTable() {
     }
     fetchData()
   }, [page, rowsPerPage, filterStatus, filterType, filterName])
+
+  const dateRangeDisplay = (startDate, endDate) => {
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+    const startMonth = startDate.toLocaleString('en-US', { month: 'short' })
+    const endMonth = endDate.toLocaleString('en-US', { month: 'short' })
+    const startDay = startDate.getDate()
+    const endDay = endDate.getDate()
+    const endYear = endDate.getFullYear()
+
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${endYear}`
+  }
 
   const handleChangeAbsenceStatus = async (id, status) => {
     const res = await AbsenceManagementService.updateAbsenceRequestStatusAsync(id, status)
@@ -243,25 +255,28 @@ export default function AbsenceRequestTable() {
             },
             '& tbody td:nth-of-type(1)': {
               paddingLeft: '20px',
-              width: '18%',
+              width: '5%',
             },
             '& thead th:nth-of-type(1)': {
               paddingLeft: '20px',
-              width: '18%',
+              width: '5%',
             },
             '& thead th:nth-of-type(2)': {
-              width: '8%',
+              width: '18%',
             },
             '& thead th:nth-of-type(3)': {
-              width: '15%',
+              width: '8%',
             },
             '& thead th:nth-of-type(4)': {
-              width: '6%',
+              width: '15%',
             },
             '& thead th:nth-of-type(5)': {
-              width: '13%',
+              width: '6%',
             },
             '& thead th:nth-of-type(6)': {
+              width: '13%',
+            },
+            '& thead th:nth-of-type(7)': {
               width: '15%',
             },
             '& thead th:last-of-type': {
@@ -274,6 +289,7 @@ export default function AbsenceRequestTable() {
         >
           <thead>
             <tr>
+              <th />
               {headCells.map((headCell) => {
                 const active = orderBy === headCell.id
                 return (
@@ -311,6 +327,9 @@ export default function AbsenceRequestTable() {
                   <React.Fragment key={fragmentKey}>
                     <tr tabIndex={-1} key={row.id}>
                       <td id={labelId}>
+                        <Avatar src={`/images/${row.image}`} />
+                      </td>
+                      <td id={labelId}>
                         <Stack direction="column">
                           <Typography level="title-sm" sx={{ fontSize: '13px' }}>
                             {row.firstName + ' ' + row.lastName}
@@ -332,16 +351,14 @@ export default function AbsenceRequestTable() {
                         <Typography level="body-sm">{row.duration} day</Typography>
                       </td>
                       <td id={labelId} style={{ textAlign: 'center' }}>
-                        <Typography level="body-sm">
-                          {formatDateTime(row.startTime)} - {formatDateTime(row.endTime)}
-                        </Typography>
+                        <Typography level="body-sm">{dateRangeDisplay(row.startTime, row.endTime)}</Typography>
                       </td>
                       <td id={labelId}>
                         <Typography level="body-sm" style={{ textAlign: 'center' }}>
                           {row.description.length > 0 ? row.description : '-'}
                         </Typography>
                       </td>
-                      <td id={labelId} style={{ borderLeft: '1.5px solid #ddd', borderRadius: '5px' }}>
+                      <td id={labelId} style={{ borderLeft: '1.5px solid #ddd', borderRadius: '5px', verticalAlign: 'middle' }}>
                         <Box
                           sx={{
                             display: 'flex',
@@ -356,7 +373,7 @@ export default function AbsenceRequestTable() {
                             variant="soft"
                             color="success"
                             onClick={() => handleChangeAbsenceStatus(row.id, 1)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
+                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
                           >
                             Approve
                           </Button>
@@ -365,7 +382,7 @@ export default function AbsenceRequestTable() {
                             variant="soft"
                             color="danger"
                             onClick={() => handleChangeAbsenceStatus(row.id, 2)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px', marginBottom: '4px' }}
+                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
                           >
                             Reject
                           </Button>
@@ -381,7 +398,7 @@ export default function AbsenceRequestTable() {
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
-                <td colSpan={7} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                <td colSpan={8} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
                   There is no data..
                 </td>
               </tr>
@@ -393,13 +410,13 @@ export default function AbsenceRequestTable() {
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
-                <td colSpan={7} aria-hidden />
+                <td colSpan={8} aria-hidden />
               </tr>
             )}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={7}>
+              <td colSpan={8}>
                 <Box
                   sx={{
                     display: 'flex',

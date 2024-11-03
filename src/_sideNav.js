@@ -36,16 +36,22 @@ const _sideNav = [
     component: CNavGroup,
     name: 'Absence Management',
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+    to: '/absence-management/user/accurals',
     items: [
       {
         component: CNavItem,
-        name: 'Absence Requests',
-        to: '/absence-management/all',
+        name: 'Absence Request',
+        to: '/absence-management/admin/requests',
+      },
+      {
+        component: CNavItem,
+        name: 'My Accurals',
+        to: '/absence-management/user/accurals',
       },
       {
         component: CNavItem,
         name: 'My Absence Requests',
-        to: '/absence-management/user',
+        to: '/absence-management/user/requests',
       },
     ],
   },
