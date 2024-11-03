@@ -40,12 +40,8 @@ const getUserAbsenceRequestsAsync = async (page, count, status, type, descriptio
   const response = await axiosClient.getAsync(url)
   return response
 }
-const getUserAbsenceInfoAsync = async (page, count) => {
-  const params = new URLSearchParams({
-    page,
-    count,
-  })
-  const url = `absence/user/accurals?${params.toString()}`
+const getUserAbsenceInfoAsync = async () => {
+  const url = 'absence/user/accurals'
   const response = await axiosClient.getAsync(url)
   return response
 }
