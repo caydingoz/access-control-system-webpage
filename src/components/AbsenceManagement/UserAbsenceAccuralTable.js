@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react'
-import { Box, Table, Typography, Sheet, IconButton, Select, Option } from '@mui/joy'
-import { Button, Chip, Link } from '@mui/joy'
+import { Box, Table, Typography, Sheet } from '@mui/joy'
 import { CProgress } from '@coreui/react'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
 import { format } from 'date-fns'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import 'src/css/style.css'
 
 export default function UserAbsenceAccuralTable() {
   const [absences, setAbsences] = React.useState([])
@@ -105,11 +101,9 @@ export default function UserAbsenceAccuralTable() {
                 height: '40px',
               },
               '& tbody td:nth-of-type(1)': {
-                paddingLeft: '20px',
                 width: '20%',
               },
               '& thead th:nth-of-type(1)': {
-                paddingLeft: '20px',
                 width: '20%',
               },
               '& thead th:nth-of-type(2)': {
@@ -136,21 +130,14 @@ export default function UserAbsenceAccuralTable() {
               <tr>
                 {headCells.map((headCell) => {
                   return (
-                    <th key={headCell.id}>
-                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                      <Link
-                        underline="none"
-                        color="neutral"
-                        component="button"
-                        fontWeight="lg"
-                        sx={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          height: '100%',
-                        }}
-                      >
-                        {headCell.label}
-                      </Link>
+                    <th
+                      key={headCell.id}
+                      style={{
+                        verticalAlign: 'middle',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {headCell.label}
                     </th>
                   )
                 })}
@@ -208,7 +195,7 @@ export default function UserAbsenceAccuralTable() {
             </tbody>
             <tfoot>
               <tr>
-                <th scope="row" colSpan={2} style={{ borderRadius: 0, paddingLeft: '20px' }}>
+                <th scope="row" colSpan={2}>
                   Totals
                 </th>
                 <th scope="row">{absences.reduce((sum, row) => sum + row.annualDay, 0)} day</th>

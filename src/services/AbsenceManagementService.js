@@ -6,7 +6,7 @@ const getAllAbsenceRequestsAsync = async (page, count, status = null, type = nul
     count,
   })
 
-  if (status) {
+  if (status != null) {
     params.append('status', status)
   }
   if (type) {

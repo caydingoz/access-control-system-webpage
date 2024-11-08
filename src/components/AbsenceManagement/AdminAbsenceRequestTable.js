@@ -1,29 +1,12 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option, Avatar } from '@mui/joy'
-import { Button, Stack, Chip, Link } from '@mui/joy'
+import { Button, Stack, Chip } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
-import { format } from 'date-fns'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import 'src/css/style.css'
 
 export default function AdminAbsenceRequestTable() {
-  const [filterName, setFilterName] = React.useState(null)
-  const [filterStatus, setFilterStatus] = React.useState(null)
-  const [filterType, setFilterType] = React.useState(null)
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('firstName')
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
-  const [totalCount, setTotalCount] = React.useState(0)
-  const [absences, setAbsences] = React.useState([])
-
-  function formatDateTime(inputDateTime) {
-    const date = new Date(inputDateTime)
-    return format(date, 'dd/MM/yyyy')
-  }
-
   const headCells = [
     {
       id: 'fullName',
@@ -76,6 +59,14 @@ export default function AdminAbsenceRequestTable() {
     10: { value: 10, type: 'Administrative Leave' },
   }
   const AbsenceTypesData = Object.values(AbsenceTypes).map((item) => ({ label: item.type, value: item.value }))
+
+  const [filterName, setFilterName] = React.useState(null)
+  const [filterStatus, setFilterStatus] = React.useState(AbsenceStatusData.at(0).value)
+  const [filterType, setFilterType] = React.useState(null)
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [totalCount, setTotalCount] = React.useState(0)
+  const [absences, setAbsences] = React.useState([])
 
   useEffect(() => {
     async function fetchData() {
@@ -131,6 +122,7 @@ export default function AdminAbsenceRequestTable() {
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
             Absences
+            {AbsenceStatusData.at(0).value}
             <br />
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
               The Absences table stores information about individuals who have access to the application, including their credentials, roles, and
@@ -217,6 +209,7 @@ export default function AdminAbsenceRequestTable() {
                     boxShadow: 'sm',
                   }}
                   searchable={false}
+                  defaultValue={filterStatus}
                   menuStyle={{ width: 180, fontSize: '13px' }}
                   data={AbsenceStatusData}
                 />
@@ -254,8 +247,12 @@ export default function AdminAbsenceRequestTable() {
               height: '57px',
             },
             '& tbody td:nth-of-type(1)': {
-              paddingLeft: '20px',
+              paddingLeft: '1.5%',
               width: '5%',
+            },
+            '& tbody td:nth-of-type(2)': {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
             },
             '& thead th:nth-of-type(1)': {
               paddingLeft: '20px',
@@ -265,7 +262,7 @@ export default function AdminAbsenceRequestTable() {
               width: '18%',
             },
             '& thead th:nth-of-type(3)': {
-              width: '8%',
+              width: '9%',
             },
             '& thead th:nth-of-type(4)': {
               width: '15%',
@@ -277,7 +274,7 @@ export default function AdminAbsenceRequestTable() {
               width: '13%',
             },
             '& thead th:nth-of-type(7)': {
-              width: '15%',
+              width: '14%',
             },
             '& thead th:last-of-type': {
               width: '15%',
@@ -291,27 +288,9 @@ export default function AdminAbsenceRequestTable() {
             <tr>
               <th />
               {headCells.map((headCell) => {
-                const active = orderBy === headCell.id
                 return (
-                  <th
-                    key={headCell.id}
-                    aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
-                    style={{ verticalAlign: 'top', textAlign: headCell.label === 'Name' ? '' : 'center' }}
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <Link
-                      underline="none"
-                      color="neutral"
-                      component="button"
-                      fontWeight="lg"
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        height: '100%',
-                      }}
-                    >
-                      {headCell.label}
-                    </Link>
+                  <th key={headCell.id} style={{ verticalAlign: 'middle', textAlign: headCell.label === 'Name' ? '' : 'center' }}>
+                    {headCell.label}
                   </th>
                 )
               })}
@@ -328,6 +307,7 @@ export default function AdminAbsenceRequestTable() {
                     <tr tabIndex={-1} key={row.id}>
                       <td id={labelId}>
                         <Avatar src={`/images/${row.image}`} />
+                        {/* TODO: Merge with Name and photo later for mobile */}
                       </td>
                       <td id={labelId}>
                         <Stack direction="column">

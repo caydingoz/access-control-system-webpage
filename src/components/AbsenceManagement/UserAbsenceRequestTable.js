@@ -1,19 +1,16 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option } from '@mui/joy'
-import { Button, Chip, Link } from '@mui/joy'
+import { Button, Chip } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
 import { format } from 'date-fns'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import 'src/css/style.css'
 
 export default function UserAbsenceRequestTable() {
   const [filterDescription, setFilterDescription] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterType, setFilterType] = React.useState(null)
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('firstName')
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
@@ -276,27 +273,9 @@ export default function UserAbsenceRequestTable() {
           <thead>
             <tr>
               {headCells.map((headCell) => {
-                const active = orderBy === headCell.id
                 return (
-                  <th
-                    key={headCell.id}
-                    aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
-                    style={{ verticalAlign: 'top', textAlign: headCell.label === 'Type' ? '' : 'center' }}
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <Link
-                      underline="none"
-                      color="neutral"
-                      component="button"
-                      fontWeight="lg"
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        height: '100%',
-                      }}
-                    >
-                      {headCell.label}
-                    </Link>
+                  <th key={headCell.id} style={{ verticalAlign: 'middle', textAlign: headCell.label === 'Type' ? '' : 'center' }}>
+                    {headCell.label}
                   </th>
                 )
               })}
