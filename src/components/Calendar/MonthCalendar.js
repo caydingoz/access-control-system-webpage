@@ -76,8 +76,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
               key={index}
               sx={{
                 width: '90%',
-                backgroundColor: '#37AFE1',
-                color: 'white',
+                backgroundColor: '#97E7E1',
                 borderRadius: '5px',
                 padding: '5px',
                 marginBottom: '5px',
@@ -93,8 +92,8 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 level="body-xs"
                 sx={{
                   textAlign: 'center',
+                  color: '#4A4A4A',
                   fontSize: '11px',
-                  color: 'white',
                   overflow: 'hidden',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',

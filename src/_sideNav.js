@@ -40,18 +40,18 @@ const _sideNav = [
     items: [
       {
         component: CNavItem,
-        name: 'Absence Request',
-        to: '/absence-management/admin/requests',
+        name: 'Absence Requests',
+        to: '/absence-management/requests/admin',
       },
       {
         component: CNavItem,
         name: 'My Accurals',
-        to: '/absence-management/user/accurals',
+        to: '/absence-management/accurals/user',
       },
       {
         component: CNavItem,
         name: 'My Absence Requests',
-        to: '/absence-management/user/requests',
+        to: '/absence-management/requests/user',
       },
     ],
   },

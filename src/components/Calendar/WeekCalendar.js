@@ -78,7 +78,6 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
           <Box
             sx={{
               backgroundColor: theme === 'dark' ? layerColorsDark[activity.layer] : layerColors[activity.layer],
-              color: 'white',
               borderRadius: '2px',
               textAlign: 'center',
               fontSize: '12px',
@@ -103,7 +102,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
               sx={{
                 textAlign: 'left',
                 fontSize: '11px',
-                color: theme === 'dark' ? 'white' : '#767879',
+                color: theme === 'dark' ? 'white' : '#4A4A4A',
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
@@ -119,7 +118,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
                 textAlign: 'left',
                 fontWeight: 'normal',
                 fontSize: '10px',
-                color: theme === 'dark' ? 'white' : '#767879',
+                color: theme === 'dark' ? 'white' : '#4A4A4A',
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',

@@ -288,8 +288,8 @@ export default function RoleTable() {
                 size="xs"
                 style={{ width: '100%', fontSize: '13px' }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.02)'
-                  e.currentTarget.style.boxShadow = '0 3px 9px rgba(0, 128, 0, 0.3)'
+                  e.currentTarget.style.transform = 'scale(1.01)'
+                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = 'scale(1)'
