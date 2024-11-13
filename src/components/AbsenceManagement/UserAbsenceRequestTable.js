@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react'
-import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option } from '@mui/joy'
+import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option, Stack } from '@mui/joy'
 import { Button, Chip } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
+import PlusIcon from '@rsuite/icons/Plus'
+import { IconButton as RsuiteIconButton } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
 import { format } from 'date-fns'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import FunnelIcon from '@rsuite/icons/Funnel'
 
 export default function UserAbsenceRequestTable() {
   const [filterDescription, setFilterDescription] = React.useState(null)
@@ -226,6 +229,37 @@ export default function UserAbsenceRequestTable() {
             </Box>
           </Sheet>
         </form>
+        <Box>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ marginLeft: '2%', width: '125px' }}>
+              <RsuiteIconButton
+                appearance="primary"
+                icon={<PlusIcon />}
+                color="green"
+                size="xs"
+                style={{ width: '100%', fontSize: '13px' }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.01)'
+                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+                // onClick={() => setVisibleAddRole((prev) => !prev)}
+              >
+                Create Request
+              </RsuiteIconButton>
+            </div>
+            <RsuiteIconButton appearance="subtle" size="sm" icon={<FunnelIcon />} style={{ marginRight: '2%' }} disabled />
+          </Stack>
+        </Box>
         <Table
           hoverRow
           size="md"

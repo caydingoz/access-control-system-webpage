@@ -166,7 +166,7 @@ export default function RoleTable() {
           }}
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
-            Roles
+            Role Management
             <br></br>
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
               The Roles table contains a list of roles that define the permissions and access levels for users within the system. Expand the row to
