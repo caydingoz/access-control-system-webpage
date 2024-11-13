@@ -121,11 +121,10 @@ export default function AdminAbsenceRequestTable() {
           }}
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
-            Absences
+            Absence Requests
             <br />
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-              The Absences table stores information about individuals who have access to the application, including their credentials, roles, and
-              relevant Absence details.
+              View employee leave requests, which are reviewed and approved or rejected by HR.
             </Typography>
           </Typography>
         </Box>

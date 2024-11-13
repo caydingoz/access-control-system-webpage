@@ -113,7 +113,9 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
     const daysArray = []
     const totalSlots = 42
 
+    // Önceki ayın günlerini ekleyin
     for (let i = 0; i < firstDayOfMonth; i++) {
+      const previousMonthDay = getDaysInMonth(currentMonth - 1, currentYear) - (firstDayOfMonth - i - 1)
       daysArray.push(
         <Box
           key={`empty-${i}`}
@@ -122,11 +124,26 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             width: '100%',
             height: '100px',
             border: '1px solid #ddd',
+            opacity: 0.5,
           }}
-        />,
+        >
+          <Typography
+            sx={{
+              position: 'absolute',
+              top: '5px',
+              right: '5px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: theme === 'dark' ? '#ccc' : '#666',
+            }}
+          >
+            {previousMonthDay}
+          </Typography>
+        </Box>,
       )
     }
 
+    // Mevcut ayın günlerini ekleyin
     for (let day = 1; day <= daysInMonth; day++) {
       const fullDate = new Date(currentYear, currentMonth, day)
       daysArray.push(
@@ -165,10 +182,12 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
       )
     }
 
+    // Sonraki ayın boş günlerini ekleyin
     const totalFilledSlots = firstDayOfMonth + daysInMonth
     const remainingEmptySlots = totalSlots - totalFilledSlots
 
     for (let i = 0; i < remainingEmptySlots; i++) {
+      const nextMonthDay = i + 1 // Sonraki ayın günleri
       daysArray.push(
         <Box
           key={`empty-after-${i}`}
@@ -177,8 +196,22 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             width: '100%',
             height: '100px',
             border: '1px solid #ddd',
+            opacity: 0.5,
           }}
-        />,
+        >
+          <Typography
+            sx={{
+              position: 'absolute',
+              top: '5px',
+              right: '5px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: theme === 'dark' ? '#ccc' : '#666',
+            }}
+          >
+            {nextMonthDay}
+          </Typography>
+        </Box>,
       )
     }
 

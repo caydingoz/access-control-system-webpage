@@ -116,11 +116,11 @@ export default function UserAbsenceRequestTable() {
           }}
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
-            Absences
+            My Absence Requests
             <br />
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-              The Absences table stores information about individuals who have access to the application, including their credentials, roles, and
-              relevant Absence details.
+              You can view all your leave requests, allowing you to track the status and details of each request. You can view past, pending, and
+              approved requests
             </Typography>
           </Typography>
         </Box>

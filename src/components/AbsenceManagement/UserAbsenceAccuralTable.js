@@ -80,11 +80,11 @@ export default function UserAbsenceAccuralTable() {
           }}
         >
           <Typography level="title-lg" sx={{ flex: '1 1 100%', fontWeight: 'bold' }}>
-            Absences
+            My Accurals
             <br />
             <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-              The Absences table stores information about individuals who have access to the application, including their credentials, roles, and
-              relevant Absence details.
+              You can view and track your available and used leave balances. This section provides an overview of your accrued leave days, helping you
+              manage your time off efficiently.
             </Typography>
           </Typography>
         </Box>
