@@ -76,7 +76,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
               key={index}
               sx={{
                 width: '90%',
-                backgroundColor: '#97E7E1',
+                backgroundColor: theme === 'dark' ? '#0C7B93' : '#B1AFFF',
                 borderRadius: '5px',
                 padding: '5px',
                 marginBottom: '5px',
@@ -84,7 +84,7 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 fontSize: '12px',
               }}
               onClick={(e) => {
-                e.stopPropagation() // Gün kutusuna tıklamayı durdurur
+                e.stopPropagation() //Gün kutusuna tıklamayı durdurur
                 openUpdateActivity(activity.id)
               }}
             >
@@ -92,12 +92,12 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
                 level="body-xs"
                 sx={{
                   textAlign: 'center',
-                  color: '#4A4A4A',
+                  color: 'white',
                   fontSize: '11px',
                   overflow: 'hidden',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: 3, // Change this number to adjust how many lines to display
+                  WebkitLineClamp: 3, //Change this number to adjust how many lines to display
                 }}
               >
                 {activity.description}

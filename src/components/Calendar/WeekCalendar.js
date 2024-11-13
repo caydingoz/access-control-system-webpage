@@ -11,8 +11,8 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const hours = Array.from({ length: 24 }, (_, i) => `${i < 10 ? '0' : ''}${i}:00`)
 
-  const layerColors = ['#D3F7FC', '#A5F1DB', '#D0F5BE', '#FBFFDC']
-  const borderColors = ['#54B8C0', '#6CBF9E', '#A5C98D', '#D4DBA4']
+  const layerColors = ['#B1AFFF', '#A0D2FF', '#90E0EF', '#48CAE4', '#0096C7']
+  const borderColors = ['#6D6E9E', '#5E85A1', '#4F7A94', '#2F697F', '#00556A']
   const layerColorsDark = ['#142850', '#27496D', '#0C7B93', '#00A8CC'] //dark mode
   const borderColorsDark = ['#C53C3D', '#D76B30', '#FFD460', '#FFE080'] //dark mode ['#4B6B9A', '#6E8BAD', '#66B8D0', '#99D7EA']
 
@@ -102,7 +102,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
               sx={{
                 textAlign: 'left',
                 fontSize: '11px',
-                color: theme === 'dark' ? 'white' : '#4A4A4A',
+                color: theme === 'dark' ? 'white' : '#333333',
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
@@ -118,7 +118,7 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
                 textAlign: 'left',
                 fontWeight: 'normal',
                 fontSize: '10px',
-                color: theme === 'dark' ? 'white' : '#4A4A4A',
+                color: theme === 'dark' ? 'white' : '#333333',
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
