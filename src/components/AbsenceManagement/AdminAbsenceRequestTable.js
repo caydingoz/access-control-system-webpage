@@ -110,7 +110,7 @@ export default function AdminAbsenceRequestTable() {
 
   return (
     <div>
-      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
+      <Sheet variant="outlined" sx={{ width: '100%', borderRadius: 'sm', backgroundColor: 'transparent' }}>
         <Box
           style={{
             display: 'flex',
@@ -144,7 +144,6 @@ export default function AdminAbsenceRequestTable() {
               margin: '0% 2% 1% 2%',
               padding: '15px',
               borderRadius: 'sm',
-              boxShadow: 'sm',
               backgroundColor: 'transparent',
             }}
           >
@@ -220,10 +219,10 @@ export default function AdminAbsenceRequestTable() {
                   padding: '0 31px',
                   borderRadius: 'md',
                   background: 'linear-gradient(45deg, #3399ff, #126EC9)',
-                  boxShadow: 'md',
                   minWidth: 120,
                   '&:hover': {
                     background: 'linear-gradient(45deg, #2A8DEB, #105CA8)',
+                    boxShadow: 'sm',
                   },
                 }}
               >
@@ -237,12 +236,11 @@ export default function AdminAbsenceRequestTable() {
           size="md"
           variant="outlined"
           sx={{
-            boxShadow: 'md',
             width: '96%',
             margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
-              height: '57px',
+              height: '55px',
             },
             '& tbody td:nth-of-type(1)': {
               paddingLeft: '1.5%',
@@ -384,7 +382,7 @@ export default function AdminAbsenceRequestTable() {
             {emptyRows > 0 && (
               <tr
                 style={{
-                  height: `calc(${emptyRows} * 57px)`,
+                  height: `calc(${emptyRows} * 55px)`,
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >

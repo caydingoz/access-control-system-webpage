@@ -107,8 +107,8 @@ export default function PermissionTable(props) {
   return (
     <tr>
       <td style={{ height: 0, padding: 0 }} colSpan={5}>
-        <Sheet variant="plain" sx={{ height: 350, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)', zIndex: 3 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%' }}>
+        <Sheet variant="plain" sx={{ height: 340, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)', zIndex: 3 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
               Permissions
               <br></br>
@@ -180,102 +180,102 @@ export default function PermissionTable(props) {
               )}
             </div>
           </div>
-          <Table
-            stickyHeader
-            stickyFooter
-            borderAxis="bothBetween"
-            size="sm"
-            sx={{
-              '--TableCell-headBackground': 'transparent',
-              '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-              '& tbody tr': { height: '32px' },
-              '& thead tr': { height: '32px' },
-              '& thead > tr > th:nth-of-type(n)': { width: '100%' },
-              '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },
-              '& tbody > tr > td:nth-of-type(5)': { width: '30%', textAlign: 'center' },
-              pt: 1,
-            }}
-          >
-            <thead style={{ pointerEvents: 'none' }}>
-              <tr>
-                <th>Operation</th>
-                <th>Type</th>
-                <th>Create Date</th>
-                <th>Update Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {permissions.length > 0 ? (
-                permissions.map((permission) => (
-                  <tr key={permission.id}>
-                    <td>
-                      <Typography level="body-xs">{permission.operation}</Typography>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ flex: '1' }}>
-                          <Checkbox
-                            color="neutral"
-                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Read)}
-                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Read)}
-                            sx={{ verticalAlign: 'middle' }}
-                            size="sm"
-                          />
-                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Read</span>
+          <Sheet variant="plain" sx={{ height: 240, overflow: 'auto' }}>
+            <Table
+              stickyHeader
+              borderAxis="both"
+              size="sm"
+              sx={{
+                '--TableCell-headBackground': (theme) => theme.vars.palette.neutral.softBg,
+                '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
+                '& tbody tr': { height: '31px' },
+                '& thead tr': { height: '31px' },
+                '& thead > tr > th:nth-of-type(n)': { width: '100%' },
+                '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },
+                '& tbody > tr > td:nth-of-type(5)': { width: '30%', textAlign: 'center' },
+              }}
+            >
+              <thead style={{ pointerEvents: 'none' }}>
+                <tr>
+                  <th>Operation</th>
+                  <th>Type</th>
+                  <th>Create Date</th>
+                  <th>Update Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {permissions.length > 0 ? (
+                  permissions.map((permission) => (
+                    <tr key={permission.id}>
+                      <td>
+                        <Typography level="body-xs">{permission.operation}</Typography>
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ flex: '1' }}>
+                            <Checkbox
+                              color="neutral"
+                              onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Read)}
+                              checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Read)}
+                              sx={{ verticalAlign: 'middle' }}
+                              size="sm"
+                            />
+                            <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Read</span>
+                          </div>
+                          <div style={{ flex: '1' }}>
+                            <Checkbox
+                              color="success"
+                              onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Write)}
+                              checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Write)}
+                              sx={{ verticalAlign: 'middle' }}
+                              size="sm"
+                            />
+                            <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Write</span>
+                          </div>
+                          <div style={{ flex: '1' }}>
+                            <Checkbox
+                              color="danger"
+                              onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Delete)}
+                              checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Delete)}
+                              sx={{ verticalAlign: 'middle' }}
+                              size="sm"
+                            />
+                            <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Delete</span>
+                          </div>
                         </div>
-                        <div style={{ flex: '1' }}>
-                          <Checkbox
-                            color="success"
-                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Write)}
-                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Write)}
-                            sx={{ verticalAlign: 'middle' }}
-                            size="sm"
-                          />
-                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Write</span>
-                        </div>
-                        <div style={{ flex: '1' }}>
-                          <Checkbox
-                            color="danger"
-                            onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Delete)}
-                            checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Delete)}
-                            sx={{ verticalAlign: 'middle' }}
-                            size="sm"
-                          />
-                          <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Delete</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <Typography level="body-xs">{formatDateTime(permission.createdAt)}</Typography>
-                    </td>
-                    <td>
-                      <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <IconButton
-                        color="red"
-                        appearance="primary"
-                        onClick={async () => await deletePermission(permission.id)}
-                        size="xs"
-                        icon={<TrashIcon />}
-                      />
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{formatDateTime(permission.createdAt)}</Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <IconButton
+                          color="red"
+                          appearance="primary"
+                          onClick={async () => await deletePermission(permission.id)}
+                          size="xs"
+                          icon={<TrashIcon />}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr
+                    style={{
+                      '--TableRow-hoverBackground': 'transparent',
+                    }}
+                  >
+                    <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                      There is no data..
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr
-                  style={{
-                    '--TableRow-hoverBackground': 'transparent',
-                  }}
-                >
-                  <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
-                    There is no data..
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+                )}
+              </tbody>
+            </Table>
+          </Sheet>
         </Sheet>
       </td>
     </tr>

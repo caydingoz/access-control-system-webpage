@@ -69,7 +69,7 @@ export default function UserAbsenceAccuralTable() {
 
   return (
     <div>
-      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
+      <Sheet variant="outlined" sx={{ width: '100%', borderRadius: 'sm', backgroundColor: 'transparent' }}>
         <Box
           style={{
             display: 'flex',

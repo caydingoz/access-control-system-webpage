@@ -155,7 +155,7 @@ export default function RoleTable() {
 
   return (
     <div>
-      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
+      <Sheet variant="outlined" sx={{ width: '100%', borderRadius: 'sm', backgroundColor: 'transparent' }}>
         <Box
           style={{
             display: 'flex',
@@ -190,7 +190,6 @@ export default function RoleTable() {
               margin: '0% 2% 1% 2%',
               padding: '15px',
               borderRadius: 'sm',
-              boxShadow: 'sm',
               backgroundColor: 'transparent',
             }}
           >
@@ -260,10 +259,10 @@ export default function RoleTable() {
                   padding: '0 31px',
                   borderRadius: 'md',
                   background: 'linear-gradient(45deg, #3399ff, #126EC9)',
-                  boxShadow: 'md',
                   minWidth: 120,
                   '&:hover': {
-                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)', // Darker or different gradient on hover
+                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)',
+                    boxShadow: 'sm',
                   },
                 }}
               >
@@ -402,7 +401,6 @@ export default function RoleTable() {
           size="md"
           variant="outlined"
           sx={{
-            boxShadow: 'md',
             width: '96%',
             margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,

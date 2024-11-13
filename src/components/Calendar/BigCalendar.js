@@ -115,7 +115,7 @@ const BigCalendar = () => {
   }
 
   return (
-    <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
+    <Sheet variant="outlined" sx={{ width: '100%', borderRadius: 'sm', backgroundColor: 'transparent' }}>
       <Box
         style={{
           display: 'flex',
@@ -174,7 +174,6 @@ const BigCalendar = () => {
           width: '96%',
           margin: '1% 2% 1% 2%',
           padding: '10px 20px 20px 20px',
-          boxShadow: 'sm',
           borderRadius: 'sm',
           backgroundColor: 'transparent',
         }}

@@ -207,7 +207,7 @@ export default function UserTable() {
 
   return (
     <div>
-      <Sheet variant="outlined" sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm', backgroundColor: 'transparent' }}>
+      <Sheet variant="outlined" sx={{ width: '100%', borderRadius: 'sm', backgroundColor: 'transparent' }}>
         <Box
           style={{
             display: 'flex',
@@ -241,7 +241,6 @@ export default function UserTable() {
               margin: '0% 2% 1% 2%',
               padding: '15px',
               borderRadius: 'sm',
-              boxShadow: 'sm',
               backgroundColor: 'transparent',
             }}
           >
@@ -407,7 +406,6 @@ export default function UserTable() {
           size="md"
           variant="outlined"
           sx={{
-            boxShadow: 'md',
             width: '96%',
             margin: '1% 2% 2% 2%',
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
@@ -415,7 +413,7 @@ export default function UserTable() {
               height: '57px',
             },
             '& thead th:nth-of-type(1)': {
-              width: '40px',
+              width: '41px',
             },
             '& thead th:nth-of-type(2)': {
               width: '60px',
