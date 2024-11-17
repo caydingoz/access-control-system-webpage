@@ -55,14 +55,6 @@ export default function RoleTable() {
       id: 'name',
       label: 'Name',
     },
-    {
-      id: 'createdAt',
-      label: 'Create Date',
-    },
-    {
-      id: 'updatedAt',
-      label: 'Update Date',
-    },
   ]
 
   useEffect(() => {
@@ -406,6 +398,7 @@ export default function RoleTable() {
             '--TableCell-selectedBackground': (theme) => theme.vars.palette.primary.softBg,
             '& tbody tr': {
               height: '40px',
+              cursor: 'pointer',
             },
             '& thead th:nth-of-type(1)': {
               width: '40px',
@@ -488,16 +481,14 @@ export default function RoleTable() {
                           }
                         : {}
                     }
+                    onClick={async () => await handleCollapse(row.id)}
                   >
                     <td
                       style={{
-                        padding: '4px',
                         alignItems: 'center',
                       }}
                     >
-                      <IconButton color="neutral" size="sm" onClick={async () => await handleCollapse(row.id)}>
-                        {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                      </IconButton>
+                      {openedId === row.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </td>
                     <td>
                       <Checkbox
@@ -516,12 +507,6 @@ export default function RoleTable() {
                     <td id={labelId}>
                       <Typography level="body-sm">{row.name}</Typography>
                     </td>
-                    <td id={labelId}>
-                      <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
-                    </td>
-                    <td id={labelId}>
-                      <Typography level="body-sm">{formatDateTime(row.updatedAt)}</Typography>
-                    </td>
                   </tr>
                   {openedId === row.id && <PermissionTable roleId={openedId.toString()} />}
                 </React.Fragment>
@@ -534,13 +519,13 @@ export default function RoleTable() {
                   '--TableRow-hoverBackground': 'transparent',
                 }}
               >
-                <td colSpan={5} aria-hidden />
+                <td colSpan={3} aria-hidden />
               </tr>
             )}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={5}>
+              <td colSpan={3}>
                 <Box
                   sx={{
                     display: 'flex',

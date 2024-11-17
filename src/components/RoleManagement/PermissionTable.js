@@ -106,7 +106,7 @@ export default function PermissionTable(props) {
 
   return (
     <tr>
-      <td style={{ height: 0, padding: 0 }} colSpan={5}>
+      <td style={{ height: 0, padding: 0 }} colSpan={3}>
         <Sheet variant="plain" sx={{ height: 340, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)', zIndex: 3 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
@@ -268,7 +268,7 @@ export default function PermissionTable(props) {
                       '--TableRow-hoverBackground': 'transparent',
                     }}
                   >
-                    <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                    <td colSpan={5} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
                       There is no data..
                     </td>
                   </tr>
