@@ -563,14 +563,7 @@ export default function RoleTable() {
                     </FormLabel>
                   </FormControl>
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton
-                      size="sm"
-                      color="neutral"
-                      variant="outlined"
-                      disabled={page === 0}
-                      onClick={() => setPage(page - 1)}
-                      sx={{ bgcolor: 'background.surface' }}
-                    >
+                    <IconButton size="sm" color="neutral" variant="outlined" disabled={page === 0} onClick={() => setPage(page - 1)}>
                       <KeyboardArrowLeftIcon />
                     </IconButton>
                     <IconButton
@@ -579,7 +572,6 @@ export default function RoleTable() {
                       variant="outlined"
                       disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
                       onClick={() => setPage(page + 1)}
-                      sx={{ bgcolor: 'background.surface' }}
                     >
                       <KeyboardArrowRightIcon />
                     </IconButton>

@@ -9,6 +9,7 @@ import { format } from 'date-fns'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import FunnelIcon from '@rsuite/icons/Funnel'
+import AbsenceRequestInfo from './AbsenceRequestInfo'
 
 export default function UserAbsenceRequestTable() {
   const [filterDescription, setFilterDescription] = React.useState(null)
@@ -18,6 +19,7 @@ export default function UserAbsenceRequestTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [absences, setAbsences] = React.useState([])
+  const [visibleNewAbsence, setVisibleNewAbsence] = React.useState(false)
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
@@ -90,6 +92,18 @@ export default function UserAbsenceRequestTable() {
 
   const handleCancelAbsenceRequest = async (id) => {
     const res = await AbsenceManagementService.deleteAbsenceRequestAsync(id)
+    if (res.success) {
+      const dataRes = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
+      if (dataRes.success) {
+        setAbsences(dataRes.data.absences)
+        setTotalCount(dataRes.data.totalCount)
+      }
+    }
+  }
+
+  const handleCreateNewAbsence = async (newAbsence) => {
+    setVisibleNewAbsence(false)
+    var res = await AbsenceManagementService.createAbsenceRequestAsync(newAbsence)
     if (res.success) {
       const dataRes = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (dataRes.success) {
@@ -252,10 +266,23 @@ export default function UserAbsenceRequestTable() {
                   e.currentTarget.style.transform = 'scale(1)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
-                // onClick={() => setVisibleAddRole((prev) => !prev)}
+                onClick={() => setVisibleNewAbsence((prev) => !prev)}
               >
                 Create Request
               </RsuiteIconButton>
+              {visibleNewAbsence && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '1.6%',
+                    marginTop: '5px',
+                    width: '420px',
+                    zIndex: 20,
+                  }}
+                >
+                  <AbsenceRequestInfo types={AbsenceTypesData} onSubmit={handleCreateNewAbsence} onClose={() => setVisibleNewAbsence(false)} />
+                </div>
+              )}
             </div>
             <RsuiteIconButton appearance="subtle" size="sm" icon={<FunnelIcon />} style={{ marginRight: '2%' }} disabled />
           </Stack>
@@ -416,14 +443,7 @@ export default function UserAbsenceRequestTable() {
                     </FormLabel>
                   </FormControl>
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton
-                      size="sm"
-                      color="neutral"
-                      variant="outlined"
-                      disabled={page === 0}
-                      onClick={() => setPage(page - 1)}
-                      sx={{ bgcolor: 'background.surface' }}
-                    >
+                    <IconButton size="sm" color="neutral" variant="outlined" disabled={page === 0} onClick={() => setPage(page - 1)}>
                       <KeyboardArrowLeftIcon />
                     </IconButton>
                     <IconButton
@@ -432,7 +452,6 @@ export default function UserAbsenceRequestTable() {
                       variant="outlined"
                       disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
                       onClick={() => setPage(page + 1)}
-                      sx={{ bgcolor: 'background.surface' }}
                     >
                       <KeyboardArrowRightIcon />
                     </IconButton>
