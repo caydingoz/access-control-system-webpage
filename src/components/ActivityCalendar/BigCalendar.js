@@ -141,7 +141,7 @@ const BigCalendar = () => {
           </Button>
         </Box>
       </Box>
-      <div style={{ padding: '0.5% 0% 0.5% 1%' }}>
+      <div style={{ padding: '0.5% 0% 0.5% 2%' }}>
         <RsuiteIconButton
           appearance="primary"
           icon={<PlusIcon />}
