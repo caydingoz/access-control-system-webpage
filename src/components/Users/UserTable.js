@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
 import { Button, Stack, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
-import { DateRangePicker, Input, SelectPicker, IconButton as RsuiteIconButton } from 'rsuite'
+import { TagPicker, Input, SelectPicker, IconButton as RsuiteIconButton } from 'rsuite'
 import UserInfo from './UserInfo'
 import UserService from 'src/services/UserService'
 import RoleManagementService from 'src/services/RoleManagementService'
@@ -21,6 +21,7 @@ import 'src/css/style.css'
 export default function UserTable() {
   const [filterName, setFilterName] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
+  const [filterRoles, setFilterRoles] = React.useState(null)
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('firstName')
   const [selectedUsers, setSelectedUsers] = React.useState([])
@@ -103,14 +104,14 @@ export default function UserTable() {
   useEffect(() => {
     async function fetchData() {
       await getAllRoles()
-      const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
+      const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName, filterRoles)
       if (res.success) {
         setUsers(res.data.users)
         setTotalCount(res.data.totalCount)
       }
     }
     fetchData()
-  }, [page, rowsPerPage, order, orderBy, filterName, filterStatus])
+  }, [page, rowsPerPage, order, orderBy, filterName, filterStatus, filterRoles])
 
   const deleteUsers = async () => {
     var res = await UserService.deleteUsersAsync(selectedUsers)
@@ -127,7 +128,7 @@ export default function UserTable() {
   }
 
   const getUsers = async () => {
-    const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName)
+    const res = await UserService.getUsersAsync(page, rowsPerPage, filterStatus, order, orderBy, filterName, filterRoles)
     if (res.success) {
       setUsers(res.data.users)
       setTotalCount(res.data.totalCount)
@@ -232,6 +233,7 @@ export default function UserTable() {
             const formElements = event.currentTarget.elements
             setFilterName(formElements.name.value)
             setFilterStatus(formElements.status.value)
+            setFilterRoles(formElements.filterRoles.value)
           }}
         >
           <Sheet
@@ -252,7 +254,7 @@ export default function UserTable() {
                 flexWrap: 'wrap',
               }}
             >
-              <Box sx={{ flex: 1, minWidth: 250 }}>
+              <Box sx={{ flex: 1, minWidth: '300px' }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
                   What are you looking for?
                 </Typography>
@@ -269,21 +271,20 @@ export default function UserTable() {
                   }}
                 />
               </Box>
-              <Box sx={{ minWidth: 180 }}>
+              <Box sx={{ width: '300px' }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Date
+                  Roles
                 </Typography>
-                <DateRangePicker
+                <TagPicker
+                  name="filterRoles"
                   size="sm"
-                  style={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
+                  placeholder="Select roles.."
+                  style={{ width: '100%', fontSize: '12px' }}
+                  menuStyle={{ fontSize: '12px', zIndex: '100', height: '250px', width: '300px' }}
+                  data={roles}
                 />
               </Box>
-              <Box sx={{ width: 180 }}>
+              <Box sx={{ width: '300px' }}>
                 <Typography level="title-sm" sx={{ mb: 1 }}>
                   Status
                 </Typography>
@@ -298,7 +299,7 @@ export default function UserTable() {
                     boxShadow: 'sm',
                   }}
                   searchable={false}
-                  menuStyle={{ width: 180, fontSize: '13px' }}
+                  menuStyle={{ width: '300px', fontSize: '13px' }}
                   data={userStatusData}
                 />
               </Box>

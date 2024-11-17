@@ -1,6 +1,6 @@
 import axiosClient from '../helpers/axiosClient'
 
-const getUsersAsync = async (page, count, status, sortType, column, filterName = null) => {
+const getUsersAsync = async (page, count, status, sortType, column, filterName = null, filterRoles = null) => {
   const params = new URLSearchParams({
     page,
     count,
@@ -13,6 +13,12 @@ const getUsersAsync = async (page, count, status, sortType, column, filterName =
   }
   if (status) {
     params.append('status', status)
+  }
+  if (filterRoles) {
+    const rolesArray = typeof filterRoles === 'string' ? filterRoles.split(',').map((role) => role.trim()) : filterRoles
+    rolesArray.forEach((roleId) => {
+      params.append('roleIds', roleId)
+    })
   }
 
   const url = `user?${params.toString()}`

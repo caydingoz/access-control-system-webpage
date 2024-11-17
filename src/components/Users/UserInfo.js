@@ -139,7 +139,7 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
           size="xs"
           placeholder="Select.."
           style={{ fontSize: '12px', padding: '4px 0' }}
-          menuStyle={{ fontSize: '12px', zIndex: '1100' }}
+          menuStyle={{ fontSize: '12px', zIndex: '2300', height: '200px' }}
           data={roles}
           value={roles.filter((role) => userInfo.roleIds.includes(role.value)).map((role) => role.value)}
           onChange={(selectedIds) => {
