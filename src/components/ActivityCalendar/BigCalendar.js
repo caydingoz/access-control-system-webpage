@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Typography, Sheet, Button } from '@mui/joy'
 import { IconButton as RsuiteIconButton } from 'rsuite'
-import MonthCalendar from '../Calendar/MonthCalendar'
-import WeekCalendar from '../Calendar/WeekCalendar'
+import MonthCalendar from './MonthCalendar'
+import WeekCalendar from './WeekCalendar'
 import ActivityCalendarService from '../../services/ActivityCalendarService'
 import PlusIcon from '@rsuite/icons/Plus'
 import ActivityInfo from './ActivityInfo'
@@ -160,10 +160,7 @@ const BigCalendar = () => {
             e.currentTarget.style.transform = 'scale(1)'
             e.currentTarget.style.boxShadow = 'none'
           }}
-          onClick={() => {
-            setSelectedDate(new Date(today))
-            setVisibleActivityInfo(true)
-          }}
+          onClick={() => openCreateActivity(new Date(today))}
         >
           Add Activity
         </RsuiteIconButton>
