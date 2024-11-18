@@ -180,7 +180,27 @@ export default function PermissionTable(props) {
               )}
             </div>
           </div>
-          <Sheet variant="plain" sx={{ height: 240, overflow: 'auto' }}>
+          <Sheet
+            variant="plain"
+            sx={{
+              height: 240,
+              overflow: 'auto',
+              '::-webkit-scrollbar': {
+                width: '5px',
+              },
+              '::-webkit-scrollbar-thumb': {
+                backgroundColor: '#888',
+                borderRadius: '4px',
+              },
+              '::-webkit-scrollbar-thumb:hover': {
+                backgroundColor: '#555',
+              },
+              '::-webkit-scrollbar-track': {
+                backgroundColor: '#f1f1f1',
+                borderRadius: '4px',
+              },
+            }}
+          >
             <Table
               stickyHeader
               borderAxis="both"
