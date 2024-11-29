@@ -3,8 +3,12 @@ import { Typography, Stack, Card } from '@mui/joy'
 import { Input, InputGroup, SelectPicker, DatePicker } from 'rsuite'
 import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
+import { useDispatch } from 'react-redux'
+import { showAlert } from '../../slices/alertSlice'
+import { v4 as uuidv4 } from 'uuid'
 
-export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
+export default function AbsenceRequestInfo({ employmentDate, types = [], onSubmit, onClose }) {
+  const dispatch = useDispatch()
   const [absenceInfo, setAbsenceInfo] = React.useState({
     description: '',
     type: null,
@@ -22,6 +26,20 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
   }
 
   const handleSubmit = () => {
+    const requiredFields = [
+      { key: 'type', message: 'Leave Type not selected!' },
+      { key: 'startDate', message: 'Start Date not selected!' },
+      { key: 'startHour', message: 'Start Hour not selected!' },
+      { key: 'endDate', message: 'End Date not selected!' },
+      { key: 'endHour', message: 'End Hour not selected!' },
+    ]
+
+    for (const field of requiredFields) {
+      if (!absenceInfo[field.key]) {
+        dispatch(showAlert({ id: uuidv4(), message: field.message, alertType: 'Error' }))
+        return
+      }
+    }
     const startDateTime = new Date(absenceInfo.startDate)
     startDateTime.setHours(absenceInfo.startHour, 0, 0, 0)
 
@@ -88,6 +106,10 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
             menuStyle={{ zIndex: '12000' }}
             value={absenceInfo.startDate}
             onChange={(value) => handleInputChange('startDate', value)}
+            shouldDisableDate={(date) => {
+              const minDate = new Date(employmentDate)
+              return date < minDate
+            }}
             isoWeek
           />
           <SelectPicker
@@ -115,6 +137,10 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
             menuStyle={{ zIndex: '12000' }}
             value={absenceInfo.endDate}
             onChange={(value) => handleInputChange('endDate', value)}
+            shouldDisableDate={(date) => {
+              const minDate = new Date(employmentDate)
+              return date < minDate
+            }}
             isoWeek
           />
           <SelectPicker

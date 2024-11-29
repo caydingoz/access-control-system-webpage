@@ -19,6 +19,7 @@ export default function UserAbsenceRequestTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [absences, setAbsences] = React.useState([])
+  const [employmentDate, setEmploymentDate] = React.useState()
   const [visibleNewAbsence, setVisibleNewAbsence] = React.useState(false)
 
   function formatDateTime(inputDateTime) {
@@ -84,6 +85,7 @@ export default function UserAbsenceRequestTable() {
       const res = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (res.success) {
         setAbsences(res.data.absences)
+        setEmploymentDate(res.data.employmentDate)
         setTotalCount(res.data.totalCount)
       }
     }
@@ -96,6 +98,7 @@ export default function UserAbsenceRequestTable() {
       const dataRes = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (dataRes.success) {
         setAbsences(dataRes.data.absences)
+        setEmploymentDate(res.data.employmentDate)
         setTotalCount(dataRes.data.totalCount)
       }
     }
@@ -108,6 +111,7 @@ export default function UserAbsenceRequestTable() {
       const dataRes = await AbsenceManagementService.getUserAbsenceRequestsAsync(page, rowsPerPage, filterStatus, filterType, filterDescription)
       if (dataRes.success) {
         setAbsences(dataRes.data.absences)
+        setEmploymentDate(res.data.employmentDate)
         setTotalCount(dataRes.data.totalCount)
       }
     }
@@ -280,7 +284,12 @@ export default function UserAbsenceRequestTable() {
                     zIndex: 20,
                   }}
                 >
-                  <AbsenceRequestInfo types={AbsenceTypesData} onSubmit={handleCreateNewAbsence} onClose={() => setVisibleNewAbsence(false)} />
+                  <AbsenceRequestInfo
+                    employmentDate={employmentDate}
+                    types={AbsenceTypesData}
+                    onSubmit={handleCreateNewAbsence}
+                    onClose={() => setVisibleNewAbsence(false)}
+                  />
                 </div>
               )}
             </div>
