@@ -105,9 +105,19 @@ export default function PermissionTable(props) {
   }
 
   return (
-    <tr>
-      <td style={{ height: 0, padding: 0 }} colSpan={3}>
-        <Sheet variant="plain" sx={{ height: 340, overflow: 'auto', pr: 3, pl: 3, boxShadow: 'inset 0 2px 2px 0 rgba(0 0 0 / 0.08)', zIndex: 3 }}>
+    <tr style={{ cursor: 'default' }}>
+      <td style={{ height: 0, padding: 0, cursor: 'default' }} colSpan={3}>
+        <Sheet
+          variant="plain"
+          sx={{
+            height: 340,
+            overflow: 'auto',
+            pr: 3,
+            pl: 3,
+            boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.12), inset 0 -2px 4px 0 rgba(0, 0, 0, 0.12)',
+            zIndex: 3,
+          }}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
               Permissions
@@ -208,7 +218,7 @@ export default function PermissionTable(props) {
               sx={{
                 '--TableCell-headBackground': (theme) => theme.vars.palette.neutral.softBg,
                 '--TableCell-selectedBackground': (theme) => theme.vars.palette.success.softBg,
-                '& tbody tr': { height: '31px' },
+                '& tbody tr': { height: '31px', cursor: 'default' },
                 '& thead tr': { height: '31px' },
                 '& thead > tr > th:nth-of-type(n)': { width: '100%' },
                 '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },

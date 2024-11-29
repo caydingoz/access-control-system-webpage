@@ -204,7 +204,10 @@ export default function UserAbsenceAccuralTable() {
                 <th scope="row" style={{ borderRadius: 0 }}>
                   <div className="d-flex justify-content-between text-nowrap">
                     <div className="fw-semibold">
-                      {(absences.reduce((sum, row) => sum + row.usedDay, 0) / absences.reduce((sum, row) => sum + row.annualDay, 0)) * 100}%
+                      {((absences.reduce((sum, row) => sum + row.usedDay, 0) / absences.reduce((sum, row) => sum + row.annualDay, 0)) * 100).toFixed(
+                        2,
+                      )}
+                      %
                     </div>
                   </div>
                   <CProgress

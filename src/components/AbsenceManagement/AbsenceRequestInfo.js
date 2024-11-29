@@ -7,16 +7,35 @@ import RsuiteCloseIcon from '@rsuite/icons/Close'
 export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
   const [absenceInfo, setAbsenceInfo] = React.useState({
     description: '',
-    startTime: new Date(new Date().setHours(8, 0, 0, 0)),
-    endTime: new Date(new Date().setHours(17, 0, 0, 0)),
     type: null,
+    startDate: new Date(),
+    startHour: 8,
+    endDate: new Date(),
+    endHour: 17,
   })
 
   const handleInputChange = (key, value) => {
-    setAbsenceInfo({
-      ...absenceInfo,
+    setAbsenceInfo((prev) => ({
+      ...prev,
       [key]: value,
-    })
+    }))
+  }
+
+  const handleSubmit = () => {
+    const startDateTime = new Date(absenceInfo.startDate)
+    startDateTime.setHours(absenceInfo.startHour, 0, 0, 0)
+
+    const endDateTime = new Date(absenceInfo.endDate)
+    endDateTime.setHours(absenceInfo.endHour, 0, 0, 0)
+
+    const payload = {
+      description: absenceInfo.description,
+      type: absenceInfo.type,
+      startTime: startDateTime.toISOString(),
+      endTime: endDateTime.toISOString(),
+    }
+
+    onSubmit(payload)
   }
 
   return (
@@ -34,7 +53,7 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
       >
         <Typography level="title-sm" sx={{ mb: 1 }}>
           New absence
-          <br></br>
+          <br />
           <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
             Please fill in the fields below to create a new absence.
           </Typography>
@@ -43,110 +62,77 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
           <RsuiteIconButton color="red" appearance="primary" onClick={onClose} size="xs" icon={<RsuiteCloseIcon />} />
         </div>
       </Stack>
-      <Stack direction="column" spacing={1}>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography level="body-md" sx={{ fontSize: '13px' }}>
+      <Stack direction="column" spacing={2}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography level="body-md" sx={{ fontSize: '13px', minWidth: 100 }}>
             Description
           </Typography>
           <InputGroup style={{ width: 300, fontSize: '12px' }}>
             <Input
-              value={absenceInfo.firstName}
+              value={absenceInfo.description}
               size="sm"
               placeholder="Description.."
               onChange={(value) => handleInputChange('description', value)}
             />
           </InputGroup>
         </Stack>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography level="body-md" sx={{ fontSize: '13px' }}>
-            Start Time
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography level="body-md" sx={{ fontSize: '13px', minWidth: 100 }}>
+            Start Date
           </Typography>
-          <InputGroup style={{ width: 300, fontSize: '12px' }}>
-            <DatePicker
-              size="sm"
-              format="dd/MM/yyyy HH:mm"
-              style={{
-                width: '100%',
-                borderRadius: 'sm',
-                boxShadow: 'sm',
-                backgroundColor: 'transparent',
-              }}
-              menuStyle={{ zIndex: '12000' }}
-              onChange={(value) => {
-                const selectedDate = new Date(new Date(value).setHours(8, 0, 0, 0))
-                handleInputChange('startTime', selectedDate)
-              }}
-              onSelect={(value) => {
-                const selectedDate = new Date(new Date(value).setHours(8, 0, 0, 0))
-                handleInputChange('startTime', selectedDate)
-              }}
-              value={absenceInfo.startTime}
-              hideHours={(hour) => hour !== 8 && hour !== 12 && hour !== 17}
-              hideMinutes={(minutes) => minutes !== 0}
-              isoWeek
-            />
-          </InputGroup>
+          <DatePicker
+            size="sm"
+            format="dd/MM/yyyy"
+            style={{ width: 200 }}
+            menuStyle={{ zIndex: '12000' }}
+            value={absenceInfo.startDate}
+            onChange={(value) => handleInputChange('startDate', value)}
+            isoWeek
+          />
+          <SelectPicker
+            searchable={false}
+            size="sm"
+            style={{ width: 100 }}
+            menuStyle={{ zIndex: '12000' }}
+            data={[
+              { label: '08:00', value: 8 },
+              { label: '12:00', value: 12 },
+            ]}
+            value={absenceInfo.startHour}
+            onChange={(value) => handleInputChange('startHour', value)}
+          />
         </Stack>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography level="body-md" sx={{ fontSize: '13px' }}>
-            End Time
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography level="body-md" sx={{ fontSize: '13px', minWidth: 100 }}>
+            End Date
           </Typography>
-          <InputGroup style={{ width: 300, fontSize: '12px' }}>
-            <DatePicker
-              size="sm"
-              format="dd/MM/yyyy HH:mm"
-              style={{
-                width: '100%',
-                borderRadius: 'sm',
-                boxShadow: 'sm',
-                backgroundColor: 'transparent',
-              }}
-              menuStyle={{ zIndex: '12000' }}
-              onChange={(value) => {
-                const selectedDate = new Date(new Date(value).setHours(17, 0, 0, 0))
-                handleInputChange('endTime', selectedDate)
-              }}
-              onSelect={(value) => {
-                const selectedDate = new Date(new Date(value).setHours(17, 0, 0, 0))
-                handleInputChange('endTime', selectedDate)
-              }}
-              value={absenceInfo.endTime}
-              hideHours={(hour) => hour !== 8 && hour !== 12 && hour !== 17}
-              hideMinutes={(minutes) => minutes !== 0}
-              isoWeek
-            />
-          </InputGroup>
+          <DatePicker
+            size="sm"
+            format="dd/MM/yyyy"
+            style={{ width: 200 }}
+            menuStyle={{ zIndex: '12000' }}
+            value={absenceInfo.endDate}
+            onChange={(value) => handleInputChange('endDate', value)}
+            isoWeek
+          />
+          <SelectPicker
+            searchable={false}
+            size="sm"
+            style={{ width: 100 }}
+            menuStyle={{ zIndex: '12000' }}
+            data={[
+              { label: '12:00', value: 12 },
+              { label: '17:00', value: 17 },
+            ]}
+            value={absenceInfo.endHour}
+            onChange={(value) => handleInputChange('endHour', value)}
+          />
         </Stack>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography level="body-md" sx={{ fontSize: '13px' }}>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography level="body-md" sx={{ fontSize: '13px', minWidth: 100 }}>
             Leave Type
           </Typography>
           <SelectPicker
@@ -164,7 +150,7 @@ export default function AbsenceRequestInfo({ types = [], onSubmit, onClose }) {
           appearance="primary"
           color="green"
           size="sm"
-          onClick={() => onSubmit(absenceInfo)}
+          onClick={handleSubmit}
           style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
         >
           Create

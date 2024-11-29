@@ -349,7 +349,7 @@ export default function AdminAbsenceRequestTable() {
                             variant="soft"
                             color="success"
                             onClick={() => handleChangeAbsenceStatus(row.id, 1)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
+                            sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
                           >
                             Approve
                           </Button>
@@ -358,7 +358,7 @@ export default function AdminAbsenceRequestTable() {
                             variant="soft"
                             color="danger"
                             onClick={() => handleChangeAbsenceStatus(row.id, 2)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
+                            sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
                           >
                             Reject
                           </Button>
