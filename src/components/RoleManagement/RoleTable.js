@@ -1,34 +1,21 @@
 import React, { useEffect } from 'react'
-import Box from '@mui/joy/Box'
-import Table from '@mui/joy/Table'
-import Typography from '@mui/joy/Typography'
-import Sheet from '@mui/joy/Sheet'
-import Checkbox from '@mui/joy/Checkbox'
-import FormControl from '@mui/joy/FormControl'
-import FormLabel from '@mui/joy/FormLabel'
-import IconButton from '@mui/joy/IconButton'
-import Tooltip from '@mui/joy/Tooltip'
-import Select from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
+import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
+import { Button, Stack, Card, Link } from '@mui/joy'
+import { DateRangePicker, Input, SelectPicker } from 'rsuite'
+import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import RoleManagementService from 'src/services/RoleManagementService'
-import { Button, Stack, Card } from '@mui/joy'
-import CloseIcon from '@mui/icons-material/Close'
-import { DateRangePicker, Input, SelectPicker } from 'rsuite'
-import PermissionTable from './PermissionTable'
-import { format } from 'date-fns'
-import Link from '@mui/joy/Link'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import CloseIcon from '@mui/icons-material/Close'
 import RemoveIcon from '@mui/icons-material/Remove'
-import { IconButton as RsuiteIconButton } from 'rsuite'
-import { Button as RsuiteButton } from 'rsuite'
 import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
+import RoleManagementService from 'src/services/RoleManagementService'
+import PermissionTable from './PermissionTable'
 
 export default function RoleTable() {
   const [filterName, setFilterName] = React.useState(null)
@@ -44,11 +31,6 @@ export default function RoleTable() {
   const [openedId, setOpenedId] = React.useState()
   const [visibleAddRole, setVisibleAddRole] = React.useState(false)
   const [newRole, setNewRole] = React.useState('')
-
-  function formatDateTime(inputDateTime) {
-    const date = new Date(inputDateTime)
-    return format(date, 'dd-MM-yyyy HH:mm')
-  }
 
   const headCells = [
     {

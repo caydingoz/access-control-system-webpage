@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 import { Box, Table, Typography, Sheet, FormControl, FormLabel, IconButton, Select, Option, Stack } from '@mui/joy'
 import { Button, Chip } from '@mui/joy'
 import { Input, SelectPicker } from 'rsuite'
-import PlusIcon from '@rsuite/icons/Plus'
 import { IconButton as RsuiteIconButton } from 'rsuite'
-import AbsenceManagementService from 'src/services/AbsenceManagementService'
-import { format } from 'date-fns'
+import PlusIcon from '@rsuite/icons/Plus'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import FunnelIcon from '@rsuite/icons/Funnel'
+import { format } from 'date-fns'
 import AbsenceRequestInfo from './AbsenceRequestInfo'
+import AbsenceManagementService from 'src/services/AbsenceManagementService'
 
 export default function UserAbsenceRequestTable() {
   const [filterDescription, setFilterDescription] = React.useState(null)

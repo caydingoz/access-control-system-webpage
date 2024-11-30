@@ -334,7 +334,7 @@ export default function AdminAbsenceRequestTable() {
                           {row.description.length > 0 ? row.description : '-'}
                         </Typography>
                       </td>
-                      <td id={labelId} style={{ borderLeft: '1.5px solid #ddd', borderRadius: '5px', verticalAlign: 'middle' }}>
+                      <td id={labelId} style={{ borderLeft: '1px solid #ddd', verticalAlign: 'middle' }}>
                         <Box
                           sx={{
                             display: 'flex',
