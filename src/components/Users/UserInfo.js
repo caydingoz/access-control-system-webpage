@@ -3,7 +3,6 @@ import { Typography, IconButton, Stack, Card } from '@mui/joy'
 import { Input, InputGroup, TagPicker } from 'rsuite'
 import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import UserBadgeIcon from '@rsuite/icons/UserBadge'
-import LocationIcon from '@rsuite/icons/Location'
 import PhoneIcon from '@rsuite/icons/Phone'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
@@ -31,129 +30,206 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
     <Card
       sx={{
         width: '100%',
+        maxWidth: '600px',
+        p: 3,
+        borderRadius: '16px',
+        background: '#ffffff',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
       }}
     >
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography level="title-sm" sx={{ mb: 1 }}>
-          {isNew ? 'New User' : 'Update User'}
-          <br></br>
-          <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-            {isNew ? 'Please fill in the fields below to create a new user.' : 'Update the necessary details below to modify the user information.'}
-          </Typography>
-        </Typography>
-        <div>
-          <RsuiteIconButton color="red" appearance="primary" onClick={onClose} size="xs" icon={<RsuiteCloseIcon />} />
-        </div>
-      </Stack>
-      <Stack direction="column" spacing={1}>
-        <Stack
-          direction="row"
-          spacing={1}
+      <Stack direction="row" spacing={2.5} sx={{ mb: 3, alignItems: 'center' }}>
+        <IconButton
+          variant="soft"
           sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            width: 85,
+            height: 85,
+            borderRadius: '16px',
+            background: 'linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%)',
+            transition: 'transform 0.2s ease',
           }}
         >
-          <IconButton
-            variant="outlined"
+          <AddAPhotoIcon
             sx={{
-              width: 100,
-              height: 120,
-              borderRadius: '5px',
-              backgroundColor: 'white',
+              fontSize: 26,
+              color: '#94a3b8',
+              transition: 'color 0.2s ease',
+              '&:hover': {
+                color: '#3b82f6',
+              },
             }}
-          >
-            <AddAPhotoIcon />
-          </IconButton>
-          <Stack direction="column" spacing={1}>
-            <InputGroup style={{ width: 250, fontSize: '12px' }}>
-              <InputGroup.Addon>
-                <LocationIcon />
-              </InputGroup.Addon>
+          />
+        </IconButton>
+
+        <Stack sx={{ flex: 1 }}>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+            <Typography
+              level="h4"
+              sx={{
+                fontSize: '1.2rem',
+                fontWeight: 700,
+                background: isNew
+                  ? 'linear-gradient(120deg, #059669, #10b981)' // Green gradient for new user
+                  : 'linear-gradient(120deg, #2563eb, #3b82f6)', // Blue gradient for edit user
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {isNew ? 'New User' : 'Edit User'}
+            </Typography>
+            <RsuiteIconButton
+              size="sm"
+              appearance="subtle"
+              onClick={onClose}
+              icon={<RsuiteCloseIcon />}
+              style={{
+                width: '32px',
+                height: '32px',
+                background: 'rgba(255, 59, 48, 0.1)',
+                color: '#ff3b30',
+                borderRadius: '8px',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#ff3b30'
+                e.currentTarget.style.color = 'white'
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(255, 59, 48, 0.25)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 59, 48, 0.1)'
+                e.currentTarget.style.color = '#ff3b30'
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={1}>
+            <InputGroup style={{ flex: 1 }}>
               <Input
                 value={userInfo.firstName}
-                size="sm"
-                placeholder="First name.."
-                style={{ fontSize: '12px' }}
+                size="md"
+                placeholder="First name"
+                style={{ borderRadius: '8px' }}
                 onChange={(value) => handleInputChange('firstName', value)}
               />
             </InputGroup>
-            <InputGroup style={{ width: 250, fontSize: '12px' }}>
-              <InputGroup.Addon>
-                <LocationIcon />
-              </InputGroup.Addon>
+            <InputGroup style={{ flex: 1 }}>
               <Input
                 value={userInfo.lastName}
-                size="sm"
-                placeholder="Last name.."
-                style={{ fontSize: '12px' }}
+                size="md"
+                placeholder="Last name"
+                style={{ borderRadius: '8px' }}
                 onChange={(value) => handleInputChange('lastName', value)}
-              />
-            </InputGroup>
-            <InputGroup style={{ width: 250, fontSize: '12px' }}>
-              <InputGroup.Addon>
-                <PhoneIcon />
-              </InputGroup.Addon>
-              <Input
-                value={userInfo.phoneNumber}
-                size="sm"
-                placeholder="Phone number.."
-                style={{ fontSize: '12px' }}
-                onChange={(value) => handleInputChange('phoneNumber', value)}
-              />
-            </InputGroup>
-            <InputGroup style={{ width: 250, fontSize: '12px' }}>
-              <InputGroup.Addon> @</InputGroup.Addon>
-              <Input
-                value={userInfo.email}
-                size="sm"
-                placeholder="Email.."
-                style={{ fontSize: '12px' }}
-                onChange={(value) => handleInputChange('email', value)}
-              />
-            </InputGroup>
-            <InputGroup style={{ fontSize: '12px' }}>
-              <InputGroup.Addon>
-                <UserBadgeIcon />
-              </InputGroup.Addon>
-              <Input
-                value={userInfo.title}
-                size="sm"
-                placeholder="Title.."
-                style={{ fontSize: '12px' }}
-                onChange={(value) => handleInputChange('title', value)}
               />
             </InputGroup>
           </Stack>
         </Stack>
-        <Typography level="body-sm" sx={{ fontSize: '13px' }}>
-          Roles
+      </Stack>
+
+      <Stack spacing={1} sx={{ mb: 2.5 }}>
+        <Typography
+          level="body-sm"
+          sx={{
+            color: '#4b5563',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          Contact Information
         </Typography>
+        <Stack direction="row" spacing={1}>
+          <InputGroup style={{ flex: 1 }}>
+            <InputGroup.Addon>
+              <PhoneIcon style={{ fontSize: '16px', color: '#6b7280' }} />
+            </InputGroup.Addon>
+            <Input
+              value={userInfo.phoneNumber}
+              size="md"
+              placeholder="Phone"
+              style={{ borderRadius: '8px' }}
+              onChange={(value) => handleInputChange('phoneNumber', value)}
+            />
+          </InputGroup>
+          <InputGroup style={{ flex: 1 }}>
+            <InputGroup.Addon style={{ color: '#6b7280' }}>@</InputGroup.Addon>
+            <Input
+              value={userInfo.email}
+              size="md"
+              placeholder="Email"
+              style={{ borderRadius: '8px' }}
+              onChange={(value) => handleInputChange('email', value)}
+            />
+          </InputGroup>
+        </Stack>
+      </Stack>
+
+      <Stack spacing={1} sx={{ mb: 3 }}>
+        <Typography
+          level="body-sm"
+          sx={{
+            color: '#4b5563',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          Position & Roles
+        </Typography>
+        <InputGroup style={{ width: '100%' }}>
+          <InputGroup.Addon>
+            <UserBadgeIcon style={{ fontSize: '16px', color: '#6b7280' }} />
+          </InputGroup.Addon>
+          <Input
+            value={userInfo.title}
+            size="md"
+            placeholder="Job title"
+            style={{ borderRadius: '8px' }}
+            onChange={(value) => handleInputChange('title', value)}
+          />
+        </InputGroup>
         <TagPicker
-          size="xs"
-          placeholder="Select.."
-          style={{ fontSize: '12px', padding: '4px 0' }}
-          menuStyle={{ fontSize: '12px', zIndex: '2300', height: '200px' }}
+          block
+          size="md"
+          placeholder="Select roles"
+          menuStyle={{ zIndex: '2300' }}
           data={roles}
           value={roles.filter((role) => userInfo.roleIds.includes(role.value)).map((role) => role.value)}
-          onChange={(selectedIds) => {
-            handleInputChange('roleIds', selectedIds)
+          onChange={(selectedIds) => handleInputChange('roleIds', selectedIds)}
+          style={{
+            borderRadius: '8px',
+            transition: 'all 0.2s ease',
           }}
         />
+      </Stack>
+
+      <Stack direction="row" justifyContent="flex-end">
         <RsuiteButton
           appearance="primary"
-          color={isNew ? 'green' : 'yellow'}
-          size="sm"
+          color={isNew ? 'green' : 'blue'}
+          size="md"
           onClick={() => onSubmit(userInfo)}
-          style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '5px', marginLeft: 'auto', marginTop: '20px' }}
+          style={{
+            minWidth: '120px',
+            borderRadius: '8px',
+            fontWeight: 600,
+            background: isNew ? 'linear-gradient(135deg, #059669, #10b981)' : 'linear-gradient(135deg, #2563eb, #3b82f6)',
+            border: 'none',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = 'none'
+          }}
         >
-          {isNew ? 'Add' : 'Update'}
+          {isNew ? 'Create' : 'Save'}
         </RsuiteButton>
       </Stack>
     </Card>
