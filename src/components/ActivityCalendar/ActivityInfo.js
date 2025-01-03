@@ -29,140 +29,206 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
         width: '100%',
       }}
     >
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{
-          justifyContent: 'space-between',
-          marginBottom: '10px',
-        }}
-      >
-        <Typography level="title-sm" sx={{ mb: 1 }}>
-          {isNew ? 'New Activity' : 'Update Activity'}
-          <br></br>
-          <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-            {isNew
-              ? 'Please fill in the fields below to create a new activity.'
-              : 'Update the necessary details below to modify the activity information.'}
-          </Typography>
-        </Typography>
-        <div>
-          <RsuiteIconButton color="red" appearance="primary" onClick={onClose} size="xs" icon={<RsuiteCloseIcon />} />
-        </div>
-      </Stack>
-      <Stack direction="column" spacing={1}>
+      <Stack spacing={3}>
         <Stack
           direction="row"
-          spacing={1}
           sx={{
             justifyContent: 'space-between',
-            alignItems: 'center',
+            pb: 2,
+            borderBottom: '2px solid #f1f5f9',
           }}
         >
-          <Stack direction="column" spacing={1}>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography level="body-md" sx={{ fontSize: '13px' }}>
-                Description
-              </Typography>
-              <Input
-                value={activityInfo.description}
-                size="sm"
-                placeholder="Activity description.."
-                style={{ width: '300px', paddingLeft: '9px' }}
-                onChange={(value) => handleInputChange('description', value)}
-              />
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography level="body-md" sx={{ fontSize: '13px' }}>
-                Subject
-              </Typography>
-              <SelectPicker
-                size="sm"
-                placeholder="Select subject.."
-                style={{ width: '300px' }}
-                menuStyle={{ fontSize: '13px', zIndex: '12000', padding: 0 }}
-                data={workItemsData}
-                value={activityInfo.workItemId}
-                onChange={(selectedId) => {
-                  handleInputChange('workItemId', selectedId)
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Stack>
+              <Typography
+                level="h4"
+                sx={{
+                  fontSize: '1.1rem',
+                  fontWeight: 700,
+                  color: isNew ? '#059669' : '#2563eb',
+                  mb: 0.5,
                 }}
-                searchable={false}
-              />
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography level="body-md" sx={{ fontSize: '13px' }}>
-                Start Time
+              >
+                {isNew ? 'New Activity' : 'Update Activity'}
               </Typography>
-              <InputGroup style={{ width: 300, fontSize: '12px' }}>
-                <InputGroup.Addon style={{ fontSize: '12px' }}>⏲️</InputGroup.Addon>
-                <DatePicker
-                  size="sm"
-                  format="dd/MM/yyyy HH:mm"
-                  style={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
-                  menuStyle={{ zIndex: '12000' }}
-                  onChange={(value) => handleInputChange('startTime', new Date(value))}
-                  value={new Date(activityInfo.startTime)}
-                  isoWeek
-                />
-              </InputGroup>
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Typography level="body-md" sx={{ fontSize: '13px' }}>
-                End Time
+              <Typography
+                level="body-xs"
+                sx={{
+                  color: '#64748b',
+                  fontSize: '0.85rem',
+                }}
+              >
+                {isNew
+                  ? 'Please fill in the fields below to create a new activity.'
+                  : 'Update the necessary details below to modify the activity information.'}
               </Typography>
-              <InputGroup style={{ width: 300, fontSize: '12px' }}>
-                <InputGroup.Addon style={{ fontSize: '12px' }}>⏰</InputGroup.Addon>
-                <DatePicker
-                  size="sm"
-                  format="dd/MM/yyyy HH:mm"
-                  style={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
-                  menuStyle={{ zIndex: '12000' }}
-                  onChange={(value) => handleInputChange('endTime', new Date(value))}
-                  value={new Date(activityInfo.endTime)}
-                  isoWeek
-                />
-              </InputGroup>
             </Stack>
           </Stack>
+          <RsuiteIconButton
+            size="sm"
+            appearance="subtle"
+            onClick={onClose}
+            icon={<RsuiteCloseIcon style={{ fontSize: '16px' }} />}
+            style={{
+              width: '32px',
+              height: '32px',
+              background: 'rgba(255, 59, 48, 0.08)',
+              color: '#ff3b30',
+              borderRadius: '10px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#ff3b30'
+              e.currentTarget.style.color = 'white'
+              e.currentTarget.style.boxShadow = '0 4px 8px rgba(255, 59, 48, 0.25)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 59, 48, 0.08)'
+              e.currentTarget.style.color = '#ff3b30'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+          />
         </Stack>
+
+        <Stack direction="column" spacing={2.5}>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography
+              level="body-sm"
+              sx={{
+                fontSize: '0.875rem',
+                width: '100px',
+                color: '#4b5563',
+                fontWeight: 500,
+              }}
+            >
+              Description
+            </Typography>
+            <Input
+              value={activityInfo.description}
+              size="md"
+              placeholder="Activity description.."
+              style={{
+                width: '100%',
+                borderRadius: '10px',
+                padding: '8px 12px',
+                border: '1px solid #e2e8f0',
+                transition: 'all 0.2s ease',
+              }}
+              onFocus={(e) => {
+                e.target.style.border = '1px solid #3b82f6'
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '1px solid #e2e8f0'
+              }}
+              onChange={(value) => handleInputChange('description', value)}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography
+              level="body-sm"
+              sx={{
+                fontSize: '0.875rem',
+                width: '100px',
+                color: '#4b5563',
+                fontWeight: 500,
+              }}
+            >
+              Subject
+            </Typography>
+            <SelectPicker
+              size="md"
+              placeholder="Select subject.."
+              style={{
+                width: '100%',
+              }}
+              menuStyle={{
+                fontSize: '13px',
+                zIndex: '12000',
+                padding: 0,
+              }}
+              data={workItemsData}
+              value={activityInfo.workItemId}
+              onChange={(selectedId) => handleInputChange('workItemId', selectedId)}
+              searchable={false}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography
+              level="body-sm"
+              sx={{
+                fontSize: '0.875rem',
+                width: '100px',
+                color: '#4b5563',
+                fontWeight: 500,
+              }}
+            >
+              Start Time
+            </Typography>
+            <InputGroup style={{ width: '100%' }}>
+              <InputGroup.Addon
+                style={{
+                  backgroundColor: '#f8fafc',
+                  borderRight: 'none',
+                  color: '#64748b',
+                  padding: '0 12px',
+                }}
+              >
+                ⏲️
+              </InputGroup.Addon>
+              <DatePicker
+                format="dd/MM/yyyy HH:mm"
+                style={{
+                  width: '100%',
+                  borderRadius: '0 10px 10px 0',
+                }}
+                menuStyle={{ zIndex: '12000' }}
+                onChange={(value) => handleInputChange('startTime', new Date(value))}
+                value={new Date(activityInfo.startTime)}
+                isoWeek
+              />
+            </InputGroup>
+          </Stack>
+
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography
+              level="body-sm"
+              sx={{
+                fontSize: '0.875rem',
+                width: '100px',
+                color: '#4b5563',
+                fontWeight: 500,
+              }}
+            >
+              End Time
+            </Typography>
+            <InputGroup style={{ width: '100%' }}>
+              <InputGroup.Addon
+                style={{
+                  backgroundColor: '#f8fafc',
+                  borderRight: 'none',
+                  color: '#64748b',
+                  padding: '0 12px',
+                }}
+              >
+                ⏰
+              </InputGroup.Addon>
+              <DatePicker
+                format="dd/MM/yyyy HH:mm"
+                style={{
+                  width: '100%',
+                  borderRadius: '0 10px 10px 0',
+                }}
+                menuStyle={{ zIndex: '12000' }}
+                onChange={(value) => handleInputChange('endTime', new Date(value))}
+                value={new Date(activityInfo.endTime)}
+                isoWeek
+              />
+            </InputGroup>
+          </Stack>
+        </Stack>
+
         <Stack
           direction="row"
           spacing={2}
@@ -177,19 +243,54 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
               color="red"
               size="sm"
               onClick={() => onDelete(activityInfo.id)}
-              style={{ width: '35px', fontSize: '12px', height: '30px', borderRadius: '5px', marginTop: '20px' }}
+              style={{
+                width: '72px',
+                height: '36px',
+                borderRadius: '10px',
+                marginBottom: '10px',
+                background: '#ff3b30',
+                color: '#ff3b30',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 59, 48, 0.25)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'none'
+              }}
             >
-              <DeleteIcon sx={{ color: 'white' }} />
+              <DeleteIcon sx={{ fontSize: '18px', color: 'white' }} />
             </RsuiteButton>
           )}
           <RsuiteButton
             appearance="primary"
-            color={isNew ? 'green' : 'yellow'}
             size="sm"
             onClick={() => onSubmit(activityInfo)}
-            style={{ width: '20%', fontSize: '12px', height: '30px', borderRadius: '5px', marginTop: '20px' }}
+            style={{
+              minWidth: '120px',
+              height: '36px',
+              borderRadius: '10px',
+              marginBottom: '10px',
+              background: isNew ? 'linear-gradient(135deg, #059669, #10b981)' : 'linear-gradient(135deg, #2563eb, #3b82f6)',
+              border: 'none',
+              fontWeight: '600',
+              fontSize: '0.875rem',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = `0 4px 12px ${isNew ? 'rgba(16, 185, 129, 0.25)' : 'rgba(37, 99, 235, 0.25)'}`
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
           >
-            {isNew ? 'Create' : 'Update'}
+            {isNew ? 'Create Activity' : 'Update Activity'}
           </RsuiteButton>
         </Stack>
       </Stack>

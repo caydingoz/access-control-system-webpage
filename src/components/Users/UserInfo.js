@@ -33,7 +33,6 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
         maxWidth: '600px',
         p: 3,
         borderRadius: '16px',
-        background: '#ffffff',
         boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
       }}
     >
@@ -67,9 +66,7 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
               sx={{
                 fontSize: '1.2rem',
                 fontWeight: 700,
-                background: isNew
-                  ? 'linear-gradient(120deg, #059669, #10b981)' // Green gradient for new user
-                  : 'linear-gradient(120deg, #2563eb, #3b82f6)', // Blue gradient for edit user
+                background: isNew ? 'linear-gradient(120deg, #059669, #10b981)' : 'linear-gradient(120deg, #2563eb, #3b82f6)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -92,13 +89,11 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#ff3b30'
                 e.currentTarget.style.color = 'white'
-                e.currentTarget.style.transform = 'translateY(-2px)'
                 e.currentTarget.style.boxShadow = '0 4px 8px rgba(255, 59, 48, 0.25)'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'rgba(255, 59, 48, 0.1)'
                 e.currentTarget.style.color = '#ff3b30'
-                e.currentTarget.style.transform = 'translateY(0)'
                 e.currentTarget.style.boxShadow = 'none'
               }}
             />
@@ -200,7 +195,7 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
           value={roles.filter((role) => userInfo.roleIds.includes(role.value)).map((role) => role.value)}
           onChange={(selectedIds) => handleInputChange('roleIds', selectedIds)}
           style={{
-            borderRadius: '8px',
+            borderRadius: '6px',
             transition: 'all 0.2s ease',
           }}
         />
