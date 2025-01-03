@@ -29,8 +29,7 @@ export default function UserTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [totalCount, setTotalCount] = React.useState(0)
   const [users, setUsers] = React.useState([])
-  const [visibleAddUser, setVisibleAddUser] = React.useState(false)
-  const [visibleUpdateUser, setVisibleUpdateUser] = React.useState(false)
+  const [visibleUserInfo, setVisibleUserInfo] = React.useState(false)
   const [updatedUserId, setUpdatedUserId] = React.useState(null)
   const [roles, setRoles] = React.useState([])
   const [optionsMenuAnchorEl, setOptionsMenuAnchorEl] = React.useState(null)
@@ -91,7 +90,7 @@ export default function UserTable() {
 
   useEffect(() => {
     //hide scroll when update model opened
-    if (visibleUpdateUser) {
+    if (visibleUserInfo) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'auto'
@@ -99,7 +98,7 @@ export default function UserTable() {
     return () => {
       document.body.style.overflow = 'auto'
     }
-  }, [visibleUpdateUser])
+  }, [visibleUserInfo])
 
   useEffect(() => {
     async function fetchData() {
@@ -137,11 +136,16 @@ export default function UserTable() {
   }
 
   const handleAddNewUser = async (newUser) => {
-    setVisibleAddUser(false)
+    setVisibleUserInfo(false)
     var res = await UserService.addUserAsync(newUser)
     if (res.success) {
       await getUsers()
     }
+  }
+
+  const handleCloseUserInfo = () => {
+    setVisibleUserInfo(false)
+    setUpdatedUserId(null)
   }
 
   const handleUpdateUser = async (user) => {
@@ -152,7 +156,7 @@ export default function UserTable() {
   }
 
   const handleOpenUpdateUser = () => {
-    setVisibleUpdateUser(true)
+    setVisibleUserInfo(true)
     setOptionsMenuAnchorEl(null)
   }
 
@@ -339,8 +343,7 @@ export default function UserTable() {
                 size="xs"
                 style={{ width: '100%', fontSize: '13px' }}
                 onClick={() => {
-                  setVisibleAddUser((prev) => !prev)
-                  getAllRoles()
+                  setVisibleUserInfo(true)
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.transform = 'scale(1.01)'
@@ -353,19 +356,6 @@ export default function UserTable() {
               >
                 Add User
               </RsuiteIconButton>
-              {visibleAddUser && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '1.6%',
-                    marginTop: '5px',
-                    width: 400,
-                    zIndex: 20,
-                  }}
-                >
-                  <UserInfo roles={roles} isNew={true} onSubmit={handleAddNewUser} onClose={() => setVisibleAddUser(false)} />
-                </div>
-              )}
             </div>
             {selectedUsers.length > 0 && (
               <Typography
@@ -630,15 +620,15 @@ export default function UserTable() {
             </tr>
           </tfoot>
         </Table>
-        {visibleUpdateUser && (
+        {visibleUserInfo && (
           <div className="overlay">
             <div style={{ width: 400 }}>
               <UserInfo
                 user={users.find((user) => user.id === updatedUserId)}
-                isNew={false}
-                onClose={() => setVisibleUpdateUser(false)}
+                isNew={updatedUserId === null}
+                onClose={handleCloseUserInfo}
                 roles={roles}
-                onSubmit={handleUpdateUser}
+                onSubmit={updatedUserId === null ? handleAddNewUser : handleUpdateUser}
               />
             </div>
           </div>
