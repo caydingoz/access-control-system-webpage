@@ -88,7 +88,29 @@ export default function UserAbsenceAccuralTable() {
             </Typography>
           </Typography>
         </Box>
-        <Box sx={{ maxHeight: 300, overflow: 'auto', borderRadius: 0, width: '96%', margin: '1% 2% 2% 2%' }}>
+        <Box
+          sx={{
+            maxHeight: 300,
+            overflow: 'auto',
+            borderRadius: 0,
+            width: '96%',
+            margin: '1% 2% 2% 2%',
+            '::-webkit-scrollbar': {
+              width: '10px',
+            },
+            '::-webkit-scrollbar-thumb': {
+              backgroundColor: '#888',
+              borderRadius: '2px',
+            },
+            '::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#555',
+            },
+            '::-webkit-scrollbar-track': {
+              backgroundColor: '#f1f1f1',
+              borderRadius: '2px',
+            },
+          }}
+        >
           <Table
             hoverRow
             stickyHeader
