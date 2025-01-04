@@ -10,7 +10,7 @@ import RoleManagementService from 'src/services/RoleManagementService'
 import FlagChecker from '../../helpers/flagChecker'
 
 export default function PermissionTable(props) {
-  const { roleId } = props
+  const { roleId, roleName } = props
   const PermissionTypes = {
     None: 0,
     Read: 1,
@@ -105,24 +105,29 @@ export default function PermissionTable(props) {
         <Sheet
           variant="plain"
           sx={{
-            height: 340,
+            height: 450,
             overflow: 'auto',
-            pr: 3,
-            pl: 3,
-            boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.12), inset 0 -2px 4px 0 rgba(0, 0, 0, 0.12)',
+            p: 2,
             zIndex: 3,
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
-              Permissions
+              Permissions for {roleName}
               <br></br>
               <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
                 The Permissions table contains a list of actions that define user access and control within the system.
               </Typography>
             </Typography>
             <div>
-              <IconButton appearance="primary" color="green" icon={<PlusIcon />} size="xs" onClick={handleOpenAddPermission}>
+              <IconButton
+                appearance="primary"
+                color="green"
+                icon={<PlusIcon />}
+                size="xs"
+                style={{ fontSize: '13px' }}
+                onClick={handleOpenAddPermission}
+              >
                 Add Permission
               </IconButton>
               {visibleAddPermission && (
@@ -188,22 +193,26 @@ export default function PermissionTable(props) {
           <Sheet
             variant="plain"
             sx={{
-              height: 240,
+              height: 360,
+              pt: 2,
               overflow: 'auto',
-              '::-webkit-scrollbar': {
-                width: '5px',
+              '&::-webkit-scrollbar': {
+                width: '8px',
+                backgroundColor: 'background.level1',
               },
-              '::-webkit-scrollbar-thumb': {
-                backgroundColor: '#888',
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'neutral.outlinedBorder',
                 borderRadius: '4px',
+                '&:hover': {
+                  backgroundColor: 'neutral.outlinedHoverBorder',
+                },
               },
-              '::-webkit-scrollbar-thumb:hover': {
-                backgroundColor: '#555',
+              '&::-webkit-scrollbar-track': {
+                backgroundColor: 'transparent',
               },
-              '::-webkit-scrollbar-track': {
-                backgroundColor: '#f1f1f1',
-                borderRadius: '4px',
-              },
+              // Firefox için scroll bar stillemesi
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'var(--joy-palette-neutral-outlinedBorder) transparent',
             }}
           >
             <Table
@@ -216,15 +225,14 @@ export default function PermissionTable(props) {
                 '& tbody tr': { height: '31px', cursor: 'default' },
                 '& thead tr': { height: '31px' },
                 '& thead > tr > th:nth-of-type(n)': { width: '100%' },
-                '& thead > tr > th:nth-of-type(5)': { width: '30%', textAlign: 'center' },
-                '& tbody > tr > td:nth-of-type(5)': { width: '30%', textAlign: 'center' },
+                '& thead > tr > th:nth-of-type(4)': { width: '30%', textAlign: 'center' },
+                '& tbody > tr > td:nth-of-type(4)': { width: '30%', textAlign: 'center' },
               }}
             >
               <thead style={{ pointerEvents: 'none' }}>
                 <tr>
                   <th>Operation</th>
                   <th>Type</th>
-                  <th>Create Date</th>
                   <th>Update Date</th>
                   <th>Actions</th>
                 </tr>
@@ -271,9 +279,6 @@ export default function PermissionTable(props) {
                         </div>
                       </td>
                       <td>
-                        <Typography level="body-xs">{formatDateTime(permission.createdAt)}</Typography>
-                      </td>
-                      <td>
                         <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -293,7 +298,7 @@ export default function PermissionTable(props) {
                       '--TableRow-hoverBackground': 'transparent',
                     }}
                   >
-                    <td colSpan={5} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
+                    <td colSpan={4} aria-hidden style={{ fontWeight: 'normal', color: 'gray' }}>
                       There is no data..
                     </td>
                   </tr>
@@ -309,4 +314,5 @@ export default function PermissionTable(props) {
 
 PermissionTable.propTypes = {
   roleId: PropTypes.string.isRequired,
+  roleName: PropTypes.string.isRequired,
 }

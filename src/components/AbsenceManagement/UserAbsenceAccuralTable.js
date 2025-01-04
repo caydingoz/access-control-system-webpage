@@ -95,20 +95,23 @@ export default function UserAbsenceAccuralTable() {
             borderRadius: 0,
             width: '96%',
             margin: '1% 2% 2% 2%',
-            '::-webkit-scrollbar': {
-              width: '10px',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+              backgroundColor: 'background.level1',
             },
-            '::-webkit-scrollbar-thumb': {
-              backgroundColor: '#888',
-              borderRadius: '2px',
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'neutral.outlinedBorder',
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: 'neutral.outlinedHoverBorder',
+              },
             },
-            '::-webkit-scrollbar-thumb:hover': {
-              backgroundColor: '#555',
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: 'transparent',
             },
-            '::-webkit-scrollbar-track': {
-              backgroundColor: '#f1f1f1',
-              borderRadius: '2px',
-            },
+            // Firefox için scroll bar stillemesi
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'var(--joy-palette-neutral-outlinedBorder) transparent',
           }}
         >
           <Table

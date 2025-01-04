@@ -1,11 +1,11 @@
 import axiosClient from '../helpers/axiosClient'
 
-const getRolesAsync = async (page, count, sortType, column, filterPermission = null, filterName = null) => {
+const getRolesAsync = async (page, count, filterPermission = null, filterName = null) => {
   const params = new URLSearchParams({
     page,
     count,
-    column,
-    sortType,
+    column: 'name',
+    sortType: 'asc',
   })
 
   if (filterName) {

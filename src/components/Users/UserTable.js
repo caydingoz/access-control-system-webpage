@@ -120,7 +120,7 @@ export default function UserTable() {
   }
 
   const getAllRoles = async () => {
-    var res = await RoleManagementService.getRolesAsync(0, 10000, 'asc', 'name')
+    var res = await RoleManagementService.getRolesAsync(0, 10000)
     if (res.success) {
       setRoles(res.data.roles.map((item) => ({ label: item.name, value: item.id })))
     }
