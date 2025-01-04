@@ -109,6 +109,7 @@ export default function PermissionTable(props) {
             overflow: 'auto',
             p: 2,
             zIndex: 3,
+            backgroundColor: 'transparent',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -194,6 +195,7 @@ export default function PermissionTable(props) {
             variant="plain"
             sx={{
               height: 360,
+              backgroundColor: 'transparent',
               pt: 2,
               overflow: 'auto',
               '&::-webkit-scrollbar': {

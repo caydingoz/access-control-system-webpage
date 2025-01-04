@@ -336,6 +336,7 @@ export default function RoleTable() {
               borderRadius: 'sm',
               display: 'flex',
               flexDirection: 'column',
+              backgroundColor: 'transparent',
               height: '100%',
             }}
           >
@@ -374,7 +375,7 @@ export default function RoleTable() {
                 scrollbarColor: 'var(--joy-palette-neutral-outlinedBorder) transparent',
               }}
             >
-              <List>
+              <List sx={{ pt: 0, pb: 0 }}>
                 {roles.map((role) => {
                   const isItemSelected = selectedRoles.indexOf(role.id) !== -1
                   const isActive = openedId === role.id
@@ -425,7 +426,6 @@ export default function RoleTable() {
                 pl: 2,
                 borderTop: '1px solid',
                 borderColor: 'divider',
-                backgroundColor: 'background.surface',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -461,7 +461,7 @@ export default function RoleTable() {
                   <KeyboardArrowLeftIcon />
                 </IconButton>
                 <Typography level="body-sm" sx={{ alignSelf: 'center' }}>
-                  {page + 1} / {Math.ceil(totalCount / rowsPerPage)}
+                  {page + (totalCount > 0 ? 1 : 0)} / {Math.ceil(totalCount / rowsPerPage)}
                 </Typography>
                 <IconButton
                   size="sm"
@@ -484,6 +484,7 @@ export default function RoleTable() {
               flex: 1,
               borderRadius: 'sm',
               overflow: 'auto',
+              backgroundColor: 'transparent',
             }}
           >
             {openedId ? (
