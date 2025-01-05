@@ -13,10 +13,10 @@ const Page401 = () => {
             <div className="clearfix">
               <h1 className="float-start display-3 me-4">401</h1>
               <div className="pt-3">
-                <h4>Yetkisiz Erişim!</h4>
-                <p className="text-medium-emphasis">Bu sayfaya erişim yetkiniz bulunmamaktadır.</p>
-                <CButton color="primary" onClick={() => navigate('/')} className="mt-2">
-                  Ana Sayfaya Git
+                <h4>Unauthorized Access!</h4>
+                <p className="text-medium-emphasis">You don&apos;t have permission to access this page.</p>
+                <CButton color="primary" onClick={() => navigate('/')} style={{ marginTop: '10px' }}>
+                  Go to Home
                 </CButton>
               </div>
             </div>

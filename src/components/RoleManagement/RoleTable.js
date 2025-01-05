@@ -488,7 +488,6 @@ export default function RoleTable() {
             sx={{
               flex: 1,
               borderRadius: 'sm',
-              overflow: 'auto',
               backgroundColor: 'transparent',
             }}
           >
@@ -504,7 +503,7 @@ export default function RoleTable() {
               <Typography level="title-md">Permissions</Typography>
             </Box>
             {openedId ? (
-              <Box sx={{ p: 2 }}>
+              <Box sx={{ p: 2, overflow: 'auto' }}>
                 <PermissionTable roleId={openedId.toString()} roleName={roles.find((r) => r.id === openedId)?.name} />
               </Box>
             ) : (

@@ -11,5 +11,7 @@
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.132);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px); /* Safari için destek */
   z-index: 2100;
 }

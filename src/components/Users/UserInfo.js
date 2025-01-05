@@ -130,7 +130,6 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
             fontSize: '0.85rem',
             fontWeight: 600,
             letterSpacing: '0.5px',
-            textTransform: 'uppercase',
           }}
         >
           Contact Information
@@ -169,7 +168,6 @@ export default function UserInfo({ user = {}, roles = [], isNew, onSubmit, onClo
             fontSize: '0.85rem',
             fontWeight: 600,
             letterSpacing: '0.5px',
-            textTransform: 'uppercase',
           }}
         >
           Position & Roles

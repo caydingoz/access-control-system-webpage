@@ -82,6 +82,11 @@ const _sideNav = [
       },
       {
         component: CNavItem,
+        name: 'Error 401',
+        to: '/unauthorized',
+      },
+      {
+        component: CNavItem,
         name: 'Error 404',
         to: '/404',
       },

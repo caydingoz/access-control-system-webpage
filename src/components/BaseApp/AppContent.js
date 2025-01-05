@@ -3,10 +3,11 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { CSpinner } from '@coreui/react'
 import { PermissionRoute } from '../Auth/PermissionRoute'
 import { PermissionTypes } from '../../enums/PermissionTypes'
-// routes config
 import routes from '../../routes'
+
 const Page404 = React.lazy(() => import('../../views/errors/Page404'))
 const Page401 = React.lazy(() => import('../../views/errors/Page401'))
+
 const AppContent = () => {
   return (
     <Suspense fallback={<CSpinner color="primary" />}>
