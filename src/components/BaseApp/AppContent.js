@@ -6,7 +6,7 @@ import { PermissionTypes } from '../../enums/PermissionTypes'
 // routes config
 import routes from '../../routes'
 const Page404 = React.lazy(() => import('../../views/errors/Page404'))
-
+const Page401 = React.lazy(() => import('../../views/errors/Page401'))
 const AppContent = () => {
   return (
     <Suspense fallback={<CSpinner color="primary" />}>
@@ -27,6 +27,7 @@ const AppContent = () => {
           )
         })}
         <Route path="/" element={<Navigate to="dashboard" replace />} />
+        <Route path="/unauthorized" name="Page 401" element={<Page401 />} />
         <Route path="*" name="Page 404" element={<Page404 />} />
       </Routes>
     </Suspense>
