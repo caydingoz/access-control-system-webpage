@@ -10,15 +10,15 @@ const UserAbsenceRequestTable = React.lazy(() => import('./components/AbsenceMan
 const UserAbsenceAccuralTable = React.lazy(() => import('./components/AbsenceManagement/UserAbsenceAccuralTable'))
 
 const routes = [
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/role-management', name: 'Role Management', element: RoleManagement },
-  { path: '/users', name: 'Users', element: Users },
-  { path: '/activity-calendar', name: 'Activity Calendar', element: ActivityCalendar },
-  { path: '/absence-management', name: 'Absence Management', element: UserAbsenceAccuralTable },
-  { path: '/absence-management/requests/admin', name: 'Absence Requests', element: AdminAbsenceRequestTable },
-  { path: '/absence-management/requests/user', name: 'My Absence Requests', element: UserAbsenceRequestTable },
-  { path: '/absence-management/accurals/user', name: 'My Accurals', element: UserAbsenceAccuralTable },
-  { path: '/system-status', name: 'System Status', element: SystemStatus },
+  { path: '/dashboard', name: 'Dashboard', element: Dashboard, permissionName: 'Dashboard' },
+  { path: '/role-management', name: 'Role Management', element: RoleManagement, permissionName: 'Role' },
+  { path: '/users', name: 'Users', element: Users, permissionName: 'User' },
+  { path: '/activity-calendar', name: 'Activity Calendar', element: ActivityCalendar, permissionName: 'Activity' },
+  { path: '/absence-management', name: 'Absence Management', element: UserAbsenceAccuralTable, permissionName: 'Absence' },
+  { path: '/absence-management/requests/admin', name: 'Absence Requests', element: AdminAbsenceRequestTable, permissionName: 'AbsenceAdmin' },
+  { path: '/absence-management/requests/user', name: 'My Absence Requests', element: UserAbsenceRequestTable, permissionName: 'Absence' },
+  { path: '/absence-management/accurals/user', name: 'My Accurals', element: UserAbsenceAccuralTable, permissionName: 'Absence' },
+  { path: '/system-status', name: 'System Status', element: SystemStatus, permissionName: 'SystemOperations' },
 ]
 
 export default routes
