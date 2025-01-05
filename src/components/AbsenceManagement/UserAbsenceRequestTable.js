@@ -10,8 +10,13 @@ import FunnelIcon from '@rsuite/icons/Funnel'
 import { format } from 'date-fns'
 import AbsenceRequestInfo from './AbsenceRequestInfo'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
+import { useSelector } from 'react-redux'
+import { PermissionTypes } from '../../enums/PermissionTypes'
+import PermissionChecker from '../../helpers/permissionChecker'
 
 export default function UserAbsenceRequestTable() {
+  const userPermissions = useSelector((state) => state.auth.permissions)
+
   const [filterDescription, setFilterDescription] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterType, setFilterType] = React.useState(null)
@@ -256,24 +261,26 @@ export default function UserAbsenceRequestTable() {
             }}
           >
             <div style={{ marginLeft: '2%', width: '125px' }}>
-              <RsuiteIconButton
-                appearance="primary"
-                icon={<PlusIcon />}
-                color="green"
-                size="xs"
-                style={{ width: '100%', fontSize: '13px' }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.01)'
-                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-                onClick={() => setVisibleNewAbsence((prev) => !prev)}
-              >
-                Create Request
-              </RsuiteIconButton>
+              {PermissionChecker.hasPermission(userPermissions, 'Absence', PermissionTypes.Write) && (
+                <RsuiteIconButton
+                  appearance="primary"
+                  icon={<PlusIcon />}
+                  color="green"
+                  size="xs"
+                  style={{ width: '100%', fontSize: '13px' }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.01)'
+                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                  onClick={() => setVisibleNewAbsence((prev) => !prev)}
+                >
+                  Create Request
+                </RsuiteIconButton>
+              )}
               {visibleNewAbsence && (
                 <div
                   style={{
@@ -390,15 +397,19 @@ export default function UserAbsenceRequestTable() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Button
-                            disabled={row.status !== 0}
-                            variant="soft"
-                            color="danger"
-                            onClick={() => handleCancelAbsenceRequest(row.id)}
-                            sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
-                          >
-                            Cancel
-                          </Button>
+                          {PermissionChecker.hasPermission(userPermissions, 'Absence', PermissionTypes.Delete) ? (
+                            <Button
+                              disabled={row.status !== 0}
+                              variant="soft"
+                              color="danger"
+                              onClick={() => handleCancelAbsenceRequest(row.id)}
+                              sx={{ minWidth: '80px', fontWeight: 'bold', fontSize: '13px' }}
+                            >
+                              Cancel
+                            </Button>
+                          ) : (
+                            '-'
+                          )}
                         </Box>
                       </td>
                     </tr>

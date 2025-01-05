@@ -5,8 +5,13 @@ import { Input, SelectPicker } from 'rsuite'
 import AbsenceManagementService from 'src/services/AbsenceManagementService'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import { useSelector } from 'react-redux'
+import { PermissionTypes } from '../../enums/PermissionTypes'
+import PermissionChecker from '../../helpers/permissionChecker'
 
 export default function AdminAbsenceRequestTable() {
+  const userPermissions = useSelector((state) => state.auth.permissions)
+
   const headCells = [
     {
       id: 'fullName',
@@ -344,24 +349,30 @@ export default function AdminAbsenceRequestTable() {
                             gap: 1,
                           }}
                         >
-                          <Button
-                            disabled={row.status !== 0}
-                            variant="soft"
-                            color="success"
-                            onClick={() => handleChangeAbsenceStatus(row.id, 1)}
-                            sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
-                          >
-                            Approve
-                          </Button>
-                          <Button
-                            disabled={row.status !== 0}
-                            variant="soft"
-                            color="danger"
-                            onClick={() => handleChangeAbsenceStatus(row.id, 2)}
-                            sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
-                          >
-                            Reject
-                          </Button>
+                          {PermissionChecker.hasPermission(userPermissions, 'Absence', PermissionTypes.Write) ? (
+                            <>
+                              <Button
+                                disabled={row.status !== 0}
+                                variant="soft"
+                                color="success"
+                                onClick={() => handleChangeAbsenceStatus(row.id, 1)}
+                                sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                disabled={row.status !== 0}
+                                variant="soft"
+                                color="danger"
+                                onClick={() => handleChangeAbsenceStatus(row.id, 2)}
+                                sx={{ minWidth: '75px', fontWeight: 'bold', fontSize: '13px' }}
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          ) : (
+                            '-'
+                          )}
                         </Box>
                       </td>
                     </tr>
