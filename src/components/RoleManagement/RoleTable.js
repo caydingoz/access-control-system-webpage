@@ -276,7 +276,12 @@ export default function RoleTable() {
                       color="green"
                       size="sm"
                       onClick={handleAddNewRole}
-                      style={{ width: '20%', fontSize: '12px', height: '27px', borderRadius: '30px' }}
+                      style={{
+                        width: '20%',
+                        fontSize: '12px',
+                        height: '26.5px',
+                        borderRadius: '5px',
+                      }}
                     >
                       Add
                     </RsuiteButton>
@@ -449,7 +454,7 @@ export default function RoleTable() {
                 </Select>
               </FormControl>
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1 }}>
                 <IconButton
                   size="sm"
                   disabled={page === 0}
@@ -487,6 +492,17 @@ export default function RoleTable() {
               backgroundColor: 'transparent',
             }}
           >
+            <Box
+              sx={{
+                p: 2,
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+                borderTopLeftRadius: 'sm',
+                borderTopRightRadius: 'sm',
+              }}
+            >
+              <Typography level="title-md">Permissions</Typography>
+            </Box>
             {openedId ? (
               <Box sx={{ p: 2 }}>
                 <PermissionTable roleId={openedId.toString()} roleName={roles.find((r) => r.id === openedId)?.name} />

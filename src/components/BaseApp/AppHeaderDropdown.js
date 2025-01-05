@@ -21,24 +21,24 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu placement="bottom-end" className="pt-0">
         <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" style={{ fontSize: '14px' }}>
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" style={{ fontSize: '14px' }}>
           <CIcon icon={cilEnvelopeOpen} className="me-2" />
           Messages
           <CBadge color="success" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" style={{ fontSize: '14px' }}>
           <CIcon icon={cilSettings} className="me-2" />
           Settings
         </CDropdownItem>
         <CDropdownDivider />
         <CDropdownItem
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', fontSize: '14px' }}
           onClick={async () => {
             let res = await authService.logout()
             if (res.success) {

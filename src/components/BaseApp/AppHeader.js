@@ -77,6 +77,7 @@ const AppHeader = () => {
               <CDropdownItem
                 active={colorMode === 'light'}
                 className="d-flex align-items-center"
+                style={{ fontSize: '14px' }}
                 as="button"
                 type="button"
                 onClick={() => {
@@ -90,6 +91,7 @@ const AppHeader = () => {
               <CDropdownItem
                 active={colorMode === 'dark'}
                 className="d-flex align-items-center"
+                style={{ fontSize: '14px' }}
                 as="button"
                 type="button"
                 onClick={() => {
@@ -104,6 +106,7 @@ const AppHeader = () => {
                 active={colorMode === 'auto'}
                 className="d-flex align-items-center"
                 as="button"
+                style={{ fontSize: '14px' }}
                 type="button"
                 onClick={() => {
                   setColorMode('auto')
