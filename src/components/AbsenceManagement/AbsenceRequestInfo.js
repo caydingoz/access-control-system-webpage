@@ -4,7 +4,7 @@ import { Input, InputGroup, SelectPicker, DatePicker } from 'rsuite'
 import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
 import { useDispatch } from 'react-redux'
-import { showAlert } from '../../slices/alertSlice'
+import { showAlert } from '../../redux/slices/alertSlice'
 import { v4 as uuidv4 } from 'uuid'
 
 export default function AbsenceRequestInfo({ employmentDate, types = [], onSubmit, onClose }) {

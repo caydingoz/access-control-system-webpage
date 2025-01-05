@@ -20,9 +20,9 @@ import { cilContrast, cilMoon, cilSun } from '@coreui/icons'
 
 import { AppBreadcrumb, AppHeaderDropdown } from '../index'
 import { logo } from 'src/assets/brand/logo'
-import { setSidebarShow } from '../../slices/sidebarSlice'
+import { setSidebarShow } from '../../redux/slices/sidebarSlice'
 import { useColorScheme } from '@mui/joy/styles'
-import { setThemeMode } from '../../slices/rSuiteThemeSlice'
+import { setThemeMode } from '../../redux/slices/rSuiteThemeSlice'
 
 const AppHeader = () => {
   const dispatch = useDispatch()

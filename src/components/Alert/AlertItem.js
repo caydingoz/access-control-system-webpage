@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, IconButton, Typography, LinearProgress } from '@mui/joy'
 import { useDispatch } from 'react-redux'
-import { hideAlert } from '../../slices/alertSlice'
+import { hideAlert } from '../../redux/slices/alertSlice'
 import { useCountUp } from 'use-count-up'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 

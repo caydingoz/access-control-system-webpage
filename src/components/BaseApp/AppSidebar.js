@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSidebarShow } from '../../slices/sidebarSlice'
+import { setSidebarShow } from '../../redux/slices/sidebarSlice'
 
 import { CSidebar, CSidebarBrand, CSidebarHeader } from '@coreui/react'
 import CIcon from '@coreui/icons-react'

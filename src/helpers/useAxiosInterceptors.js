@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
-import { showAlert } from '../slices/alertSlice'
-import { loggedOut } from '../slices/authSlice'
+import { showAlert } from '../redux/slices/alertSlice'
+import { loggedOut } from '../redux/slices/authSlice'
 import AuthService from '../services/AuthService'
 import { v4 as uuidv4 } from 'uuid'
-import { hideLoading, showLoading } from 'src/slices/loadingSlice'
+import { hideLoading, showLoading } from 'src/redux/slices/loadingSlice'
 
 const API_URL = 'http://localhost:8080/api/'
 

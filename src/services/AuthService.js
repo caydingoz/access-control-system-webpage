@@ -1,6 +1,6 @@
 import axiosClient from '../helpers/axiosClient'
 import { useDispatch } from 'react-redux'
-import { loggedIn, setRoles, loggedOut } from '../slices/authSlice'
+import { loggedIn, setRoles, loggedOut } from '../redux/slices/authSlice'
 
 const AuthService = () => {
   const dispatch = useDispatch()
