@@ -5,8 +5,11 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ActivityDetail from './ActivityDetail'
 import 'src/css/style.css'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
 
 const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, openUpdateActivity, openCreateActivity }) => {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const theme = useSelector((state) => state.rSuiteTheme.themeMode)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -85,7 +88,9 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
               }}
               onClick={(e) => {
                 e.stopPropagation() //Gün kutusuna tıklamayı durdurur
-                openUpdateActivity(activity.id)
+                if (PermissionChecker.hasPermission(userPermissions, 'Activity', PermissionTypes.Write)) {
+                  openUpdateActivity(activity.id)
+                }
               }}
             >
               <Typography
@@ -164,7 +169,11 @@ const MonthCalendar = ({ activities = [], setActivities, currentDate, setCurrent
             paddingBottom: '5px',
             zIndex: '8',
           }}
-          onClick={() => openCreateActivity(fullDate)}
+          onClick={() => {
+            if (PermissionChecker.hasPermission(userPermissions, 'Activity', PermissionTypes.Write)) {
+              openCreateActivity(fullDate)
+            }
+          }}
         >
           <Typography
             sx={{

@@ -6,8 +6,12 @@ import WeekCalendar from './WeekCalendar'
 import ActivityCalendarService from '../../services/ActivityCalendarService'
 import PlusIcon from '@rsuite/icons/Plus'
 import ActivityInfo from './ActivityInfo'
+import { useSelector } from 'react-redux'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
 
 const BigCalendar = () => {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const today = new Date()
 
   const [calendarType, setCalendarType] = useState('Month')
@@ -142,28 +146,30 @@ const BigCalendar = () => {
         </Box>
       </Box>
       <div style={{ padding: '0.5% 0% 0.5% 2%' }}>
-        <RsuiteIconButton
-          appearance="primary"
-          icon={<PlusIcon />}
-          color="green"
-          size="xs"
-          style={{
-            width: '120px',
-            fontSize: '13px',
-            marginRight: '2%',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = 'scale(1.01)'
-            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = 'scale(1)'
-            e.currentTarget.style.boxShadow = 'none'
-          }}
-          onClick={() => openCreateActivity(new Date(today))}
-        >
-          Add Activity
-        </RsuiteIconButton>
+        {PermissionChecker.hasPermission(userPermissions, 'ActivityCalendar', PermissionTypes.Create) && (
+          <RsuiteIconButton
+            appearance="primary"
+            icon={<PlusIcon />}
+            color="green"
+            size="xs"
+            style={{
+              width: '120px',
+              fontSize: '13px',
+              marginRight: '2%',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'scale(1.01)'
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+            onClick={() => openCreateActivity(new Date(today))}
+          >
+            Add Activity
+          </RsuiteIconButton>
+        )}
       </div>
       <Sheet
         variant="outlined"

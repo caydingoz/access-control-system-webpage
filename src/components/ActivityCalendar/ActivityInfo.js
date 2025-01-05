@@ -5,8 +5,12 @@ import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
 import DeleteIcon from '@mui/icons-material/Delete'
 import 'src/css/style.css'
+import { useSelector } from 'react-redux'
+import { PermissionTypes } from '../../enums/PermissionTypes'
+import PermissionChecker from '../../helpers/permissionChecker'
 
 export default function ActivityInfo({ activity = {}, workItems = [], isNew, onSubmit, onClose, onDelete }) {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const [activityInfo, setActivityInfo] = React.useState({
     id: activity.id || '',
     description: activity.description || '',
@@ -237,7 +241,7 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
             alignItems: 'center',
           }}
         >
-          {!isNew && (
+          {!isNew && PermissionChecker.hasPermission(userPermissions, 'Activity', PermissionTypes.Delete) && (
             <RsuiteButton
               appearance="primary"
               color="red"

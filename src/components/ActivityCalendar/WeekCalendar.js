@@ -4,8 +4,11 @@ import { Box, Typography, Table, IconButton, Tooltip } from '@mui/joy'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ActivityDetail from './ActivityDetail'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
 
 const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentDate, openUpdateActivity }) => {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const theme = useSelector((state) => state.rSuiteTheme.themeMode)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -94,7 +97,9 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
               cursor: 'pointer',
             }}
             onClick={() => {
-              openUpdateActivity(activity.id)
+              if (PermissionChecker.hasPermission(userPermissions, 'Activity', PermissionTypes.Write)) {
+                openUpdateActivity(activity.id)
+              }
             }}
           >
             <Typography
