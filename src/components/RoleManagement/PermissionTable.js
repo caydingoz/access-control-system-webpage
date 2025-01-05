@@ -291,7 +291,7 @@ export default function PermissionTable({ roleId, roleName }) {
                         <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        {PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) ? (
+                        {PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Delete) ? (
                           <IconButton
                             color="red"
                             appearance="primary"

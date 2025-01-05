@@ -419,7 +419,7 @@ export default function RoleTable() {
                             handleSelectRole(event, role.id)
                           }}
                           size="sm"
-                          disabled={!PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write)}
+                          disabled={!PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Delete)}
                         />
                         <Box sx={{ flex: 1 }}>
                           <Typography level="body-sm">{role.name}</Typography>

@@ -17,8 +17,12 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import EditIcon from '@mui/icons-material/Edit'
 import 'src/css/style.css'
+import { useSelector } from 'react-redux'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
 
 export default function UserTable() {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const [filterName, setFilterName] = React.useState(null)
   const [filterStatus, setFilterStatus] = React.useState(null)
   const [filterRoles, setFilterRoles] = React.useState(null)
@@ -336,26 +340,28 @@ export default function UserTable() {
             }}
           >
             <div style={{ marginLeft: '2%', width: '100px' }}>
-              <RsuiteIconButton
-                appearance="primary"
-                icon={<PlusIcon />}
-                color="green"
-                size="xs"
-                style={{ width: '100%', fontSize: '13px' }}
-                onClick={() => {
-                  setVisibleUserInfo(true)
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.01)'
-                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              >
-                Add User
-              </RsuiteIconButton>
+              {PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Write) && (
+                <RsuiteIconButton
+                  appearance="primary"
+                  icon={<PlusIcon />}
+                  color="green"
+                  size="xs"
+                  style={{ width: '100%', fontSize: '13px' }}
+                  onClick={() => {
+                    setVisibleUserInfo(true)
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.01)'
+                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                >
+                  Add User
+                </RsuiteIconButton>
+              )}
             </div>
             {selectedUsers.length > 0 && (
               <Typography
@@ -435,6 +441,7 @@ export default function UserTable() {
                   color="primary"
                   onChange={handleSelectAllUsers}
                   sx={{ verticalAlign: 'sub', marginLeft: '5px' }}
+                  disabled={!PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Delete)}
                 />
               </th>
               <th />
@@ -506,7 +513,12 @@ export default function UserTable() {
                             'aria-labelledby': labelId,
                           },
                         }}
-                        sx={{ verticalAlign: 'top', marginLeft: '5px' }}
+                        sx={{
+                          verticalAlign: 'top',
+                          marginLeft: '5px',
+                          pointerEvents: PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Delete) ? 'auto' : 'none',
+                        }}
+                        disabled={!PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Delete)}
                       />
                     </td>
                     <td id={labelId}>
@@ -544,23 +556,27 @@ export default function UserTable() {
                       <Typography level="body-sm">{formatDateTime(row.createdAt)}</Typography>
                     </td>
                     <td id={labelId}>
-                      <IconButton size="sm" onClick={(event) => handleOptionsMenu(event, row.id)}>
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        sx={{ p: 0, boxShadow: '0px 0.1px 2px rgba(0, 0, 0, 0.1)' }}
-                        anchorEl={optionsMenuAnchorEl}
-                        open={Boolean(optionsMenuAnchorEl)}
-                        onClose={handleCloseOptionsMenu}
-                        placement="bottom-end"
-                        ref={menuRef}
-                        size="sm"
-                      >
-                        <MenuItem sx={{ height: '20px', width: 100, p: 1 }} onClick={() => handleOpenUpdateUser()} size="sm">
-                          <EditIcon fontSize="small" />
-                          <Typography level="body-sm">Edit</Typography>
-                        </MenuItem>
-                      </Menu>
+                      {PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Write) && (
+                        <>
+                          <IconButton size="sm" onClick={(event) => handleOptionsMenu(event, row.id)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            sx={{ p: 0, boxShadow: '0px 0.1px 2px rgba(0, 0, 0, 0.1)' }}
+                            anchorEl={optionsMenuAnchorEl}
+                            open={Boolean(optionsMenuAnchorEl)}
+                            onClose={handleCloseOptionsMenu}
+                            placement="bottom-end"
+                            ref={menuRef}
+                            size="sm"
+                          >
+                            <MenuItem sx={{ height: '20px', width: 100, p: 1 }} onClick={() => handleOpenUpdateUser()} size="sm">
+                              <EditIcon fontSize="small" />
+                              <Typography level="body-sm">Edit</Typography>
+                            </MenuItem>
+                          </Menu>
+                        </>
+                      )}
                     </td>
                   </tr>
                 </React.Fragment>
