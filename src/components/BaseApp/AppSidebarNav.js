@@ -3,10 +3,13 @@ import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
-
+import { useSelector } from 'react-redux'
 import { CBadge, CNavLink, CSidebarNav } from '@coreui/react'
+import { PermissionTypes } from '../../enums/PermissionTypes'
+import PermissionChecker from '../../helpers/permissionChecker'
 
 export const AppSidebarNav = ({ items }) => {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>
@@ -48,12 +51,21 @@ export const AppSidebarNav = ({ items }) => {
     const Component = component
     return (
       <Component compact as="div" key={index} toggler={navLink(name, icon)} {...rest}>
-        {item.items?.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index, true)))}
+        {item.items
+          ?.filter((item) => PermissionChecker.hasPermission(userPermissions, item.permissionName, PermissionTypes.Read))
+          .map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index, true)))}
       </Component>
     )
   }
 
-  return <CSidebarNav as={SimpleBar}>{items && items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}</CSidebarNav>
+  return (
+    <CSidebarNav as={SimpleBar}>
+      {items &&
+        items
+          .filter((item) => PermissionChecker.hasPermission(userPermissions, item.permissionName, PermissionTypes.Read))
+          .map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
+    </CSidebarNav>
+  )
 }
 
 AppSidebarNav.propTypes = {
