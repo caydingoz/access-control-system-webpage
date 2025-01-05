@@ -4,19 +4,15 @@ import { TagPicker, Button, IconButton } from 'rsuite'
 import TrashIcon from '@rsuite/icons/Trash'
 import PlusIcon from '@rsuite/icons/Plus'
 import CloseIcon from '@rsuite/icons/Close'
-import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 import RoleManagementService from 'src/services/RoleManagementService'
 import FlagChecker from '../../helpers/flagChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { useSelector } from 'react-redux'
 
-export default function PermissionTable(props) {
-  const { roleId, roleName } = props
-  const PermissionTypes = {
-    None: 0,
-    Read: 1,
-    Write: 2,
-    Delete: 4,
-  }
+export default function PermissionTable({ roleId, roleName }) {
+  const userPermissions = useSelector((state) => state.auth.permissions)
 
   function formatDateTime(inputDateTime) {
     const date = new Date(inputDateTime)
@@ -115,22 +111,24 @@ export default function PermissionTable(props) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography level="title-sm" sx={{ mb: 1 }}>
               Permissions for {roleName}
-              <br></br>
+              <br />
               <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
                 The Permissions table contains a list of actions that define user access and control within the system.
               </Typography>
             </Typography>
             <div>
-              <IconButton
-                appearance="primary"
-                color="green"
-                icon={<PlusIcon />}
-                size="xs"
-                style={{ fontSize: '13px' }}
-                onClick={handleOpenAddPermission}
-              >
-                Add Permission
-              </IconButton>
+              {PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) && (
+                <IconButton
+                  appearance="primary"
+                  color="green"
+                  icon={<PlusIcon />}
+                  size="xs"
+                  style={{ fontSize: '13px' }}
+                  onClick={handleOpenAddPermission}
+                >
+                  Add Permission
+                </IconButton>
+              )}
               {visibleAddPermission && (
                 <Card
                   sx={{
@@ -253,7 +251,10 @@ export default function PermissionTable(props) {
                               color="neutral"
                               onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Read)}
                               checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Read)}
-                              sx={{ verticalAlign: 'middle' }}
+                              sx={{
+                                verticalAlign: 'middle',
+                                pointerEvents: PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) ? 'auto' : 'none',
+                              }}
                               size="sm"
                             />
                             <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Read</span>
@@ -263,7 +264,10 @@ export default function PermissionTable(props) {
                               color="success"
                               onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Write)}
                               checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Write)}
-                              sx={{ verticalAlign: 'middle' }}
+                              sx={{
+                                verticalAlign: 'middle',
+                                pointerEvents: PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) ? 'auto' : 'none',
+                              }}
                               size="sm"
                             />
                             <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Write</span>
@@ -273,7 +277,10 @@ export default function PermissionTable(props) {
                               color="danger"
                               onClick={async (event) => await changePermissionType(event, permission, PermissionTypes.Delete)}
                               checked={FlagChecker.hasFlag(permission.type, PermissionTypes.Delete)}
-                              sx={{ verticalAlign: 'middle' }}
+                              sx={{
+                                verticalAlign: 'middle',
+                                pointerEvents: PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) ? 'auto' : 'none',
+                              }}
                               size="sm"
                             />
                             <span style={{ verticalAlign: 'middle', paddingLeft: '3px' }}>Delete</span>
@@ -284,13 +291,17 @@ export default function PermissionTable(props) {
                         <Typography level="body-xs">{formatDateTime(permission.updatedAt)}</Typography>
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        <IconButton
-                          color="red"
-                          appearance="primary"
-                          onClick={async () => await deletePermission(permission.id)}
-                          size="xs"
-                          icon={<TrashIcon />}
-                        />
+                        {PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) ? (
+                          <IconButton
+                            color="red"
+                            appearance="primary"
+                            onClick={async () => await deletePermission(permission.id)}
+                            size="xs"
+                            icon={<TrashIcon />}
+                          />
+                        ) : (
+                          '-'
+                        )}
                       </td>
                     </tr>
                   ))
@@ -312,9 +323,4 @@ export default function PermissionTable(props) {
       </td>
     </tr>
   )
-}
-
-PermissionTable.propTypes = {
-  roleId: PropTypes.string.isRequired,
-  roleName: PropTypes.string.isRequired,
 }

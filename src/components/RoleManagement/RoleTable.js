@@ -11,8 +11,12 @@ import FunnelIcon from '@rsuite/icons/Funnel'
 import RsuiteCloseIcon from '@rsuite/icons/Close'
 import RoleManagementService from 'src/services/RoleManagementService'
 import PermissionTable from './PermissionTable'
+import { useSelector } from 'react-redux'
+import PermissionChecker from '../../helpers/permissionChecker'
+import { PermissionTypes } from '../../enums/PermissionTypes'
 
 export default function RoleTable() {
+  const userPermissions = useSelector((state) => state.auth.permissions)
   const [filterName, setFilterName] = React.useState(null)
   const [filterPermissions, setFilterPermissions] = React.useState(null)
   const [selectedRoles, setSelectedRoles] = React.useState([])
@@ -203,24 +207,26 @@ export default function RoleTable() {
             }}
           >
             <div style={{ marginLeft: '2%', width: '100px' }}>
-              <RsuiteIconButton
-                appearance="primary"
-                icon={<PlusIcon />}
-                color="green"
-                size="xs"
-                style={{ width: '100%', fontSize: '13px' }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.01)'
-                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-                onClick={() => setVisibleAddRole((prev) => !prev)}
-              >
-                Add Role
-              </RsuiteIconButton>
+              {PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write) && (
+                <RsuiteIconButton
+                  appearance="primary"
+                  icon={<PlusIcon />}
+                  color="green"
+                  size="xs"
+                  style={{ width: '100%', fontSize: '13px' }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.01)'
+                    e.currentTarget.style.boxShadow = '0 2px 6px rgba(0, 128, 0, 0.3)'
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                  onClick={() => setVisibleAddRole((prev) => !prev)}
+                >
+                  Add Role
+                </RsuiteIconButton>
+              )}
               {visibleAddRole && (
                 <Card
                   sx={{
@@ -413,6 +419,7 @@ export default function RoleTable() {
                             handleSelectRole(event, role.id)
                           }}
                           size="sm"
+                          disabled={!PermissionChecker.hasPermission(userPermissions, 'Role', PermissionTypes.Write)}
                         />
                         <Box sx={{ flex: 1 }}>
                           <Typography level="body-sm">{role.name}</Typography>
