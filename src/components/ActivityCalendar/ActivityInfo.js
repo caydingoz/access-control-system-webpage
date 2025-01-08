@@ -187,9 +187,11 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                   width: '100%',
                   borderRadius: '0 10px 10px 0',
                 }}
-                menuStyle={{ zIndex: '12000' }}
+                menuStyle={{ zIndex: '12000', marginLeft: '10px', position: 'fixed' }}
                 onChange={(value) => handleInputChange('startTime', new Date(value))}
                 value={new Date(activityInfo.startTime)}
+                placement="right"
+                container={() => document.querySelector('.overlay')} //scroll edildiginde overflow olmasını saglar
                 isoWeek
               />
             </InputGroup>
@@ -224,9 +226,11 @@ export default function ActivityInfo({ activity = {}, workItems = [], isNew, onS
                   width: '100%',
                   borderRadius: '0 10px 10px 0',
                 }}
-                menuStyle={{ zIndex: '12000' }}
+                menuStyle={{ zIndex: '12000', marginLeft: '10px', position: 'fixed' }}
                 onChange={(value) => handleInputChange('endTime', new Date(value))}
                 value={new Date(activityInfo.endTime)}
+                placement="right"
+                container={() => document.querySelector('.overlay')} //scroll edildiginde overflow olmasını saglar
                 isoWeek
               />
             </InputGroup>

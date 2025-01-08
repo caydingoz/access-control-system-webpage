@@ -62,7 +62,8 @@ const WeekCalendar = ({ activities = [], setActivities, currentDate, setCurrentD
     return filteredActivities.map((activity, index) => {
       const startTime = new Date(activity.startTime)
       const endTime = new Date(activity.endTime)
-      const differenceInHours = endTime.getHours() - startTime.getHours() - 1
+      const totalHours = (endTime - startTime) / (1000 * 60 * 60)
+      const differenceInHours = totalHours - 1
       const startTimeHours = startTime.getHours().toString().padStart(2, '0')
       const startTimeMinutes = startTime.getMinutes().toString().padStart(2, '0')
       const endTimeHours = endTime.getHours().toString().padStart(2, '0')

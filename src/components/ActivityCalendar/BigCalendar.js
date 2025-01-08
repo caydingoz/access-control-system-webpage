@@ -9,8 +9,12 @@ import ActivityInfo from './ActivityInfo'
 import { useSelector } from 'react-redux'
 import PermissionChecker from '../../helpers/permissionChecker'
 import { PermissionTypes } from '../../enums/PermissionTypes'
+import { useDispatch } from 'react-redux'
+import { showAlert } from '../../redux/slices/alertSlice'
+import { v4 as uuidv4 } from 'uuid'
 
 const BigCalendar = () => {
+  const dispatch = useDispatch()
   const userPermissions = useSelector((state) => state.auth.permissions)
   const today = new Date()
 
@@ -23,13 +27,12 @@ const BigCalendar = () => {
   const [visibleActivityInfo, setVisibleActivityInfo] = React.useState(false)
 
   useEffect(() => {
-    const currentMonth = currentDate.getMonth()
-    const currentYear = currentDate.getFullYear()
-    const daysInMonth = getDaysInMonth(currentMonth, currentYear)
-
     async function fetchData() {
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
       const activityRes = await ActivityCalendarService.getActivitiesAsync(
-        new Date(currentYear, currentMonth, 1).toISOString(),
+        new Date(currentYear, currentMonth - 1, 1).toISOString(),
         new Date(currentYear, currentMonth, daysInMonth).toISOString(),
       )
       if (activityRes.success) {
@@ -65,38 +68,46 @@ const BigCalendar = () => {
     setVisibleActivityInfo(true)
   }
 
+  const getActivitiesAsync = async () => {
+    const currentMonth = currentDate.getMonth()
+    const currentYear = currentDate.getFullYear()
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear)
+    const activityRes = await ActivityCalendarService.getActivitiesAsync(
+      new Date(currentYear, currentMonth - 1, 1).toISOString(),
+      new Date(currentYear, currentMonth, daysInMonth).toISOString(),
+    )
+    if (activityRes.success) {
+      setActivities(activityRes.data.activities)
+    }
+  }
+
   const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate()
 
   const handleUpdateActivity = async (activity) => {
     const res = await ActivityCalendarService.updateActivityAsync(activity)
     if (res.success) {
-      const currentMonth = currentDate.getMonth()
-      const currentYear = currentDate.getFullYear()
-      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
-      const activityRes = await ActivityCalendarService.getActivitiesAsync(
-        new Date(currentYear, currentMonth, 1).toISOString(),
-        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
-      )
-      if (activityRes.success) {
-        setActivities(activityRes.data.activities)
-      }
+      await getActivitiesAsync()
     }
     setVisibleActivityInfo(false)
   }
 
   const handleCreateActivity = async (activity) => {
+    const requiredFields = [
+      { key: 'description', message: 'Description not given!' },
+      { key: 'workItemId', message: 'Subject not selected!' },
+      { key: 'startTime', message: 'Start Date not selected!' },
+      { key: 'endTime', message: 'End Date not selected!' },
+    ]
+
+    for (const field of requiredFields) {
+      if (!activity[field.key]) {
+        dispatch(showAlert({ id: uuidv4(), message: field.message, alertType: 'Error' }))
+        return
+      }
+    }
     const res = await ActivityCalendarService.createActivityAsync(activity)
     if (res.success) {
-      const currentMonth = currentDate.getMonth()
-      const currentYear = currentDate.getFullYear()
-      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
-      const activityRes = await ActivityCalendarService.getActivitiesAsync(
-        new Date(currentYear, currentMonth, 1).toISOString(),
-        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
-      )
-      if (activityRes.success) {
-        setActivities(activityRes.data.activities)
-      }
+      await getActivitiesAsync()
     }
     setVisibleActivityInfo(false)
   }
@@ -104,16 +115,7 @@ const BigCalendar = () => {
   const handleDeleteActivity = async (id) => {
     const res = await ActivityCalendarService.deleteActivityByIdAsync(id)
     if (res.success) {
-      const currentMonth = currentDate.getMonth()
-      const currentYear = currentDate.getFullYear()
-      const daysInMonth = getDaysInMonth(currentMonth, currentYear)
-      const activityRes = await ActivityCalendarService.getActivitiesAsync(
-        new Date(currentYear, currentMonth, 1).toISOString(),
-        new Date(currentYear, currentMonth, daysInMonth).toISOString(),
-      )
-      if (activityRes.success) {
-        setActivities(activityRes.data.activities)
-      }
+      await getActivitiesAsync()
     }
     setVisibleActivityInfo(false)
   }
@@ -146,7 +148,7 @@ const BigCalendar = () => {
         </Box>
       </Box>
       <div style={{ padding: '0.5% 0% 0.5% 2%' }}>
-        {PermissionChecker.hasPermission(userPermissions, 'ActivityCalendar', PermissionTypes.Create) && (
+        {PermissionChecker.hasPermission(userPermissions, 'Activity', PermissionTypes.Write) && (
           <RsuiteIconButton
             appearance="primary"
             icon={<PlusIcon />}

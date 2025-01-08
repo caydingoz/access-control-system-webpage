@@ -14,4 +14,5 @@
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px); /* Safari için destek */
   z-index: 2100;
+  overflow: auto;
 }

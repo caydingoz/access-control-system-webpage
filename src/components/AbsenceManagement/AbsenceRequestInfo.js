@@ -116,7 +116,7 @@ export default function AbsenceRequestInfo({ employmentDate, types = [], onSubmi
             searchable={false}
             size="sm"
             style={{ width: 100 }}
-            menuStyle={{ zIndex: '12000' }}
+            menuStyle={{ zIndex: '12000', width: 100 }}
             data={[
               { label: '08:00', value: 8 },
               { label: '12:00', value: 12 },
@@ -147,7 +147,7 @@ export default function AbsenceRequestInfo({ employmentDate, types = [], onSubmi
             searchable={false}
             size="sm"
             style={{ width: 100 }}
-            menuStyle={{ zIndex: '12000' }}
+            menuStyle={{ zIndex: '12000', width: 100 }}
             data={[
               { label: '12:00', value: 12 },
               { label: '17:00', value: 17 },
