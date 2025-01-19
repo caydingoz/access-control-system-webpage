@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import LoadingSpinner from '../components/BaseApp/LoadingSpinner'
 import { CssVarsProvider } from '@mui/joy/styles'
 import { CustomProvider } from 'rsuite'
+import Chat from '../components/BaseApp/Chat'
 
 const DefaultLayout = () => {
   const { isLoading } = useSelector((state) => state.loading)
@@ -19,6 +20,7 @@ const DefaultLayout = () => {
             <div className="body flex-grow-1 min-vh-100 px-3">
               {isLoading && <LoadingSpinner />}
               <AppContent />
+              <Chat />
             </div>
             <div className="pt-5">
               <AppFooter />

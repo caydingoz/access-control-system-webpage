@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -17,6 +17,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilEnvelopeOpen, cilMenu, cilBell, cilList } from '@coreui/icons'
 import { cilContrast, cilMoon, cilSun } from '@coreui/icons'
+import { HubConnectionBuilder } from '@microsoft/signalr'
 
 import { AppBreadcrumb, AppHeaderDropdown } from '../index'
 import { logo } from 'src/assets/brand/logo'
@@ -29,6 +30,30 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   const { setMode } = useColorScheme()
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const connection = new HubConnectionBuilder()
+      .withUrl('http://localhost:8080/hubs/notification', {
+        accessTokenFactory: () => JSON.parse(token).accessToken,
+      })
+      .withAutomaticReconnect()
+      .build()
+
+    connection
+      .start()
+      .then(() => {
+        connection.on('ReceiveNotification', (count) => {
+          setUnreadCount((prevCount) => prevCount + count)
+        })
+      })
+      .catch((err) => console.error('SignalR Connection Error: ', err))
+
+    return () => {
+      connection.stop()
+    }
+  }, [])
 
   return (
     <CHeader position="sticky" className="mb-4 p-0" style={{ zIndex: 500 }}>
@@ -45,7 +70,12 @@ const AppHeader = () => {
         <CHeaderNav className="ms-auto">
           <CNavItem>
             <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
+              <div className="position-relative">
+                <CIcon icon={cilBell} size="lg" />
+                {unreadCount > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{unreadCount}</span>
+                )}
+              </div>
             </CNavLink>
           </CNavItem>
           <CNavItem>

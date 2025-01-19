@@ -32,7 +32,7 @@ const useAxiosInterceptors = () => {
     const responseInterceptor = axios.interceptors.response.use(
       (response) => {
         if (!response.data.success) dispatch(showAlert({ id: uuidv4(), message: response.data.errorMessage, alertType: 'Error' }))
-        else if (response.config.method !== 'get' && response.config.url !== API_URL + 'auth/refresh-token') {
+        else if (response.config.method !== 'get' && !response.config.url.includes('auth') && !response.config.url.includes('chat')) {
           dispatch(showAlert({ id: uuidv4(), message: 'Operation completed successfully!', alertType: 'Success' }))
         }
         if (response.config.url !== API_URL + 'auth/refresh-token') dispatch(hideLoading())
