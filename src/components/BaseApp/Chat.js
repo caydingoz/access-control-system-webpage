@@ -32,6 +32,20 @@ const Chat = () => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const selectedChatRef = useRef(selectedChat.userId)
+  const [isFetching, setIsFetching] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+
+  const getOldMessages = async () => {
+    const res = await ChatService.getChatMessagesAsync(20, selectedChat.userId, messages.at(-1).id)
+    if (res.success) {
+      if (res.data.chatMessages.length === 0) {
+        setHasMore(false)
+      } else {
+        setMessages((prevMessages) => [...prevMessages, res.data.chatMessages])
+      }
+      setIsFetching(false)
+    }
+  }
 
   useEffect(() => {
     selectedChatRef.current = selectedChat.userId
@@ -52,7 +66,6 @@ const Chat = () => {
         connection.on('ReceiveMessage', (message) => {
           if (selectedChatRef.current === message.senderId) {
             setMessages((prevMessages) => [
-              ...prevMessages,
               {
                 id: message.id,
                 content: message.content,
@@ -61,6 +74,7 @@ const Chat = () => {
                 sentAt: message.sentAt,
                 isRead: message.isRead,
               },
+              ...prevMessages,
             ])
             ChatService.readChatMessagesAsync(message.id)
           } else {
@@ -91,10 +105,6 @@ const Chat = () => {
   }, [])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-  }, [messages])
-
-  useEffect(() => {
     async function fetchData() {
       const res = await ChatService.getChatOverviewAsync(0, 20)
       if (res.success) {
@@ -107,7 +117,7 @@ const Chat = () => {
   const handleChatSelect = async (chat) => {
     setMessages([])
     setSelectedChat(chat)
-    const res = await ChatService.getChatMessagesAsync(200, chat.userId, 0)
+    const res = await ChatService.getChatMessagesAsync(20, chat.userId, 0)
     if (res.success) {
       setMessages(res.data.chatMessages)
     }
@@ -132,7 +142,6 @@ const Chat = () => {
       if (res.success) {
         setNewMessage('')
         setMessages((prevMessages) => [
-          ...prevMessages,
           {
             id: res.data,
             content: newMessage,
@@ -141,6 +150,7 @@ const Chat = () => {
             sentAt: DateTime.utc(),
             isRead: false,
           },
+          ...prevMessages,
         ])
       }
     }
@@ -327,6 +337,8 @@ const Chat = () => {
                 flex: 1,
                 px: 2,
                 py: 2,
+                display: 'flex',
+                flexDirection: 'column-reverse',
                 overflowY: 'auto',
                 '&::-webkit-scrollbar': {
                   width: '4px',
