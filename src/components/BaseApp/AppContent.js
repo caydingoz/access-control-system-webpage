@@ -16,7 +16,7 @@ const AppContent = () => {
 
   useEffect(() => {
     if (tokenInfo) {
-      dispatch(fetchUserPermissions(tokenInfo))
+      dispatch(fetchUserPermissions())
     }
   }, [dispatch, tokenInfo])
 
