@@ -93,8 +93,9 @@ const Chat = () => {
           }
         })
         connection.on('ReadMessage', (messageIds) => {
+          const messageIdsArray = Array.isArray(messageIds) ? messageIds : [messageIds]
           setMessages((prevMessages) =>
-            prevMessages.map((chatMessage) => (messageIds.includes(chatMessage.id) ? { ...chatMessage, isRead: true } : chatMessage)),
+            prevMessages.map((chatMessage) => (messageIdsArray.includes(chatMessage.id) ? { ...chatMessage, isRead: true } : chatMessage)),
           )
         })
       })
@@ -118,7 +119,7 @@ const Chat = () => {
   const handleChatSelect = async (chat) => {
     setMessages([])
     setSelectedChat(chat)
-    const res = await ChatService.getChatMessagesAsync(20, chat.userId, 0)
+    const res = await ChatService.getChatMessagesAsync(10, chat.userId, 0)
     if (res.success) {
       setMessages(res.data.chatMessages)
     }
@@ -361,8 +362,9 @@ const Chat = () => {
             >
               {selectedChat ? (
                 messages.map((message, index) => {
-                  const currentMessageDate = new Date(message.sentAt).toLocaleDateString()
-                  const previousMessageDate = index > 0 ? new Date(messages[index - 1].sentAt).toLocaleDateString() : null
+                  const currentMessageDate = TimeZoneConverter.convertUtcToIstanbul(message.sentAt).toLocaleDateString()
+                  const previousMessageDate =
+                    index > 0 ? TimeZoneConverter.convertUtcToIstanbul(messages[index - 1].sentAt).toLocaleDateString() : null
 
                   return (
                     <React.Fragment key={index}>
