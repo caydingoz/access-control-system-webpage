@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import LoadingSpinner from '../components/BaseApp/LoadingSpinner'
 import { CssVarsProvider } from '@mui/joy/styles'
 import { CustomProvider } from 'rsuite'
-import Chat from '../components/BaseApp/Chat'
+import Chat from '../components/Chat/Chat'
 
 const DefaultLayout = () => {
   const { isLoading } = useSelector((state) => state.loading)
