@@ -18,6 +18,8 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
+import CircularProgress from '@mui/joy/CircularProgress'
+import ArrowUpward from '@mui/icons-material/ArrowUpward'
 import ChatService from 'src/services/ChatService'
 import TimeZoneConverter from 'src/helpers/timeZoneConverter'
 import { HubConnectionBuilder } from '@microsoft/signalr'
@@ -33,8 +35,9 @@ const Chat = () => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const selectedChatRef = useRef(selectedChat.userId)
-  const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const messagesContainerRef = useRef(null)
+  const [isLoadingOldMessages, setIsLoadingOldMessages] = useState(false)
 
   const getOldMessages = async () => {
     const res = await ChatService.getChatMessagesAsync(20, selectedChat.userId, messages.at(-1).id)
@@ -42,14 +45,21 @@ const Chat = () => {
       if (res.data.chatMessages.length === 0) {
         setHasMore(false)
       } else {
-        setMessages((prevMessages) => [...prevMessages, res.data.chatMessages])
+        setMessages((prevMessages) => [...prevMessages, ...res.data.chatMessages])
       }
-      setIsFetching(false)
     }
+  }
+
+  const handleLoadOldMessages = async () => {
+    setIsLoadingOldMessages(true)
+    await getOldMessages()
+    setIsLoadingOldMessages(false)
   }
 
   useEffect(() => {
     selectedChatRef.current = selectedChat.userId
+    setHasMore(true)
+    setIsLoadingOldMessages(false)
   }, [selectedChat.userId])
 
   useEffect(() => {
@@ -119,7 +129,7 @@ const Chat = () => {
   const handleChatSelect = async (chat) => {
     setMessages([])
     setSelectedChat(chat)
-    const res = await ChatService.getChatMessagesAsync(10, chat.userId, 0)
+    const res = await ChatService.getChatMessagesAsync(20, chat.userId, 0)
     if (res.success) {
       setMessages(res.data.chatMessages)
     }
@@ -335,6 +345,7 @@ const Chat = () => {
               </Box>
             )}
             <Sheet
+              ref={messagesContainerRef}
               sx={{
                 flex: 1,
                 px: 2,
@@ -360,76 +371,90 @@ const Chat = () => {
                 scrollbarColor: 'var(--joy-palette-neutral-outlinedBorder) transparent',
               }}
             >
-              {selectedChat ? (
-                messages.map((message, index) => {
-                  const currentMessageDate = TimeZoneConverter.convertUtcToIstanbul(message.sentAt).toLocaleDateString()
-                  const previousMessageDate =
-                    index > 0 ? TimeZoneConverter.convertUtcToIstanbul(messages[index - 1].sentAt).toLocaleDateString() : null
+              {selectedChat.userId ? (
+                <>
+                  {messages.map((message, index) => {
+                    const currentMessageDate = TimeZoneConverter.convertUtcToIstanbul(message.sentAt).toLocaleDateString()
+                    const previousMessageDate =
+                      index > 0 ? TimeZoneConverter.convertUtcToIstanbul(messages[index - 1].sentAt).toLocaleDateString() : null
 
-                  return (
-                    <React.Fragment key={index}>
-                      {currentMessageDate !== previousMessageDate && previousMessageDate && (
-                        <Divider sx={{ my: 2, color: theme === 'dark' ? 'white' : 'black' }}>
-                          <Typography level="body-sm">{previousMessageDate}</Typography>
-                        </Divider>
-                      )}
-                      <Box
-                        sx={{
-                          mb: 0.5,
-                          textAlign: message.receiverId !== selectedChat.userId ? 'left' : 'right',
-                        }}
-                      >
-                        <Typography
-                          level="body-sm"
-                          sx={{
-                            display: 'inline-block',
-                            padding: 1,
-                            background:
-                              message.receiverId !== selectedChat.userId
-                                ? theme === 'dark'
-                                  ? '#4a3222'
-                                  : '#fff3e0'
-                                : theme === 'dark'
-                                  ? '#004d4d'
-                                  : '#e0f7fa',
-                            borderRadius: 8,
-                            fontSize: '13px',
-                            maxWidth: '75%',
-                            color: theme === 'dark' ? 'white' : 'black',
-                          }}
-                        >
-                          {message.content}
-                        </Typography>
+                    return (
+                      <React.Fragment key={index}>
+                        {currentMessageDate !== previousMessageDate && previousMessageDate && (
+                          <Divider sx={{ my: 2, color: theme === 'dark' ? 'white' : 'black' }}>
+                            <Typography level="body-sm">{previousMessageDate}</Typography>
+                          </Divider>
+                        )}
                         <Box
                           sx={{
-                            display: 'flex',
-                            justifyContent: message.receiverId !== selectedChat.userId ? 'flex-start' : 'flex-end',
-                            alignItems: 'center',
-                            gap: 0.5,
+                            mb: 0.5,
+                            textAlign: message.receiverId !== selectedChat.userId ? 'left' : 'right',
                           }}
                         >
-                          <Typography level="body-sm" sx={{ fontSize: '8px' }}>
-                            {TimeZoneConverter.convertUtcToIstanbul(message.sentAt).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
+                          <Typography
+                            level="body-sm"
+                            sx={{
+                              display: 'inline-block',
+                              padding: 1,
+                              background:
+                                message.receiverId !== selectedChat.userId
+                                  ? theme === 'dark'
+                                    ? '#4a3222'
+                                    : '#fff3e0'
+                                  : theme === 'dark'
+                                    ? '#004d4d'
+                                    : '#e0f7fa',
+                              borderRadius: 8,
+                              fontSize: '13px',
+                              maxWidth: '75%',
+                              color: theme === 'dark' ? 'white' : 'black',
+                            }}
+                          >
+                            {message.content}
                           </Typography>
-                          {message.receiverId === selectedChat.userId &&
-                            (message.isRead === true ? (
-                              <DoneAllIcon sx={{ fontSize: '10px', color: '#4caf50' }} />
-                            ) : (
-                              <DoneAllIcon sx={{ fontSize: '10px', color: 'gray' }} />
-                            ))}
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: message.receiverId !== selectedChat.userId ? 'flex-start' : 'flex-end',
+                              alignItems: 'center',
+                              gap: 0.5,
+                            }}
+                          >
+                            <Typography level="body-sm" sx={{ fontSize: '8px' }}>
+                              {TimeZoneConverter.convertUtcToIstanbul(message.sentAt).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </Typography>
+                            {message.receiverId === selectedChat.userId &&
+                              (message.isRead === true ? (
+                                <DoneAllIcon sx={{ fontSize: '10px', color: '#4caf50' }} />
+                              ) : (
+                                <DoneAllIcon sx={{ fontSize: '10px', color: 'gray' }} />
+                              ))}
+                          </Box>
                         </Box>
-                      </Box>
-                      {index === messages.length - 1 && (
-                        <Divider sx={{ my: 2, color: theme === 'dark' ? 'white' : 'black' }}>
-                          <Typography level="body-sm">{currentMessageDate}</Typography>
-                        </Divider>
-                      )}
-                    </React.Fragment>
-                  )
-                })
+                        {index === messages.length - 1 && (
+                          <Divider sx={{ my: 2, color: theme === 'dark' ? 'white' : 'black' }}>
+                            <Typography level="body-sm">{currentMessageDate}</Typography>
+                          </Divider>
+                        )}
+                      </React.Fragment>
+                    )
+                  })}
+                  {hasMore &&
+                    messages.length > 0 &&
+                    (isLoadingOldMessages ? (
+                      <CircularProgress size="sm" sx={{ alignSelf: 'center', mb: 2 }} />
+                    ) : (
+                      <Button size="xs" variant="outlined" color="primary" sx={{ alignSelf: 'center', mb: 2 }} onClick={handleLoadOldMessages}>
+                        <ArrowUpward fontSize="small" />
+                        <Typography level="body-sm" color="primary">
+                          Load Older Messages
+                        </Typography>
+                      </Button>
+                    ))}
+                </>
               ) : (
                 <Typography level="body-sm" sx={{ textAlign: 'center' }}>
                   Start a conversation...
@@ -463,7 +488,7 @@ const Chat = () => {
                 color="primary"
                 startDecorator={<SendRoundedIcon />}
                 onClick={handleSendMessage}
-                disabled={!selectedChat}
+                disabled={!selectedChat.userId}
               >
                 Send
               </Button>
