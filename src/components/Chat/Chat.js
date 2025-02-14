@@ -156,6 +156,7 @@ const Chat = () => {
           },
           ...prevMessages,
         ])
+        messagesContainerRef.current.scrollTop = 0
       }
     }
   }
@@ -173,8 +174,8 @@ const Chat = () => {
           bottom: 20,
           right: 20,
           borderRadius: '50%',
-          width: 56,
-          height: 56,
+          width: 50,
+          height: 50,
           boxShadow: 'sm',
           zIndex: 2000,
         }}
@@ -193,7 +194,7 @@ const Chat = () => {
       <Sheet
         sx={{
           position: 'fixed',
-          bottom: 90,
+          bottom: 85,
           right: 20,
           width: 600,
           height: 450,
@@ -219,7 +220,7 @@ const Chat = () => {
           }}
         >
           <Typography level="title-md">Chat</Typography>
-          <IconButton variant="plain" color="neutral" size="sm" onClose={() => setIsOpen(false)}>
+          <IconButton variant="plain" color="neutral" size="sm" onClick={() => setIsOpen(false)}>
             <CloseRoundedIcon />
           </IconButton>
         </Sheet>
