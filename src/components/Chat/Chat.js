@@ -10,20 +10,22 @@ import { DateTime } from 'luxon'
 import { Badge, IconButton, Sheet, Box } from '@mui/joy'
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import Typography from '@mui/joy/Typography'
 
 const Chat = () => {
   const theme = useSelector((state) => state.rSuiteTheme.themeMode)
-  const messagesEndRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [chatOverviews, setChatOverviews] = useState([])
   const [selectedChat, setSelectedChat] = useState({ userId: null })
   const [searchTerm, setSearchTerm] = useState('')
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
-  const selectedChatRef = useRef(selectedChat.userId)
   const [hasMore, setHasMore] = useState(true)
-  const messagesContainerRef = useRef(null)
   const [isLoadingOldMessages, setIsLoadingOldMessages] = useState(false)
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const messagesEndRef = useRef(null)
+  const selectedChatRef = useRef(selectedChat.userId)
+  const messagesContainerRef = useRef(null)
 
   const getOldMessages = async () => {
     const res = await ChatService.getChatMessagesAsync(20, selectedChat.userId, messages.at(-1).id)
@@ -93,6 +95,9 @@ const Chat = () => {
           setMessages((prevMessages) =>
             prevMessages.map((chatMessage) => (messageIdsArray.includes(chatMessage.id) ? { ...chatMessage, isRead: true } : chatMessage)),
           )
+        })
+        connection.on('OnlineUsersUpdated', (users) => {
+          setOnlineUsers(users)
         })
       })
       .catch((err) => console.error('SignalR Connection Error: ', err))
@@ -200,7 +205,24 @@ const Chat = () => {
           zIndex: 2000,
         }}
       >
-        <ChatHeader onClose={() => setIsOpen(false)} />
+        <Sheet
+          sx={{
+            px: 2,
+            py: 1.5,
+            height: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            backgroundColor: 'background.level2',
+          }}
+        >
+          <Typography level="title-md">Chat</Typography>
+          <IconButton variant="plain" color="neutral" size="sm" onClose={() => setIsOpen(false)}>
+            <CloseRoundedIcon />
+          </IconButton>
+        </Sheet>
         <Box sx={{ display: 'flex', flex: 1 }}>
           <ChatUserList
             searchTerm={searchTerm}
@@ -211,6 +233,7 @@ const Chat = () => {
             theme={theme}
           />
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: 400 }}>
+            <ChatHeader selectedChat={selectedChat} onlineUsers={onlineUsers} />
             <ChatMessages
               messages={messages}
               selectedChat={selectedChat}
