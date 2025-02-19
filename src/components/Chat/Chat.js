@@ -4,6 +4,7 @@ import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
 import ChatUserList from './ChatUserList'
+import NewChatUserList from './NewChatUserList'
 import ChatService from 'src/services/ChatService'
 import { HubConnectionBuilder } from '@microsoft/signalr'
 import { DateTime } from 'luxon'
@@ -17,12 +18,12 @@ const Chat = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [chatOverviews, setChatOverviews] = useState([])
   const [selectedChat, setSelectedChat] = useState({ userId: null })
-  const [searchTerm, setSearchTerm] = useState('')
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
   const [hasMore, setHasMore] = useState(true)
   const [isLoadingOldMessages, setIsLoadingOldMessages] = useState(false)
   const [onlineUsers, setOnlineUsers] = useState([])
+  const [newChatOpen, setNewChatOpen] = useState(false)
   const messagesEndRef = useRef(null)
   const selectedChatRef = useRef(selectedChat.userId)
   const messagesContainerRef = useRef(null)
@@ -46,8 +47,6 @@ const Chat = () => {
 
   useEffect(() => {
     selectedChatRef.current = selectedChat.userId
-    setHasMore(true)
-    setIsLoadingOldMessages(false)
   }, [selectedChat.userId])
 
   useEffect(() => {
@@ -64,6 +63,7 @@ const Chat = () => {
       .then(() => {
         connection.on('ReceiveMessage', (message) => {
           if (selectedChatRef.current === message.senderId) {
+            //eger chat aciksa
             setMessages((prevMessages) => [
               {
                 id: message.id,
@@ -83,6 +83,7 @@ const Chat = () => {
                   return {
                     ...chatOverview,
                     unReadMessageCount: chatOverview.unReadMessageCount + 1,
+                    lastMessage: message.content,
                   }
                 }
                 return chatOverview
@@ -91,6 +92,7 @@ const Chat = () => {
           }
         })
         connection.on('ReadMessage', (messageIds) => {
+          //signalr'dan gelen mesajlar okundu olarak isaretlenir
           const messageIdsArray = Array.isArray(messageIds) ? messageIds : [messageIds]
           setMessages((prevMessages) =>
             prevMessages.map((chatMessage) => (messageIdsArray.includes(chatMessage.id) ? { ...chatMessage, isRead: true } : chatMessage)),
@@ -117,12 +119,39 @@ const Chat = () => {
     fetchData()
   }, [])
 
+  const handleNewChat = (chat) => {
+    setChatOverviews((prevChatOverviews) => {
+      if (prevChatOverviews.find((chatOverview) => chatOverview.userId === chat.userId)) {
+        return prevChatOverviews
+      }
+      return [
+        {
+          userId: chat.userId,
+          name: chat.name,
+          image: chat.image,
+          lastMessage: '',
+          unReadMessageCount: 0,
+        },
+        ...prevChatOverviews,
+      ]
+    })
+    setMessages([])
+    setSelectedChat(chat)
+    setNewChatOpen(false)
+    setHasMore(false)
+  }
+
   const handleChatSelect = async (chat) => {
     setMessages([])
     setSelectedChat(chat)
+    setHasMore(true)
+    setIsLoadingOldMessages(false)
     const res = await ChatService.getChatMessagesAsync(20, chat.userId, 0)
     if (res.success) {
       setMessages(res.data.chatMessages)
+      if (res.data.chatMessages.length < 20) {
+        setHasMore(false)
+      }
     }
     if (chat.unReadMessageCount > 0) {
       await ChatService.readAllChatMessagesAsync(chat.userId)
@@ -149,19 +178,27 @@ const Chat = () => {
           {
             id: res.data,
             content: newMessage,
-            senderId: prevMessages.at(0).senderId,
             receiverId: selectedChat.userId,
             sentAt: DateTime.utc(),
             isRead: false,
           },
           ...prevMessages,
         ])
+        setChatOverviews((prevChatOverviews) => {
+          return prevChatOverviews.map((chatOverview) => {
+            if (chatOverview.userId === selectedChat.userId) {
+              return {
+                ...chatOverview,
+                lastMessage: newMessage,
+              }
+            }
+            return chatOverview
+          })
+        })
         messagesContainerRef.current.scrollTop = 0
       }
     }
   }
-
-  const filteredChats = chatOverviews.filter((chat) => chat.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <>
@@ -179,7 +216,10 @@ const Chat = () => {
           boxShadow: 'sm',
           zIndex: 2000,
         }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen)
+          setNewChatOpen(false)
+        }}
       >
         <Badge
           badgeContent={chatOverviews.reduce((total, chat) => {
@@ -191,6 +231,25 @@ const Chat = () => {
         </Badge>
       </IconButton>
 
+      {newChatOpen && (
+        <Sheet
+          sx={{
+            position: 'fixed',
+            bottom: 85,
+            right: 625,
+            width: 240,
+            height: 400,
+            borderRadius: 'lg',
+            boxShadow: 'lg',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            zIndex: 2000,
+          }}
+        >
+          <NewChatUserList theme={theme} handleNewChat={handleNewChat} setNewChatOpen={setNewChatOpen} />
+        </Sheet>
+      )}
       <Sheet
         sx={{
           position: 'fixed',
@@ -206,7 +265,7 @@ const Chat = () => {
           zIndex: 2000,
         }}
       >
-        <Sheet
+        <Box
           sx={{
             px: 2,
             py: 1.5,
@@ -220,17 +279,25 @@ const Chat = () => {
           }}
         >
           <Typography level="title-md">Chat</Typography>
-          <IconButton variant="plain" color="neutral" size="sm" onClick={() => setIsOpen(false)}>
+          <IconButton
+            variant="plain"
+            color="neutral"
+            size="sm"
+            onClick={() => {
+              setIsOpen(!isOpen)
+              setNewChatOpen(false)
+            }}
+          >
             <CloseRoundedIcon />
           </IconButton>
-        </Sheet>
+        </Box>
         <Box sx={{ display: 'flex', flex: 1 }}>
           <ChatUserList
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filteredChats={filteredChats}
+            chatOverviews={chatOverviews}
             selectedChat={selectedChat}
             handleChatSelect={handleChatSelect}
+            newChatOpen={newChatOpen}
+            setNewChatOpen={setNewChatOpen}
             theme={theme}
           />
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: 400 }}>

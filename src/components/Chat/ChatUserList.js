@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Sheet, Input, List, ListItem, ListItemButton, ListItemContent, Avatar, Typography, Box, Chip } from '@mui/joy'
 import Button from '@mui/joy/Button'
 
-const ChatUserList = ({ searchTerm, setSearchTerm, filteredChats, selectedChat, handleChatSelect, theme }) => {
+const ChatUserList = ({ chatOverviews, selectedChat, handleChatSelect, newChatOpen, setNewChatOpen, theme }) => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const normalizeString = (str) => str.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase()
+  const filteredChats = chatOverviews.filter((chat) => normalizeString(chat.name).includes(normalizeString(searchTerm)))
+
   return (
     <Sheet
       sx={{
@@ -32,7 +36,15 @@ const ChatUserList = ({ searchTerm, setSearchTerm, filteredChats, selectedChat, 
       }}
     >
       <Box sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
-        <Input size="sm" placeholder="Search user..." sx={{ margin: 1.5 }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <Input
+          size="sm"
+          placeholder="Search user..."
+          sx={{ margin: 1.5 }}
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+          }}
+        />
       </Box>
 
       <List
@@ -62,7 +74,7 @@ const ChatUserList = ({ searchTerm, setSearchTerm, filteredChats, selectedChat, 
                     {chat.name}
                   </Typography>
                   <Typography level="body-xs" sx={{ fontWeight: chat.unReadMessageCount > 0 && 'bold' }} noWrap>
-                    {chat.lastMessage}
+                    {chat.lastMessage || '-'}
                   </Typography>
                 </ListItemContent>
                 {chat.unReadMessageCount > 0 && (
@@ -88,7 +100,7 @@ const ChatUserList = ({ searchTerm, setSearchTerm, filteredChats, selectedChat, 
               width: '100%',
               borderRadius: 'md',
             }}
-            onClick={() => alert('Yeni kullanıcı ile sohbet başlatıldı!')}
+            onClick={() => setNewChatOpen(!newChatOpen)}
           >
             New Chat
           </Button>

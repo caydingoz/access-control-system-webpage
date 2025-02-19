@@ -21,6 +21,11 @@ const getChatOverviewAsync = async (page, count) => {
   const response = await axiosClient.getAsync(url)
   return response
 }
+const getChatAllUsersAsync = async () => {
+  const url = `chat/users`
+  const response = await axiosClient.getAsync(url)
+  return response
+}
 const sendChatMessageAsync = async (message) => {
   const response = await axiosClient.postAsync(`chat/message`, message)
   return response
@@ -43,6 +48,7 @@ const readChatMessagesAsync = async (messageId) => {
 const ChatService = {
   getChatMessagesAsync,
   getChatOverviewAsync,
+  getChatAllUsersAsync,
   sendChatMessageAsync,
   readAllChatMessagesAsync,
   readChatMessagesAsync,
