@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Sheet, Input, List, ListItem, ListItemButton, ListItemContent, Avatar, Typography, Box, Chip } from '@mui/joy'
 import Button from '@mui/joy/Button'
+import TimeZoneConverter from 'src/helpers/timeZoneConverter'
 
 const ChatUserList = ({ chatOverviews, selectedChat, handleChatSelect, newChatOpen, setNewChatOpen, theme }) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -73,9 +74,18 @@ const ChatUserList = ({ chatOverviews, selectedChat, handleChatSelect, newChatOp
                   <Typography level="title-sm" sx={{ fontWeight: chat.unReadMessageCount > 0 && 'bold' }}>
                     {chat.name}
                   </Typography>
-                  <Typography level="body-xs" sx={{ fontWeight: chat.unReadMessageCount > 0 && 'bold' }} noWrap>
-                    {chat.lastMessage || '-'}
-                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography level="body-xs" sx={{ fontWeight: chat.unReadMessageCount > 0 && 'bold' }} noWrap>
+                      {chat.lastMessage || '-'}
+                    </Typography>
+                    <Typography level="body-xs" sx={{ fontWeight: chat.unReadMessageCount > 0 && 'bold', ml: 1 }}>
+                      {chat.lastMessageTime &&
+                        TimeZoneConverter.convertUtcToIstanbul(chat.lastMessageTime).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                    </Typography>
+                  </Box>
                 </ListItemContent>
                 {chat.unReadMessageCount > 0 && (
                   <Chip size="sm" variant="solid" color="success">

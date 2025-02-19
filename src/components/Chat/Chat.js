@@ -76,20 +76,20 @@ const Chat = () => {
               ...prevMessages,
             ])
             ChatService.readChatMessagesAsync(message.id)
-          } else {
-            setChatOverviews((prevChatOverviews) => {
-              return prevChatOverviews.map((chatOverview) => {
-                if (chatOverview.userId === message.senderId) {
-                  return {
-                    ...chatOverview,
-                    unReadMessageCount: chatOverview.unReadMessageCount + 1,
-                    lastMessage: message.content,
-                  }
-                }
-                return chatOverview
-              })
-            })
           }
+          setChatOverviews((prevChatOverviews) => {
+            return prevChatOverviews.map((chatOverview) => {
+              if (chatOverview.userId === message.senderId) {
+                return {
+                  ...chatOverview,
+                  unReadMessageCount: selectedChatRef.current === message.senderId ? 0 : chatOverview.unReadMessageCount + 1,
+                  lastMessage: message.content,
+                  lastMessageTime: message.sentAt,
+                }
+              }
+              return chatOverview
+            })
+          })
         })
         connection.on('ReadMessage', (messageIds) => {
           //signalr'dan gelen mesajlar okundu olarak isaretlenir
@@ -190,6 +190,7 @@ const Chat = () => {
               return {
                 ...chatOverview,
                 lastMessage: newMessage,
+                lastMessageTime: DateTime.utc(),
               }
             }
             return chatOverview
