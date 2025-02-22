@@ -1,19 +1,18 @@
 import React, { useEffect } from 'react'
-import { Box, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
-import { Button, Stack, Card, List, ListItem } from '@mui/joy'
-import { Input, SelectPicker } from 'rsuite'
-import { IconButton as RsuiteIconButton, Button as RsuiteButton } from 'rsuite'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import { Box, Typography, Sheet, Checkbox, Tooltip } from '@mui/joy'
+import { Stack, List, ListItem } from '@mui/joy'
+import { IconButton as RsuiteIconButton } from 'rsuite'
 import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
-import RsuiteCloseIcon from '@rsuite/icons/Close'
 import RoleManagementService from 'src/services/RoleManagementService'
 import PermissionTable from './PermissionTable'
 import { useSelector } from 'react-redux'
 import PermissionChecker from '../../helpers/permissionChecker'
 import { PermissionTypes } from '../../enums/PermissionTypes'
+import AddRoleForm from './AddRoleForm'
+import RoleTableFooter from './RoleTableFooter'
+import RoleTableFilterForm from './RoleTableFilterForm'
 
 export default function RoleTable() {
   const userPermissions = useSelector((state) => state.auth.permissions)
@@ -114,89 +113,12 @@ export default function RoleTable() {
             </Typography>
           </Typography>
         </Box>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            setOpenedId(null)
-            const formElements = event.currentTarget.elements
-            setFilterName(formElements.name.value)
-            setFilterPermissions(formElements.permissions.value)
-          }}
-        >
-          <Sheet
-            variant="outlined"
-            sx={{
-              width: '96%',
-              margin: '0% 2% 1% 2%',
-              padding: '15px',
-              borderRadius: 'sm',
-              backgroundColor: 'transparent',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'flex-end',
-                gap: 3,
-                flexWrap: 'wrap',
-              }}
-            >
-              <Box sx={{ flex: 1, minWidth: 180 }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  What are you looking for?
-                </Typography>
-                <Input
-                  name="name"
-                  placeholder="Search for role, permission, etc."
-                  variant="outlined"
-                  size="sm"
-                  sx={{
-                    width: '40%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
-                />
-              </Box>
-              <Box sx={{ minWidth: 280 }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Permissions
-                </Typography>
-                <SelectPicker
-                  name="permissions"
-                  size="sm"
-                  placeholder="All"
-                  variant="outlined"
-                  style={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
-                  menuStyle={{ width: 180, fontSize: '13px' }}
-                  data={permissions}
-                />
-              </Box>
-              <Button
-                type="submit"
-                variant="solid"
-                size="sm"
-                sx={{
-                  padding: '0 31px',
-                  borderRadius: 'md',
-                  background: 'linear-gradient(45deg, #3399ff, #126EC9)',
-                  minWidth: 120,
-                  '&:hover': {
-                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)',
-                    boxShadow: 'sm',
-                  },
-                }}
-              >
-                Search
-              </Button>
-            </Box>
-          </Sheet>
-        </form>
+        <RoleTableFilterForm
+          setFilterName={setFilterName}
+          setFilterPermissions={setFilterPermissions}
+          permissions={permissions}
+          setOpenedId={setOpenedId}
+        />
         <Box>
           <Stack
             direction="row"
@@ -227,73 +149,12 @@ export default function RoleTable() {
                   Add Role
                 </RsuiteIconButton>
               )}
-              {visibleAddRole && (
-                <Card
-                  sx={{
-                    position: 'absolute',
-                    left: '1.6%',
-                    marginTop: '5px',
-                    width: '350px',
-                    zIndex: 20,
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Typography level="title-sm" sx={{ mb: 1 }}>
-                      New Role
-                      <br></br>
-                      <Typography level="body-xs" sx={{ fontWeight: 'normal' }}>
-                        Type the name of the role here.
-                      </Typography>
-                    </Typography>
-                    <div>
-                      <RsuiteIconButton
-                        color="red"
-                        appearance="primary"
-                        onClick={() => setVisibleAddRole(false)}
-                        size="xs"
-                        icon={<RsuiteCloseIcon />}
-                      />
-                    </div>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{
-                      marginTop: '5px',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Input
-                      value={newRole}
-                      size="sm"
-                      placeholder="Role name.."
-                      style={{ width: 300, fontSize: '12px' }}
-                      onChange={handleNewRoleName}
-                    />
-                    <RsuiteButton
-                      appearance="primary"
-                      color="green"
-                      size="sm"
-                      onClick={handleAddNewRole}
-                      style={{
-                        width: '20%',
-                        fontSize: '12px',
-                        height: '26.5px',
-                        borderRadius: '5px',
-                      }}
-                    >
-                      Add
-                    </RsuiteButton>
-                  </Stack>
-                </Card>
-              )}
+              <AddRoleForm
+                visible={visibleAddRole}
+                setVisible={setVisibleAddRole}
+                handleAddNewRole={handleAddNewRole}
+                handleNewRoleName={handleNewRoleName}
+              />
             </div>
             {selectedRoles.length > 0 && (
               <Typography
@@ -431,62 +292,14 @@ export default function RoleTable() {
               </List>
             </Box>
 
-            <Box
-              sx={{
-                pt: 1.5,
-                pb: 1.5,
-                pl: 2,
-                borderTop: '1px solid',
-                borderColor: 'divider',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <FormControl orientation="horizontal" size="sm">
-                <FormLabel>Rows per page:</FormLabel>
-                <Select
-                  onChange={(event, newValue) => {
-                    setRowsPerPage(parseInt(newValue.toString(), 10))
-                    setPage(0)
-                    setOpenedId(null)
-                  }}
-                  value={rowsPerPage}
-                  size="sm"
-                >
-                  <Option value={10}>10</Option>
-                  <Option value={25}>25</Option>
-                  <Option value={50}>50</Option>
-                  <Option value={100}>100</Option>
-                </Select>
-              </FormControl>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1 }}>
-                <IconButton
-                  size="sm"
-                  disabled={page === 0}
-                  onClick={() => {
-                    setPage(page - 1)
-                    setOpenedId(null)
-                  }}
-                >
-                  <KeyboardArrowLeftIcon />
-                </IconButton>
-                <Typography level="body-sm" sx={{ alignSelf: 'center' }}>
-                  {page + (totalCount > 0 ? 1 : 0)} / {Math.ceil(totalCount / rowsPerPage)}
-                </Typography>
-                <IconButton
-                  size="sm"
-                  disabled={page >= Math.ceil(totalCount / rowsPerPage) - 1}
-                  onClick={() => {
-                    setPage(page + 1)
-                    setOpenedId(null)
-                  }}
-                >
-                  <KeyboardArrowRightIcon />
-                </IconButton>
-              </Box>
-            </Box>
+            <RoleTableFooter
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+              totalCount={totalCount}
+              setOpenedId={setOpenedId}
+            />
           </Sheet>
 
           {/* Sağ Panel - İzinler Tablosu */}
