@@ -63,7 +63,7 @@ const Chat = () => {
       .then(() => {
         connection.on('ReceiveMessage', (message) => {
           if (selectedChatRef.current === message.senderId) {
-            //eger chat aciksa
+            // eğer chat açıksa
             setMessages((prevMessages) => [
               {
                 id: message.id,
@@ -78,7 +78,7 @@ const Chat = () => {
             ChatService.readChatMessagesAsync(message.id)
           }
           setChatOverviews((prevChatOverviews) => {
-            return prevChatOverviews.map((chatOverview) => {
+            const updatedChatOverviews = prevChatOverviews.map((chatOverview) => {
               if (chatOverview.userId === message.senderId) {
                 return {
                   ...chatOverview,
@@ -89,6 +89,9 @@ const Chat = () => {
               }
               return chatOverview
             })
+            // Mesaj gönderen kullanıcıyı en üste taşı
+            const senderChatOverview = updatedChatOverviews.find((chatOverview) => chatOverview.userId === message.senderId)
+            return [senderChatOverview, ...updatedChatOverviews.filter((chatOverview) => chatOverview.userId !== message.senderId)]
           })
         })
         connection.on('ReadMessage', (messageIds) => {
@@ -185,7 +188,7 @@ const Chat = () => {
           ...prevMessages,
         ])
         setChatOverviews((prevChatOverviews) => {
-          return prevChatOverviews.map((chatOverview) => {
+          const updatedChatOverviews = prevChatOverviews.map((chatOverview) => {
             if (chatOverview.userId === selectedChat.userId) {
               return {
                 ...chatOverview,
@@ -195,6 +198,9 @@ const Chat = () => {
             }
             return chatOverview
           })
+          // Mesaj gönderilen kullanıcıyı en üste taşı
+          const receiverChatOverview = updatedChatOverviews.find((chatOverview) => chatOverview.userId === selectedChat.userId)
+          return [receiverChatOverview, ...updatedChatOverviews.filter((chatOverview) => chatOverview.userId !== selectedChat.userId)]
         })
         messagesContainerRef.current.scrollTop = 0
       }
