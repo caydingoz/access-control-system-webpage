@@ -29,7 +29,7 @@ const Chat = () => {
   const messagesContainerRef = useRef(null)
 
   const getOldMessages = async () => {
-    const res = await ChatService.getChatMessagesAsync(20, selectedChat.userId, messages.at(-1).id)
+    const res = await ChatService.getChatMessagesAsync(40, selectedChat.userId, messages.at(-1).id)
     if (res.success) {
       if (res.data.chatMessages.length === 0) {
         setHasMore(false)
@@ -149,10 +149,10 @@ const Chat = () => {
     setSelectedChat(chat)
     setHasMore(true)
     setIsLoadingOldMessages(false)
-    const res = await ChatService.getChatMessagesAsync(20, chat.userId, 0)
+    const res = await ChatService.getChatMessagesAsync(50, chat.userId, 0)
     if (res.success) {
       setMessages(res.data.chatMessages)
-      if (res.data.chatMessages.length < 20) {
+      if (res.data.chatMessages.length < 50) {
         setHasMore(false)
       }
     }
