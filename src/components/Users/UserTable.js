@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Box, Table, Typography, Sheet, Checkbox, FormControl, FormLabel, IconButton, Tooltip, Select, Option } from '@mui/joy'
-import { Button, Stack, Avatar, Chip, Menu, MenuItem, Link } from '@mui/joy'
-import { TagPicker, Input, SelectPicker, IconButton as RsuiteIconButton } from 'rsuite'
+import { Box, Table, Typography, Sheet, Checkbox, IconButton, Tooltip } from '@mui/joy'
+import { Stack, Avatar, Chip, Menu, MenuItem } from '@mui/joy'
+import { IconButton as RsuiteIconButton } from 'rsuite'
 import UserInfo from './UserInfo'
 import UserService from 'src/services/UserService'
 import RoleManagementService from 'src/services/RoleManagementService'
@@ -9,17 +9,16 @@ import { format } from 'date-fns'
 import PlusIcon from '@rsuite/icons/Plus'
 import TrashIcon from '@rsuite/icons/Trash'
 import FunnelIcon from '@rsuite/icons/Funnel'
-import RemoveIcon from '@mui/icons-material/Remove'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import CloseIcon from '@mui/icons-material/Close'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import EditIcon from '@mui/icons-material/Edit'
 import 'src/css/style.css'
 import { useSelector } from 'react-redux'
 import PermissionChecker from '../../helpers/permissionChecker'
 import { PermissionTypes } from '../../enums/PermissionTypes'
+import UserTableHeader from './UserTableHeader'
+import UserTableFooter from './UserTableFooter'
+import UserTableFilterForm from './UserTableFilterForm'
 
 export default function UserTable() {
   const userPermissions = useSelector((state) => state.auth.permissions)
@@ -43,40 +42,6 @@ export default function UserTable() {
     const date = new Date(inputDateTime)
     return format(date, 'dd-MM-yyyy')
   }
-
-  const headCells = [
-    {
-      id: 'firstName',
-      label: 'Name',
-    },
-    {
-      id: 'status',
-      label: 'Status',
-    },
-    {
-      id: 'phoneNumber',
-      label: 'Phone Number',
-    },
-    {
-      id: 'title',
-      label: 'Title',
-    },
-    {
-      id: 'roles',
-      label: 'Roles',
-    },
-    {
-      id: 'createdAt',
-      label: 'Create Date',
-    },
-  ]
-
-  const userStatus = {
-    0: { status: 'Passive', color: 'warning' },
-    1: { status: 'Active', color: 'success' },
-    2: { status: 'Deleted', color: 'danger' },
-  }
-  const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   useEffect(() => {
     //close modal if clicked outside
@@ -208,11 +173,19 @@ export default function UserTable() {
   }
 
   const handleChangeRowsPerPage = (event, newValue) => {
+    setUsers([])
     setRowsPerPage(parseInt(newValue.toString(), 10))
     setPage(0)
   }
 
   const emptyRows = Math.max(0, rowsPerPage - users.length)
+
+  const userStatus = {
+    0: { status: 'Passive', color: 'warning' },
+    1: { status: 'Active', color: 'success' },
+    2: { status: 'Deleted', color: 'danger' },
+  }
+  const userStatusData = Object.values(userStatus).map((item) => ({ label: item.status, value: item.status }))
 
   return (
     <div>
@@ -235,102 +208,13 @@ export default function UserTable() {
             </Typography>
           </Typography>
         </Box>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            const formElements = event.currentTarget.elements
-            setFilterName(formElements.name.value)
-            setFilterStatus(formElements.status.value)
-            setFilterRoles(formElements.filterRoles.value)
-          }}
-        >
-          <Sheet
-            variant="outlined"
-            sx={{
-              width: '96%',
-              margin: '0% 2% 1% 2%',
-              padding: '15px',
-              borderRadius: 'sm',
-              backgroundColor: 'transparent',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'flex-end',
-                gap: 3,
-                flexWrap: 'wrap',
-              }}
-            >
-              <Box sx={{ flex: 1, minWidth: '300px' }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  What are you looking for?
-                </Typography>
-                <Input
-                  name="name"
-                  placeholder="Search for name, email, phone number, etc."
-                  variant="outlined"
-                  size="sm"
-                  sx={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                    backgroundColor: 'transparent',
-                  }}
-                />
-              </Box>
-              <Box sx={{ width: '300px' }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Roles
-                </Typography>
-                <TagPicker
-                  name="filterRoles"
-                  size="sm"
-                  placeholder="Select roles.."
-                  style={{ width: '100%', fontSize: '12px' }}
-                  menuStyle={{ fontSize: '12px', zIndex: '100', height: '250px', width: '300px' }}
-                  data={roles}
-                />
-              </Box>
-              <Box sx={{ width: '300px' }}>
-                <Typography level="title-sm" sx={{ mb: 1 }}>
-                  Status
-                </Typography>
-                <SelectPicker
-                  name="status"
-                  size="sm"
-                  placeholder="All"
-                  variant="outlined"
-                  style={{
-                    width: '100%',
-                    borderRadius: 'sm',
-                    boxShadow: 'sm',
-                  }}
-                  searchable={false}
-                  menuStyle={{ width: '300px', fontSize: '13px' }}
-                  data={userStatusData}
-                />
-              </Box>
-              <Button
-                type="submit"
-                variant="solid"
-                size="sm"
-                sx={{
-                  padding: '0 31px',
-                  borderRadius: 'md',
-                  background: 'linear-gradient(45deg, #3399ff, #126EC9)',
-                  boxShadow: 'md',
-                  minWidth: 120,
-                  '&:hover': {
-                    background: 'linear-gradient(45deg, #2A8DEB, #105CA8)',
-                  },
-                }}
-              >
-                Search
-              </Button>
-            </Box>
-          </Sheet>
-        </form>
+        <UserTableFilterForm
+          roles={roles}
+          userStatusData={userStatusData}
+          setFilterName={setFilterName}
+          setFilterStatus={setFilterStatus}
+          setFilterRoles={setFilterRoles}
+        />
         <Box>
           <Stack
             direction="row"
@@ -432,55 +316,16 @@ export default function UserTable() {
             },
           }}
         >
-          <thead>
-            <tr>
-              <th>
-                <Checkbox
-                  checked={users.length > 0 && selectedUsers.length >= users.length}
-                  checkedIcon={<RemoveIcon />}
-                  color="primary"
-                  onChange={handleSelectAllUsers}
-                  sx={{ verticalAlign: 'sub', marginLeft: '5px' }}
-                  disabled={!PermissionChecker.hasPermission(userPermissions, 'User', PermissionTypes.Delete)}
-                />
-              </th>
-              <th />
-              {headCells.map((headCell) => {
-                const active = orderBy === headCell.id
-                return (
-                  <th
-                    key={headCell.id}
-                    aria-sort={active ? { asc: 'ascending', desc: 'descending' }[order] : undefined}
-                    style={{ verticalAlign: 'top' }}
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <Link
-                      underline="none"
-                      color="neutral"
-                      textColor={active ? 'primary.plainColor' : undefined}
-                      component="button"
-                      onClick={(event) => handleOrder(event, headCell.id)}
-                      fontWeight="lg"
-                      endDecorator={<ArrowDownwardIcon sx={{ opacity: headCell.id === 'roles' ? 0 : active ? 1 : 0 }} />}
-                      sx={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        height: '100%',
-                        '& svg': {
-                          transition: '0.2s',
-                          transform: active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                        },
-                        '&:hover': { '& svg': { opacity: headCell.id === 'roles' ? 0 : 1 } },
-                      }}
-                    >
-                      {headCell.label}
-                    </Link>
-                  </th>
-                )
-              })}
-              <th />
-            </tr>
-          </thead>
+          <UserTableHeader
+            order={order}
+            orderBy={orderBy}
+            handleOrder={handleOrder}
+            handleSelectAllUsers={handleSelectAllUsers}
+            users={users}
+            selectedUsers={selectedUsers}
+            userPermissions={userPermissions}
+          />
+
           <tbody>
             {users.map((row, index) => {
               const isItemSelected = selectedUsers.indexOf(row.id) !== -1
@@ -593,48 +438,13 @@ export default function UserTable() {
               </tr>
             )}
           </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={9}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <FormControl orientation="horizontal" size="sm">
-                    <FormLabel>Rows per page:</FormLabel>
-                    <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
-                      <Option value={5}>5</Option>
-                      <Option value={10}>10</Option>
-                      <Option value={25}>25</Option>
-                    </Select>
-                  </FormControl>
-                  <FormControl orientation="horizontal" size="sm" sx={{ width: '5%' }}>
-                    <FormLabel size="sm">
-                      Page: {page + 1}/{rowsPerPage > totalCount ? 1 : Math.ceil(totalCount / rowsPerPage)}
-                    </FormLabel>
-                  </FormControl>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton size="sm" color="neutral" variant="outlined" disabled={page === 0} onClick={() => setPage(page - 1)}>
-                      <KeyboardArrowLeftIcon />
-                    </IconButton>
-                    <IconButton
-                      size="sm"
-                      color="neutral"
-                      variant="outlined"
-                      disabled={(page + 1) * rowsPerPage >= totalCount ? true : false}
-                      onClick={() => setPage(page + 1)}
-                    >
-                      <KeyboardArrowRightIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </td>
-            </tr>
-          </tfoot>
+          <UserTableFooter
+            rowsPerPage={rowsPerPage}
+            totalCount={totalCount}
+            page={page}
+            setPage={setPage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         </Table>
         {visibleUserInfo && (
           <div className="overlay">
